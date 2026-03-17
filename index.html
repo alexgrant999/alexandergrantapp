@@ -114,6 +114,31 @@
       position: relative;
       overflow: hidden;
     }
+    .card-screenshot {
+      width: calc(100% + 56px);
+      margin: -28px -28px 0;
+      height: 180px;
+      overflow: hidden;
+      border-radius: 16px 16px 0 0;
+      position: relative;
+      flex-shrink: 0;
+    }
+    .card-screenshot img {
+      width: 100%; height: 100%;
+      object-fit: cover; object-position: top;
+      display: block;
+    }
+    .card-screenshot-placeholder {
+      width: 100%; height: 100%;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 2.5rem;
+    }
+    .card-screenshot::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(to bottom, transparent 60%, var(--card-bg) 100%);
+    }
     .card::before {
       content: '';
       position: absolute;
@@ -121,6 +146,7 @@
       height: 3px;
       background: var(--card-accent, linear-gradient(90deg, var(--accent), var(--accent2)));
       border-radius: 16px 16px 0 0;
+      z-index: 1;
     }
     .card:hover {
       transform: translateY(-4px);
@@ -328,6 +354,7 @@
 
       <!-- Find Yoga AU -->
       <div class="card" style="--card-accent: linear-gradient(90deg,#43b89c,#2d8a70)">
+        <div class="card-screenshot"><img src="screenshots/findyoga-au.jpg" alt="Find Yoga Australia" /></div>
         <div class="card-header">
           <div class="card-icon" style="background:rgba(67,184,156,.15)">🧘</div>
           <div class="card-meta">
@@ -348,30 +375,10 @@
         </div>
       </div>
 
-      <!-- Find Yoga Next.js -->
-      <div class="card" style="--card-accent: linear-gradient(90deg,#43b89c,#6c63ff)">
-        <div class="card-header">
-          <div class="card-icon" style="background:rgba(108,99,255,.15)">🌿</div>
-          <div class="card-meta">
-            <div class="card-name">Find Yoga — Next Gen</div>
-            <div class="card-type">Web App Rebuild</div>
-          </div>
-        </div>
-        <p class="card-desc">A full rebuild of Find Yoga AU with modern Next.js, Supabase backend, Stripe payments, Google Places integration, and scraping pipelines for event discovery.</p>
-        <div class="tags">
-          <span class="tag">Next.js 16</span>
-          <span class="tag">Supabase</span>
-          <span class="tag">Stripe</span>
-          <span class="tag">Google Places</span>
-        </div>
-        <div class="card-footer">
-          <span class="status status-dev"><span class="pip"></span>In Dev</span>
-          <span class="btn btn-disabled">Coming Soon</span>
-        </div>
-      </div>
 
       <!-- BaliSpirit -->
       <div class="card" style="--card-accent: linear-gradient(90deg,#ff6584,#ff8c55)">
+        <div class="card-screenshot"><img src="screenshots/balispirit.jpg" alt="Bali Spirit Festival" /></div>
         <div class="card-header">
           <div class="card-icon" style="background:rgba(255,101,132,.15)">🌴</div>
           <div class="card-meta">
@@ -394,6 +401,7 @@
 
       <!-- Playday -->
       <div class="card" style="--card-accent: linear-gradient(90deg,#f59e0b,#f97316)">
+        <div class="card-screenshot"><img src="screenshots/playday.jpg" alt="Playday" /></div>
         <div class="card-header">
           <div class="card-icon" style="background:rgba(245,158,11,.15)">🎉</div>
           <div class="card-meta">
@@ -416,6 +424,7 @@
 
       <!-- Vibro-Acoustic -->
       <div class="card" style="--card-accent: linear-gradient(90deg,#8b5cf6,#06b6d4)">
+        <div class="card-screenshot"><img src="screenshots/vibro-acoustic.jpg" alt="Vibro-Acoustic App" /></div>
         <div class="card-header">
           <div class="card-icon" style="background:rgba(139,92,246,.15)">🎵</div>
           <div class="card-meta">
@@ -430,13 +439,14 @@
           <span class="tag">Web Audio API</span>
         </div>
         <div class="card-footer">
-          <span class="status status-dev"><span class="pip"></span>In Dev</span>
-          <span class="btn btn-disabled">Coming Soon</span>
+          <span class="status status-live"><span class="pip pip-live"></span>Live</span>
+          <a href="https://vibroapp.vercel.app" target="_blank" rel="noopener" class="btn btn-primary">Visit Site ↗</a>
         </div>
       </div>
 
       <!-- TCM Study -->
       <div class="card" style="--card-accent: linear-gradient(90deg,#ef4444,#dc2626)">
+        <div class="card-screenshot"><img src="screenshots/tcm-study.jpg" alt="TCM Study" /></div>
         <div class="card-header">
           <div class="card-icon" style="background:rgba(239,68,68,.15)">📚</div>
           <div class="card-meta">
@@ -452,13 +462,14 @@
           <span class="tag">Recharts</span>
         </div>
         <div class="card-footer">
-          <span class="status status-dev"><span class="pip"></span>In Dev</span>
-          <span class="btn btn-disabled">Coming Soon</span>
+          <span class="status status-live"><span class="pip pip-live"></span>Live</span>
+          <a href="https://tcm-study.vercel.app" target="_blank" rel="noopener" class="btn btn-primary">Visit Site ↗</a>
         </div>
       </div>
 
       <!-- Zen Book -->
       <div class="card" style="--card-accent: linear-gradient(90deg,#10b981,#059669)">
+        <div class="card-screenshot"><img src="screenshots/zen-book.jpg" alt="Zen Book" /></div>
         <div class="card-header">
           <div class="card-icon" style="background:rgba(16,185,129,.15)">📅</div>
           <div class="card-meta">
@@ -475,13 +486,14 @@
           <span class="tag">Stripe</span>
         </div>
         <div class="card-footer">
-          <span class="status status-dev"><span class="pip"></span>In Dev</span>
-          <span class="btn btn-disabled">Coming Soon</span>
+          <span class="status status-live"><span class="pip pip-live"></span>Live</span>
+          <a href="https://zenbook.vercel.app" target="_blank" rel="noopener" class="btn btn-primary">Visit Site ↗</a>
         </div>
       </div>
 
       <!-- Real Estate -->
       <div class="card" style="--card-accent: linear-gradient(90deg,#3b82f6,#1d4ed8)">
+        <div class="card-screenshot"><img src="screenshots/real-estate.jpg" alt="Real Estate Dashboard" /></div>
         <div class="card-header">
           <div class="card-icon" style="background:rgba(59,130,246,.15)">🏠</div>
           <div class="card-meta">
@@ -497,13 +509,14 @@
           <span class="tag">Tailwind</span>
         </div>
         <div class="card-footer">
-          <span class="status status-dev"><span class="pip"></span>In Dev</span>
-          <span class="btn btn-disabled">Coming Soon</span>
+          <span class="status status-live"><span class="pip pip-live"></span>Live</span>
+          <a href="https://real-estate-steel-three.vercel.app" target="_blank" rel="noopener" class="btn btn-primary">Visit Site ↗</a>
         </div>
       </div>
 
       <!-- iEmerge -->
       <div class="card" style="--card-accent: linear-gradient(90deg,#1db954,#1ed760)">
+        <div class="card-screenshot"><img src="screenshots/iemerge.jpg" alt="iEmerge" /></div>
         <div class="card-header">
           <div class="card-icon" style="background:rgba(29,185,84,.15)">🌱</div>
           <div class="card-meta">
@@ -527,6 +540,7 @@
 
       <!-- Orphius -->
       <div class="card" style="--card-accent: linear-gradient(90deg,#6366f1,#8b5cf6)">
+        <div class="card-screenshot" style="background:linear-gradient(135deg,#10102a,#1a1840)"><div class="card-screenshot-placeholder">🎧</div></div>
         <div class="card-header">
           <div class="card-icon" style="background:rgba(99,102,241,.15)">🎧</div>
           <div class="card-meta">
