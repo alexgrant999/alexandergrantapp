@@ -241,54 +241,6 @@
       0%,100% { opacity: 1; } 50% { opacity: .4; }
     }
 
-    /* ── SCROLL GALLERY ── */
-    .gallery-wrap { position: relative; }
-    .gallery-scroll {
-      display: flex;
-      gap: 16px;
-      overflow-x: auto;
-      scroll-snap-type: x mandatory;
-      -webkit-overflow-scrolling: touch;
-      padding-bottom: 16px;
-      scrollbar-width: none;
-    }
-    .gallery-scroll::-webkit-scrollbar { display: none; }
-
-    .gallery-item {
-      flex-shrink: 0;
-      width: 280px;
-      border-radius: 14px;
-      overflow: hidden;
-      border: 1px solid var(--border);
-      scroll-snap-align: start;
-      background: var(--card-bg);
-      transition: transform .2s, box-shadow .2s;
-      cursor: pointer;
-    }
-    .gallery-item:hover { transform: scale(1.02); box-shadow: 0 12px 30px rgba(0,0,0,.5); }
-
-    .gallery-thumb {
-      width: 100%; height: 160px;
-      display: flex; align-items: center; justify-content: center;
-      font-size: 3rem;
-      position: relative;
-      overflow: hidden;
-    }
-    .gallery-thumb img {
-      position: absolute; inset: 0;
-      width: 100%; height: 100%;
-      object-fit: cover; object-position: top;
-    }
-    .gallery-thumb-bg {
-      position: absolute; inset: 0;
-      opacity: .15;
-    }
-    .gallery-thumb-emoji { position: relative; z-index: 1; }
-
-    .gallery-info { padding: 14px 16px; }
-    .gallery-info h4 { font-size: .95rem; font-weight: 700; margin-bottom: 4px; }
-    .gallery-info p  { font-size: .78rem; color: var(--muted); }
-
     /* ── FOOTER ── */
     footer {
       text-align: center;
@@ -300,24 +252,6 @@
     footer a { color: var(--accent); text-decoration: none; }
     footer a:hover { text-decoration: underline; }
     .footer-name { font-size: 1.1rem; font-weight: 700; color: var(--text); margin-bottom: 6px; }
-
-    /* ── SCROLL ARROWS ── */
-    .gallery-arrows {
-      display: flex; gap: 8px; justify-content: flex-end;
-      margin-top: 12px;
-    }
-    .arrow-btn {
-      width: 36px; height: 36px;
-      border-radius: 50%;
-      border: 1px solid var(--border);
-      background: var(--card-bg);
-      color: var(--text);
-      font-size: 1rem;
-      cursor: pointer;
-      display: flex; align-items: center; justify-content: center;
-      transition: background .15s, border-color .15s;
-    }
-    .arrow-btn:hover { background: var(--border); border-color: var(--accent); }
 
     @media (max-width: 640px) {
       .hero { padding: 70px 20px 60px; }
@@ -394,8 +328,8 @@
           <span class="tag">Gemini AI</span>
         </div>
         <div class="card-footer">
-          <span class="status status-dev"><span class="pip"></span>In Dev</span>
-          <span class="btn btn-disabled">Coming Soon</span>
+          <span class="status status-live"><span class="pip pip-live"></span>Live</span>
+          <a href="https://bali-spirit.vercel.app/" target="_blank" rel="noopener" class="btn btn-primary">Visit Site ↗</a>
         </div>
       </div>
 
@@ -467,30 +401,6 @@
         </div>
       </div>
 
-      <!-- Zen Book -->
-      <div class="card" style="--card-accent: linear-gradient(90deg,#10b981,#059669)">
-        <div class="card-screenshot"><img src="screenshots/zen-book.jpg" alt="Zen Book" /></div>
-        <div class="card-header">
-          <div class="card-icon" style="background:rgba(16,185,129,.15)">📅</div>
-          <div class="card-meta">
-            <div class="card-name">Zen Book</div>
-            <div class="card-type">Booking System</div>
-          </div>
-        </div>
-        <p class="card-desc">A flexible booking platform for classes, workshops, and appointments. Includes auth, admin dashboard, Stripe payments, and a clean client-facing experience.</p>
-        <div class="tags">
-          <span class="tag">React 19</span>
-          <span class="tag">TypeScript</span>
-          <span class="tag">Vite</span>
-          <span class="tag">Supabase</span>
-          <span class="tag">Stripe</span>
-        </div>
-        <div class="card-footer">
-          <span class="status status-live"><span class="pip pip-live"></span>Live</span>
-          <a href="https://zenbook.vercel.app" target="_blank" rel="noopener" class="btn btn-primary">Visit Site ↗</a>
-        </div>
-      </div>
-
       <!-- Real Estate -->
       <div class="card" style="--card-accent: linear-gradient(90deg,#3b82f6,#1d4ed8)">
         <div class="card-screenshot"><img src="screenshots/real-estate.jpg" alt="Real Estate Dashboard" /></div>
@@ -516,7 +426,7 @@
 
       <!-- iEmerge -->
       <div class="card" style="--card-accent: linear-gradient(90deg,#1db954,#1ed760)">
-        <div class="card-screenshot"><img src="screenshots/iemerge.jpg" alt="iEmerge" /></div>
+        <div class="card-screenshot"><img src="screenshots/iemerge-appstore.jpg" alt="iEmerge App Store" /></div>
         <div class="card-header">
           <div class="card-icon" style="background:rgba(29,185,84,.15)">🌱</div>
           <div class="card-meta">
@@ -533,8 +443,8 @@
           <span class="tag">Firebase</span>
         </div>
         <div class="card-footer">
-          <span class="status status-dev"><span class="pip"></span>In Dev</span>
-          <span class="btn btn-disabled">Coming Soon</span>
+          <span class="status status-mobile"><span class="pip"></span>App Store</span>
+          <a href="https://apps.apple.com/pl/app/iemerge-app/id6503445578" target="_blank" rel="noopener" class="btn btn-primary">Download ↗</a>
         </div>
       </div>
 
@@ -556,8 +466,8 @@
           <span class="tag">YouTube API</span>
         </div>
         <div class="card-footer">
-          <span class="status status-mobile"><span class="pip"></span>Mobile App</span>
-          <span class="btn btn-disabled">iOS / Android</span>
+          <span class="status status-mobile"><span class="pip"></span>App Store</span>
+          <a href="https://apps.apple.com/us/app/orpheusb/id6502888343" target="_blank" rel="noopener" class="btn btn-primary">Download ↗</a>
         </div>
       </div>
 
@@ -567,123 +477,17 @@
 
 <hr class="divider" />
 
-<!-- ── SCROLL GALLERY ── -->
+<!-- ── CONTACT ── -->
 <section class="section">
-  <div class="container">
-    <h2 class="section-title">Image Library</h2>
-    <p class="section-sub">Scroll through the project showcase.</p>
-
-    <div class="gallery-wrap">
-      <div class="gallery-scroll" id="gallery">
-
-        <div class="gallery-item">
-          <div class="gallery-thumb" style="background:#1a2a1f">
-            <img src="screenshots/findyoga-au.jpg" alt="Find Yoga Australia" />
-          </div>
-          <div class="gallery-info">
-            <h4>Find Yoga Australia</h4>
-            <p>National yoga directory — findyoga.com.au</p>
-          </div>
-        </div>
-
-        <div class="gallery-item">
-          <div class="gallery-thumb" style="background:#1a1a2e">
-            <img src="screenshots/findyoga-nextjs.jpg" alt="Find Yoga Next Gen" />
-          </div>
-          <div class="gallery-info">
-            <h4>Find Yoga — Next Gen</h4>
-            <p>Modern rebuild with Next.js &amp; Supabase</p>
-          </div>
-        </div>
-
-        <div class="gallery-item">
-          <div class="gallery-thumb" style="background:#2a1a1a">
-            <img src="screenshots/balispirit.jpg" alt="Bali Spirit Festival" />
-          </div>
-          <div class="gallery-info">
-            <h4>Bali Spirit Festival</h4>
-            <p>AI-powered festival scheduling app</p>
-          </div>
-        </div>
-
-        <div class="gallery-item">
-          <div class="gallery-thumb" style="background:#1f1a10">
-            <img src="screenshots/playday.jpg" alt="Playday" />
-          </div>
-          <div class="gallery-info">
-            <h4>Playday</h4>
-            <p>Children's activity booking platform</p>
-          </div>
-        </div>
-
-        <div class="gallery-item">
-          <div class="gallery-thumb" style="background:#1a1020">
-            <img src="screenshots/vibro-acoustic.jpg" alt="Vibro-Acoustic App" />
-          </div>
-          <div class="gallery-info">
-            <h4>Vibro-Acoustic App</h4>
-            <p>Therapeutic sound experience player</p>
-          </div>
-        </div>
-
-        <div class="gallery-item">
-          <div class="gallery-thumb" style="background:#200a0a">
-            <img src="screenshots/tcm-study.jpg" alt="TCM Study" />
-          </div>
-          <div class="gallery-info">
-            <h4>TCM Study</h4>
-            <p>Adaptive Chinese medicine exam prep</p>
-          </div>
-        </div>
-
-        <div class="gallery-item">
-          <div class="gallery-thumb" style="background:#0a1e18">
-            <img src="screenshots/zen-book.jpg" alt="Zen Book" />
-          </div>
-          <div class="gallery-info">
-            <h4>Zen Book</h4>
-            <p>Flexible booking &amp; scheduling system</p>
-          </div>
-        </div>
-
-        <div class="gallery-item">
-          <div class="gallery-thumb" style="background:#0a1225">
-            <div class="gallery-thumb-bg" style="background:radial-gradient(circle,#3b82f6,transparent 70%)"></div>
-            <span class="gallery-thumb-emoji">🏠</span>
-          </div>
-          <div class="gallery-info">
-            <h4>Real Estate Dashboard</h4>
-            <p>Property market analysis &amp; data viz</p>
-          </div>
-        </div>
-
-        <div class="gallery-item">
-          <div class="gallery-thumb" style="background:#0a1e0f">
-            <img src="screenshots/iemerge.jpg" alt="iEmerge" />
-          </div>
-          <div class="gallery-info">
-            <h4>iEmerge</h4>
-            <p>Wellness platform with Spotify + AI</p>
-          </div>
-        </div>
-
-        <div class="gallery-item">
-          <div class="gallery-thumb" style="background:#10102a">
-            <div class="gallery-thumb-bg" style="background:radial-gradient(circle,#6366f1,transparent 70%)"></div>
-            <span class="gallery-thumb-emoji">🎧</span>
-          </div>
-          <div class="gallery-info">
-            <h4>Orphius</h4>
-            <p>Flutter meditation &amp; audio mobile app</p>
-          </div>
-        </div>
-
-      </div>
-
-      <div class="gallery-arrows">
-        <button class="arrow-btn" onclick="scroll(-1)" aria-label="Scroll left">←</button>
-        <button class="arrow-btn" onclick="scroll(1)" aria-label="Scroll right">→</button>
-      </div>
+  <div class="container" style="max-width:560px">
+    <h2 class="section-title">Get in Touch</h2>
+    <p class="section-sub">Send me a message on WhatsApp.</p>
+    <div style="display:flex;flex-direction:column;gap:12px">
+      <input id="wa-name" type="text" placeholder="Your name" style="background:var(--card-bg);border:1px solid var(--border);color:var(--text);border-radius:10px;padding:12px 16px;font-size:.95rem;outline:none;width:100%" />
+      <textarea id="wa-msg" rows="4" placeholder="Your message..." style="background:var(--card-bg);border:1px solid var(--border);color:var(--text);border-radius:10px;padding:12px 16px;font-size:.95rem;outline:none;resize:vertical;width:100%;font-family:inherit"></textarea>
+      <button onclick="sendWhatsApp()" class="btn btn-primary" style="align-self:flex-start;padding:10px 24px;font-size:.9rem">
+        Send via WhatsApp ↗
+      </button>
     </div>
   </div>
 </section>
@@ -697,9 +501,12 @@
 </footer>
 
 <script>
-  function scroll(dir) {
-    const g = document.getElementById('gallery');
-    g.scrollBy({ left: dir * 300, behavior: 'smooth' });
+  function sendWhatsApp() {
+    const name = document.getElementById('wa-name').value.trim();
+    const msg = document.getElementById('wa-msg').value.trim();
+    if (!msg) return;
+    const text = name ? `Hi, I'm ${name}. ${msg}` : msg;
+    window.open('https://wa.me/12122038499?text=' + encodeURIComponent(text), '_blank');
   }
 </script>
 
