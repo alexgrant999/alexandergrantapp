@@ -1,0 +1,693 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Alexander Grant — Developer Portfolio</title>
+  <style>
+    :root {
+      --bg: #0a0a0f;
+      --surface: #13131a;
+      --border: #1e1e2e;
+      --accent: #6c63ff;
+      --accent2: #ff6584;
+      --text: #e8e8f0;
+      --muted: #6b6b8a;
+      --card-bg: #16161f;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+      line-height: 1.6;
+      min-height: 100vh;
+    }
+
+    /* ── HERO ── */
+    .hero {
+      position: relative;
+      padding: 100px 24px 80px;
+      text-align: center;
+      overflow: hidden;
+    }
+    .hero::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(ellipse 80% 60% at 50% 0%, rgba(108,99,255,.18) 0%, transparent 70%);
+      pointer-events: none;
+    }
+    .avatar {
+      width: 88px; height: 88px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, var(--accent), var(--accent2));
+      display: flex; align-items: center; justify-content: center;
+      font-size: 2rem; font-weight: 700;
+      margin: 0 auto 24px;
+      box-shadow: 0 0 0 4px rgba(108,99,255,.25);
+    }
+    h1 {
+      font-size: clamp(2rem, 5vw, 3.2rem);
+      font-weight: 700;
+      letter-spacing: -0.03em;
+      margin-bottom: 12px;
+    }
+    h1 span { color: var(--accent); }
+    .tagline {
+      color: var(--muted);
+      font-size: 1.1rem;
+      max-width: 480px;
+      margin: 0 auto 32px;
+    }
+    .hero-badges {
+      display: flex; gap: 8px; flex-wrap: wrap; justify-content: center;
+    }
+    .badge {
+      background: var(--border);
+      border: 1px solid rgba(108,99,255,.3);
+      color: var(--muted);
+      font-size: .75rem;
+      padding: 4px 12px;
+      border-radius: 999px;
+      letter-spacing: .04em;
+      text-transform: uppercase;
+    }
+
+    /* ── SECTION ── */
+    .section { padding: 64px 24px; }
+    .section-title {
+      font-size: 1.6rem;
+      font-weight: 700;
+      letter-spacing: -.02em;
+      margin-bottom: 8px;
+    }
+    .section-sub {
+      color: var(--muted);
+      font-size: .95rem;
+      margin-bottom: 40px;
+    }
+    .container { max-width: 1120px; margin: 0 auto; }
+
+    /* ── DIVIDER ── */
+    .divider {
+      border: none;
+      border-top: 1px solid var(--border);
+    }
+
+    /* ── PROJECT GRID ── */
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+      gap: 20px;
+    }
+
+    .card {
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 28px;
+      display: flex; flex-direction: column; gap: 16px;
+      transition: transform .2s, border-color .2s, box-shadow .2s;
+      position: relative;
+      overflow: hidden;
+    }
+    .card::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 3px;
+      background: var(--card-accent, linear-gradient(90deg, var(--accent), var(--accent2)));
+      border-radius: 16px 16px 0 0;
+    }
+    .card:hover {
+      transform: translateY(-4px);
+      border-color: rgba(108,99,255,.4);
+      box-shadow: 0 20px 40px rgba(0,0,0,.4);
+    }
+
+    .card-icon {
+      width: 48px; height: 48px;
+      border-radius: 12px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1.4rem;
+      flex-shrink: 0;
+    }
+    .card-header { display: flex; align-items: flex-start; gap: 14px; }
+    .card-meta { flex: 1; }
+    .card-name {
+      font-size: 1.1rem;
+      font-weight: 700;
+      letter-spacing: -.01em;
+      margin-bottom: 4px;
+    }
+    .card-type {
+      font-size: .78rem;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: .06em;
+    }
+    .card-desc {
+      font-size: .9rem;
+      color: var(--muted);
+      line-height: 1.6;
+    }
+
+    /* tech tags */
+    .tags { display: flex; gap: 6px; flex-wrap: wrap; }
+    .tag {
+      background: rgba(108,99,255,.12);
+      color: rgba(180,175,255,.8);
+      font-size: .72rem;
+      padding: 3px 10px;
+      border-radius: 6px;
+      font-weight: 500;
+    }
+
+    .card-footer { display: flex; gap: 10px; margin-top: auto; }
+    .btn {
+      display: inline-flex; align-items: center; gap: 6px;
+      padding: 8px 16px;
+      border-radius: 8px;
+      font-size: .82rem;
+      font-weight: 600;
+      text-decoration: none;
+      transition: background .15s, opacity .15s;
+      cursor: pointer;
+      border: none;
+    }
+    .btn-primary {
+      background: var(--accent);
+      color: #fff;
+    }
+    .btn-primary:hover { background: #5a52e0; }
+    .btn-ghost {
+      background: var(--border);
+      color: var(--muted);
+    }
+    .btn-ghost:hover { background: #252535; color: var(--text); }
+    .btn-disabled {
+      background: var(--border);
+      color: #3a3a55;
+      cursor: default;
+      pointer-events: none;
+    }
+
+    /* status pip */
+    .status {
+      display: inline-flex; align-items: center; gap: 5px;
+      font-size: .75rem;
+      padding: 3px 10px;
+      border-radius: 999px;
+    }
+    .status-live { background: rgba(34,197,94,.12); color: #4ade80; }
+    .status-dev  { background: rgba(251,191,36,.1);  color: #fbbf24; }
+    .status-mobile { background: rgba(99,179,255,.12); color: #63b3ff; }
+    .pip {
+      width: 6px; height: 6px;
+      border-radius: 50%;
+      background: currentColor;
+    }
+    .pip-live { animation: pulse 2s infinite; }
+    @keyframes pulse {
+      0%,100% { opacity: 1; } 50% { opacity: .4; }
+    }
+
+    /* ── SCROLL GALLERY ── */
+    .gallery-wrap { position: relative; }
+    .gallery-scroll {
+      display: flex;
+      gap: 16px;
+      overflow-x: auto;
+      scroll-snap-type: x mandatory;
+      -webkit-overflow-scrolling: touch;
+      padding-bottom: 16px;
+      scrollbar-width: none;
+    }
+    .gallery-scroll::-webkit-scrollbar { display: none; }
+
+    .gallery-item {
+      flex-shrink: 0;
+      width: 280px;
+      border-radius: 14px;
+      overflow: hidden;
+      border: 1px solid var(--border);
+      scroll-snap-align: start;
+      background: var(--card-bg);
+      transition: transform .2s, box-shadow .2s;
+      cursor: pointer;
+    }
+    .gallery-item:hover { transform: scale(1.02); box-shadow: 0 12px 30px rgba(0,0,0,.5); }
+
+    .gallery-thumb {
+      width: 100%; height: 160px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 3rem;
+      position: relative;
+      overflow: hidden;
+    }
+    .gallery-thumb img {
+      position: absolute; inset: 0;
+      width: 100%; height: 100%;
+      object-fit: cover; object-position: top;
+    }
+    .gallery-thumb-bg {
+      position: absolute; inset: 0;
+      opacity: .15;
+    }
+    .gallery-thumb-emoji { position: relative; z-index: 1; }
+
+    .gallery-info { padding: 14px 16px; }
+    .gallery-info h4 { font-size: .95rem; font-weight: 700; margin-bottom: 4px; }
+    .gallery-info p  { font-size: .78rem; color: var(--muted); }
+
+    /* ── FOOTER ── */
+    footer {
+      text-align: center;
+      padding: 48px 24px;
+      border-top: 1px solid var(--border);
+      color: var(--muted);
+      font-size: .85rem;
+    }
+    footer a { color: var(--accent); text-decoration: none; }
+    footer a:hover { text-decoration: underline; }
+    .footer-name { font-size: 1.1rem; font-weight: 700; color: var(--text); margin-bottom: 6px; }
+
+    /* ── SCROLL ARROWS ── */
+    .gallery-arrows {
+      display: flex; gap: 8px; justify-content: flex-end;
+      margin-top: 12px;
+    }
+    .arrow-btn {
+      width: 36px; height: 36px;
+      border-radius: 50%;
+      border: 1px solid var(--border);
+      background: var(--card-bg);
+      color: var(--text);
+      font-size: 1rem;
+      cursor: pointer;
+      display: flex; align-items: center; justify-content: center;
+      transition: background .15s, border-color .15s;
+    }
+    .arrow-btn:hover { background: var(--border); border-color: var(--accent); }
+
+    @media (max-width: 640px) {
+      .hero { padding: 70px 20px 60px; }
+      .grid { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- ── HERO ── -->
+<section class="hero">
+  <div class="avatar">AG</div>
+  <h1>Alexander <span>Grant</span></h1>
+  <p class="tagline">Full-stack developer building web & mobile products across wellness, real estate, education and more.</p>
+  <div class="hero-badges">
+    <span class="badge">Next.js</span>
+    <span class="badge">React</span>
+    <span class="badge">Flutter</span>
+    <span class="badge">Supabase</span>
+    <span class="badge">TypeScript</span>
+    <span class="badge">AI-Powered</span>
+  </div>
+</section>
+
+<hr class="divider" />
+
+<!-- ── PROJECT CARDS ── -->
+<section class="section">
+  <div class="container">
+    <h2 class="section-title">Projects</h2>
+    <p class="section-sub">A selection of web and mobile applications I've built.</p>
+
+    <div class="grid">
+
+      <!-- Find Yoga AU -->
+      <div class="card" style="--card-accent: linear-gradient(90deg,#43b89c,#2d8a70)">
+        <div class="card-header">
+          <div class="card-icon" style="background:rgba(67,184,156,.15)">🧘</div>
+          <div class="card-meta">
+            <div class="card-name">Find Yoga Australia</div>
+            <div class="card-type">Yoga Directory &amp; Listings</div>
+          </div>
+        </div>
+        <p class="card-desc">Australia's yoga studio and class directory. Search by location, style, and level — connecting practitioners with teachers across the country.</p>
+        <div class="tags">
+          <span class="tag">Node.js</span>
+          <span class="tag">Keystone.js</span>
+          <span class="tag">MongoDB</span>
+          <span class="tag">Heroku</span>
+        </div>
+        <div class="card-footer">
+          <span class="status status-live"><span class="pip pip-live"></span>Live</span>
+          <a href="https://findyoga.com.au" target="_blank" rel="noopener" class="btn btn-primary">Visit Site ↗</a>
+        </div>
+      </div>
+
+      <!-- Find Yoga Next.js -->
+      <div class="card" style="--card-accent: linear-gradient(90deg,#43b89c,#6c63ff)">
+        <div class="card-header">
+          <div class="card-icon" style="background:rgba(108,99,255,.15)">🌿</div>
+          <div class="card-meta">
+            <div class="card-name">Find Yoga — Next Gen</div>
+            <div class="card-type">Web App Rebuild</div>
+          </div>
+        </div>
+        <p class="card-desc">A full rebuild of Find Yoga AU with modern Next.js, Supabase backend, Stripe payments, Google Places integration, and scraping pipelines for event discovery.</p>
+        <div class="tags">
+          <span class="tag">Next.js 16</span>
+          <span class="tag">Supabase</span>
+          <span class="tag">Stripe</span>
+          <span class="tag">Google Places</span>
+        </div>
+        <div class="card-footer">
+          <span class="status status-dev"><span class="pip"></span>In Dev</span>
+          <span class="btn btn-disabled">Coming Soon</span>
+        </div>
+      </div>
+
+      <!-- BaliSpirit -->
+      <div class="card" style="--card-accent: linear-gradient(90deg,#ff6584,#ff8c55)">
+        <div class="card-header">
+          <div class="card-icon" style="background:rgba(255,101,132,.15)">🌴</div>
+          <div class="card-meta">
+            <div class="card-name">Bali Spirit Festival</div>
+            <div class="card-type">Event Scheduling App</div>
+          </div>
+        </div>
+        <p class="card-desc">AI-powered festival scheduling app for Bali Spirit Festival. Browse sessions, build personalised schedules, and discover events — powered by Gemini AI and Supabase.</p>
+        <div class="tags">
+          <span class="tag">React 19</span>
+          <span class="tag">Vite</span>
+          <span class="tag">Supabase</span>
+          <span class="tag">Gemini AI</span>
+        </div>
+        <div class="card-footer">
+          <span class="status status-dev"><span class="pip"></span>In Dev</span>
+          <span class="btn btn-disabled">Coming Soon</span>
+        </div>
+      </div>
+
+      <!-- Playday -->
+      <div class="card" style="--card-accent: linear-gradient(90deg,#f59e0b,#f97316)">
+        <div class="card-header">
+          <div class="card-icon" style="background:rgba(245,158,11,.15)">🎉</div>
+          <div class="card-meta">
+            <div class="card-name">Playday</div>
+            <div class="card-type">Children's Activity Booking</div>
+          </div>
+        </div>
+        <p class="card-desc">Multi-location booking platform for children's activities. Features parent and admin portals, Stripe memberships, class scheduling, and capacity management.</p>
+        <div class="tags">
+          <span class="tag">Next.js 15</span>
+          <span class="tag">Supabase</span>
+          <span class="tag">Stripe</span>
+          <span class="tag">Tailwind</span>
+        </div>
+        <div class="card-footer">
+          <span class="status status-dev"><span class="pip"></span>In Dev</span>
+          <span class="btn btn-disabled">Coming Soon</span>
+        </div>
+      </div>
+
+      <!-- Vibro-Acoustic -->
+      <div class="card" style="--card-accent: linear-gradient(90deg,#8b5cf6,#06b6d4)">
+        <div class="card-header">
+          <div class="card-icon" style="background:rgba(139,92,246,.15)">🎵</div>
+          <div class="card-meta">
+            <div class="card-name">Vibro-Acoustic App</div>
+            <div class="card-type">Sound Therapy Player</div>
+          </div>
+        </div>
+        <p class="card-desc">An immersive vibroacoustic therapy sound experience. Stream curated therapeutic audio sessions designed to promote deep relaxation and wellbeing.</p>
+        <div class="tags">
+          <span class="tag">Next.js 15</span>
+          <span class="tag">React 19</span>
+          <span class="tag">Web Audio API</span>
+        </div>
+        <div class="card-footer">
+          <span class="status status-dev"><span class="pip"></span>In Dev</span>
+          <span class="btn btn-disabled">Coming Soon</span>
+        </div>
+      </div>
+
+      <!-- TCM Study -->
+      <div class="card" style="--card-accent: linear-gradient(90deg,#ef4444,#dc2626)">
+        <div class="card-header">
+          <div class="card-icon" style="background:rgba(239,68,68,.15)">📚</div>
+          <div class="card-meta">
+            <div class="card-name">TCM Study</div>
+            <div class="card-type">Adaptive Learning Platform</div>
+          </div>
+        </div>
+        <p class="card-desc">Traditional Chinese Medicine exam preparation app with spaced repetition, flashcards, case studies, and an adaptive learning engine that adjusts to your knowledge gaps.</p>
+        <div class="tags">
+          <span class="tag">Next.js 14</span>
+          <span class="tag">Supabase</span>
+          <span class="tag">TanStack Query</span>
+          <span class="tag">Recharts</span>
+        </div>
+        <div class="card-footer">
+          <span class="status status-dev"><span class="pip"></span>In Dev</span>
+          <span class="btn btn-disabled">Coming Soon</span>
+        </div>
+      </div>
+
+      <!-- Zen Book -->
+      <div class="card" style="--card-accent: linear-gradient(90deg,#10b981,#059669)">
+        <div class="card-header">
+          <div class="card-icon" style="background:rgba(16,185,129,.15)">📅</div>
+          <div class="card-meta">
+            <div class="card-name">Zen Book</div>
+            <div class="card-type">Booking System</div>
+          </div>
+        </div>
+        <p class="card-desc">A flexible booking platform for classes, workshops, and appointments. Includes auth, admin dashboard, Stripe payments, and a clean client-facing experience.</p>
+        <div class="tags">
+          <span class="tag">React 19</span>
+          <span class="tag">TypeScript</span>
+          <span class="tag">Vite</span>
+          <span class="tag">Supabase</span>
+          <span class="tag">Stripe</span>
+        </div>
+        <div class="card-footer">
+          <span class="status status-dev"><span class="pip"></span>In Dev</span>
+          <span class="btn btn-disabled">Coming Soon</span>
+        </div>
+      </div>
+
+      <!-- Real Estate -->
+      <div class="card" style="--card-accent: linear-gradient(90deg,#3b82f6,#1d4ed8)">
+        <div class="card-header">
+          <div class="card-icon" style="background:rgba(59,130,246,.15)">🏠</div>
+          <div class="card-meta">
+            <div class="card-name">Real Estate Dashboard</div>
+            <div class="card-type">Market Analysis Tool</div>
+          </div>
+        </div>
+        <p class="card-desc">Data-driven real estate analysis dashboard. Visualise market trends, compare suburbs, and surface insights from property data using interactive charts.</p>
+        <div class="tags">
+          <span class="tag">Next.js 14</span>
+          <span class="tag">Recharts</span>
+          <span class="tag">SQLite</span>
+          <span class="tag">Tailwind</span>
+        </div>
+        <div class="card-footer">
+          <span class="status status-dev"><span class="pip"></span>In Dev</span>
+          <span class="btn btn-disabled">Coming Soon</span>
+        </div>
+      </div>
+
+      <!-- iEmerge -->
+      <div class="card" style="--card-accent: linear-gradient(90deg,#1db954,#1ed760)">
+        <div class="card-header">
+          <div class="card-icon" style="background:rgba(29,185,84,.15)">🌱</div>
+          <div class="card-meta">
+            <div class="card-name">iEmerge</div>
+            <div class="card-type">Wellness Platform</div>
+          </div>
+        </div>
+        <p class="card-desc">A wellness platform blending Spotify playlist generation via OpenAI with guided meditation, breathing exercises, and mindfulness content via a Flutter mobile app.</p>
+        <div class="tags">
+          <span class="tag">Next.js 14</span>
+          <span class="tag">OpenAI</span>
+          <span class="tag">Spotify API</span>
+          <span class="tag">Flutter</span>
+          <span class="tag">Firebase</span>
+        </div>
+        <div class="card-footer">
+          <span class="status status-dev"><span class="pip"></span>In Dev</span>
+          <span class="btn btn-disabled">Coming Soon</span>
+        </div>
+      </div>
+
+      <!-- Orphius -->
+      <div class="card" style="--card-accent: linear-gradient(90deg,#6366f1,#8b5cf6)">
+        <div class="card-header">
+          <div class="card-icon" style="background:rgba(99,102,241,.15)">🎧</div>
+          <div class="card-meta">
+            <div class="card-name">Orphius</div>
+            <div class="card-type">Mobile Audio App</div>
+          </div>
+        </div>
+        <p class="card-desc">A Flutter meditation and audio app featuring YouTube integration, an RSS podcast feed reader, and a Supabase backend with Firebase auth for a smooth mobile experience.</p>
+        <div class="tags">
+          <span class="tag">Flutter</span>
+          <span class="tag">Supabase</span>
+          <span class="tag">Firebase</span>
+          <span class="tag">YouTube API</span>
+        </div>
+        <div class="card-footer">
+          <span class="status status-mobile"><span class="pip"></span>Mobile App</span>
+          <span class="btn btn-disabled">iOS / Android</span>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<hr class="divider" />
+
+<!-- ── SCROLL GALLERY ── -->
+<section class="section">
+  <div class="container">
+    <h2 class="section-title">Image Library</h2>
+    <p class="section-sub">Scroll through the project showcase.</p>
+
+    <div class="gallery-wrap">
+      <div class="gallery-scroll" id="gallery">
+
+        <div class="gallery-item">
+          <div class="gallery-thumb" style="background:#1a2a1f">
+            <img src="screenshots/findyoga-au.jpg" alt="Find Yoga Australia" />
+          </div>
+          <div class="gallery-info">
+            <h4>Find Yoga Australia</h4>
+            <p>National yoga directory — findyoga.com.au</p>
+          </div>
+        </div>
+
+        <div class="gallery-item">
+          <div class="gallery-thumb" style="background:#1a1a2e">
+            <img src="screenshots/findyoga-nextjs.jpg" alt="Find Yoga Next Gen" />
+          </div>
+          <div class="gallery-info">
+            <h4>Find Yoga — Next Gen</h4>
+            <p>Modern rebuild with Next.js &amp; Supabase</p>
+          </div>
+        </div>
+
+        <div class="gallery-item">
+          <div class="gallery-thumb" style="background:#2a1a1a">
+            <img src="screenshots/balispirit.jpg" alt="Bali Spirit Festival" />
+          </div>
+          <div class="gallery-info">
+            <h4>Bali Spirit Festival</h4>
+            <p>AI-powered festival scheduling app</p>
+          </div>
+        </div>
+
+        <div class="gallery-item">
+          <div class="gallery-thumb" style="background:#1f1a10">
+            <img src="screenshots/playday.jpg" alt="Playday" />
+          </div>
+          <div class="gallery-info">
+            <h4>Playday</h4>
+            <p>Children's activity booking platform</p>
+          </div>
+        </div>
+
+        <div class="gallery-item">
+          <div class="gallery-thumb" style="background:#1a1020">
+            <img src="screenshots/vibro-acoustic.jpg" alt="Vibro-Acoustic App" />
+          </div>
+          <div class="gallery-info">
+            <h4>Vibro-Acoustic App</h4>
+            <p>Therapeutic sound experience player</p>
+          </div>
+        </div>
+
+        <div class="gallery-item">
+          <div class="gallery-thumb" style="background:#200a0a">
+            <img src="screenshots/tcm-study.jpg" alt="TCM Study" />
+          </div>
+          <div class="gallery-info">
+            <h4>TCM Study</h4>
+            <p>Adaptive Chinese medicine exam prep</p>
+          </div>
+        </div>
+
+        <div class="gallery-item">
+          <div class="gallery-thumb" style="background:#0a1e18">
+            <img src="screenshots/zen-book.jpg" alt="Zen Book" />
+          </div>
+          <div class="gallery-info">
+            <h4>Zen Book</h4>
+            <p>Flexible booking &amp; scheduling system</p>
+          </div>
+        </div>
+
+        <div class="gallery-item">
+          <div class="gallery-thumb" style="background:#0a1225">
+            <div class="gallery-thumb-bg" style="background:radial-gradient(circle,#3b82f6,transparent 70%)"></div>
+            <span class="gallery-thumb-emoji">🏠</span>
+          </div>
+          <div class="gallery-info">
+            <h4>Real Estate Dashboard</h4>
+            <p>Property market analysis &amp; data viz</p>
+          </div>
+        </div>
+
+        <div class="gallery-item">
+          <div class="gallery-thumb" style="background:#0a1e0f">
+            <img src="screenshots/iemerge.jpg" alt="iEmerge" />
+          </div>
+          <div class="gallery-info">
+            <h4>iEmerge</h4>
+            <p>Wellness platform with Spotify + AI</p>
+          </div>
+        </div>
+
+        <div class="gallery-item">
+          <div class="gallery-thumb" style="background:#10102a">
+            <div class="gallery-thumb-bg" style="background:radial-gradient(circle,#6366f1,transparent 70%)"></div>
+            <span class="gallery-thumb-emoji">🎧</span>
+          </div>
+          <div class="gallery-info">
+            <h4>Orphius</h4>
+            <p>Flutter meditation &amp; audio mobile app</p>
+          </div>
+        </div>
+
+      </div>
+
+      <div class="gallery-arrows">
+        <button class="arrow-btn" onclick="scroll(-1)" aria-label="Scroll left">←</button>
+        <button class="arrow-btn" onclick="scroll(1)" aria-label="Scroll right">→</button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── FOOTER ── -->
+<footer>
+  <p class="footer-name">Alexander Grant</p>
+  <p>Full-stack developer &mdash; web &amp; mobile &mdash; Sydney, Australia</p>
+  <br />
+  <p>Built with care &mdash; <a href="mailto:alex@alexandergrant.app">alex@alexandergrant.app</a></p>
+</footer>
+
+<script>
+  function scroll(dir) {
+    const g = document.getElementById('gallery');
+    g.scrollBy({ left: dir * 300, behavior: 'smooth' });
+  }
+</script>
+
+</body>
+</html>
