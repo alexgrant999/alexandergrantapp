@@ -1,20 +1,41 @@
 import { NextResponse } from 'next/server'
 import { prisma } from '@/lib/db/prisma'
 import Anthropic from '@anthropic-ai/sdk'
-import { execSync } from 'child_process'
+import postgres from 'postgres'
 
 const anthropic = new Anthropic()
 
-const repoMap: Record<string, string> = {
-  'BaliSpirit': '/Users/alexgrant/development/BaliSpirit',
-  'Playday': '/Users/alexgrant/development/playday',
-  'FindYoga': '/Users/alexgrant/development/findyoga-nextjs',
-  'Alexander Grant App': '/Users/alexgrant/development/alexandergrantapp',
-  'iEmerge': '/Users/alexgrant/development/iEmerge',
-  'TCM Study': '/Users/alexgrant/development/tcm-study',
-  'TRNZK Sewing Classes': '/Users/alexgrant/development/sewing-class',
-  'Vibroacoustic App': '/Users/alexgrant/development/vibro-acoustic',
-  'Claude Brain': '/Users/alexgrant/development/claude-brain',
+async function getProjectContext(projectName: string) {
+  const brainUrl = process.env.CLAUDE_BRAIN_DATABASE_URL
+  if (!brainUrl) return null
+
+  const sql = postgres(brainUrl)
+
+  try {
+    const [project] = await sql`
+      SELECT id, name, slug, description, tech_stack, notes
+      FROM projects WHERE name = ${projectName} LIMIT 1
+    `
+    if (!project) return null
+
+    const instructions = await sql`
+      SELECT instruction_type, title, content
+      FROM project_instructions
+      WHERE (project_id = ${project.id} OR project_id IS NULL) AND active = true
+      ORDER BY priority
+    `
+
+    const guides = await sql`
+      SELECT title, content, tags
+      FROM how_to_guides
+      WHERE project_id = ${project.id}
+      ORDER BY updated_at DESC
+    `
+
+    return { project, instructions, guides }
+  } finally {
+    await sql.end()
+  }
 }
 
 export async function GET(req: Request) {
@@ -26,33 +47,32 @@ export async function GET(req: Request) {
     const project = await prisma.project.findUnique({ where: { id: projectId } })
     if (!project) return NextResponse.json({ error: 'Project not found' }, { status: 404 })
 
-    const repoPath = repoMap[project.name]
-    if (!repoPath) return NextResponse.json({ error: `No repo mapped for "${project.name}"` }, { status: 404 })
+    const context = await getProjectContext(project.name)
+    if (!context) return NextResponse.json({ error: 'No brain context found' }, { status: 404 })
 
-    const commits = execSync('git log --oneline --since="2025-01-01" --no-merges', {
-      cwd: repoPath,
-      encoding: 'utf-8',
-      timeout: 5000,
-    }).trim()
+    const instructionsSummary = context.instructions
+      .map((i) => `[${i.instruction_type}] ${i.title}: ${i.content}`)
+      .join('\n')
 
-    if (!commits) return NextResponse.json([])
-
-    const lines = commits.split('\n')
-    const firstDate = execSync('git log --format="%ai" --reverse --since="2025-01-01" --no-merges -1', { cwd: repoPath, encoding: 'utf-8' }).trim().split(' ')[0]
-    const lastDate = execSync('git log --format="%ai" --no-merges -1', { cwd: repoPath, encoding: 'utf-8' }).trim().split(' ')[0]
+    const guidesSummary = context.guides
+      .map((g) => `- ${g.title} (${(g.tags as string[]).join(', ')})`)
+      .join('\n')
 
     const messages: Anthropic.MessageParam[] = [{
       role: 'user',
       content: `You are generating invoice line items for a freelance software developer billing a client.
 
-Project: ${project.name}
-Date range: ${firstDate} to ${lastDate}
-Total commits: ${lines.length}
+Project: ${context.project.name}
+Description: ${context.project.description || 'N/A'}
+Tech Stack: ${JSON.stringify(context.project.tech_stack)}
+Notes: ${context.project.notes || 'N/A'}
 
-Here are the git commits for this billing period:
-${commits}
+Here is what was built (architecture decisions, integrations, features):
+${instructionsSummary || 'No specific instructions recorded.'}
 
-Generate 2-5 big-picture invoice line items that summarize this work. Each item should be a clear, professional description a client would understand — not technical jargon or individual commits. Group related work together into deliverables.
+${guidesSummary ? `Implementation guides completed:\n${guidesSummary}` : ''}
+
+Based on this context, generate 2-5 big-picture invoice line items that summarize the work delivered. Each item should be a clear, professional description a client would understand. Group related work into deliverables.
 
 Respond with ONLY a JSON array of objects with "description" and "quantity" fields. Quantity should be "1" for each item. Do not include rates.
 
