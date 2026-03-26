@@ -46,7 +46,7 @@ export function PortalInvoiceClient({ token, id }: { token: string; id: string }
     )
   }
 
-  const canPay = invoice.status === 'SENT' || invoice.status === 'OVERDUE'
+  const canPay = !justPaid && (invoice.status === 'SENT' || invoice.status === 'OVERDUE')
 
   return (
     <div style={{ minHeight: '100vh', background: 'var(--bg)', padding: '48px 24px', fontFamily: "-apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif", color: 'var(--text)' }}>
@@ -64,9 +64,10 @@ export function PortalInvoiceClient({ token, id }: { token: string; id: string }
         </Link>
 
         {justPaid && (
-          <div style={{ background: 'rgba(34,197,94,.1)', border: '1px solid rgba(34,197,94,.3)', borderRadius: 12, padding: '16px 20px', marginBottom: 24, display: 'flex', alignItems: 'center', gap: 12 }}>
-            <CheckCircle size={18} color="#4ade80" />
-            <p style={{ color: '#4ade80', fontWeight: 600, fontSize: '0.9rem' }}>Payment received. Thank you!</p>
+          <div style={{ background: 'rgba(34,197,94,.08)', border: '1px solid rgba(34,197,94,.25)', borderRadius: 16, padding: '28px 24px', marginBottom: 24, textAlign: 'center' }}>
+            <CheckCircle size={36} color="#4ade80" style={{ margin: '0 auto 12px' }} />
+            <p style={{ color: '#4ade80', fontWeight: 700, fontSize: '1.15rem', marginBottom: 4 }}>Payment confirmed</p>
+            <p style={{ color: 'var(--muted)', fontSize: '0.9rem' }}>Thank you for your payment. A receipt has been sent to your email.</p>
           </div>
         )}
 
