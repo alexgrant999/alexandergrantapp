@@ -1,0 +1,180 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
+}
+
+model Client {
+  id               String   @id @default(cuid())
+  name             String
+  email            String   @unique
+  company          String?
+  phone            String?
+  address          String?
+  notes            String?
+  portalToken      String   @unique @default(cuid())
+  stripeCustomerId String?  @unique
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
+
+  projects      Project[]
+  invoices      Invoice[]
+  subscriptions Subscription[]
+}
+
+model Project {
+  id          String        @id @default(cuid())
+  clientId    String
+  name        String
+  description String?
+  repoName    String?       @unique
+  status      ProjectStatus @default(ACTIVE)
+  budget      Decimal?      @db.Decimal(10, 2)
+  startDate   DateTime?
+  endDate     DateTime?
+  createdAt   DateTime      @default(now())
+  updatedAt   DateTime      @updatedAt
+
+  client        Client         @relation(fields: [clientId], references: [id])
+  timeEntries   TimeEntry[]
+  expenses      Expense[]
+  invoices      Invoice[]
+  subscriptions Subscription[]
+  workLogs      WorkLog[]
+}
+
+model WorkLog {
+  id         String   @id @default(cuid())
+  projectId  String
+  commitHash String   @unique
+  message    String
+  date       DateTime
+  billed     Boolean  @default(false)
+  createdAt  DateTime @default(now())
+
+  project Project @relation(fields: [projectId], references: [id])
+}
+
+enum ProjectStatus {
+  ACTIVE
+  ON_HOLD
+  COMPLETED
+  CANCELLED
+}
+
+model Invoice {
+  id              String        @id @default(cuid())
+  clientId        String
+  projectId       String?
+  number          String        @unique
+  status          InvoiceStatus @default(DRAFT)
+  issueDate       DateTime      @default(now())
+  dueDate         DateTime
+  subtotal        Decimal       @db.Decimal(10, 2)
+  tax             Decimal       @default(0) @db.Decimal(10, 2)
+  total           Decimal       @db.Decimal(10, 2)
+  notes           String?
+  stripeSessionId String?
+  paidAt          DateTime?
+  createdAt       DateTime      @default(now())
+  updatedAt       DateTime      @updatedAt
+
+  client  Client        @relation(fields: [clientId], references: [id])
+  project Project?      @relation(fields: [projectId], references: [id])
+  items   InvoiceItem[]
+}
+
+enum InvoiceStatus {
+  DRAFT
+  SENT
+  PAID
+  OVERDUE
+  CANCELLED
+}
+
+model InvoiceItem {
+  id          String  @id @default(cuid())
+  invoiceId   String
+  description String
+  quantity    Decimal @db.Decimal(10, 2)
+  rate        Decimal @db.Decimal(10, 2)
+  amount      Decimal @db.Decimal(10, 2)
+
+  invoice Invoice @relation(fields: [invoiceId], references: [id], onDelete: Cascade)
+}
+
+model Subscription {
+  id                      String             @id @default(cuid())
+  clientId                String
+  projectId               String?
+  name                    String
+  amount                  Decimal            @db.Decimal(10, 2)
+  interval                BillingInterval
+  status                  SubscriptionStatus @default(PENDING)
+  stripeSubscriptionId    String?            @unique
+  stripeCheckoutSessionId String?            @unique
+  stripeCustomerId        String?
+  currentPeriodStart      DateTime?
+  currentPeriodEnd        DateTime?
+  cancelAtPeriodEnd       Boolean            @default(false)
+  createdAt               DateTime           @default(now())
+  updatedAt               DateTime           @updatedAt
+
+  client  Client   @relation(fields: [clientId], references: [id])
+  project Project? @relation(fields: [projectId], references: [id])
+}
+
+enum BillingInterval {
+  MONTHLY
+  QUARTERLY
+  ANNUALLY
+}
+
+enum SubscriptionStatus {
+  PENDING
+  ACTIVE
+  PAUSED
+  CANCELLED
+  PAST_DUE
+}
+
+model TimeEntry {
+  id          String   @id @default(cuid())
+  projectId   String
+  date        DateTime
+  hours       Decimal  @db.Decimal(5, 2)
+  description String
+  billable    Boolean  @default(true)
+  hourlyRate  Decimal? @db.Decimal(10, 2)
+  createdAt   DateTime @default(now())
+
+  project Project @relation(fields: [projectId], references: [id])
+}
+
+model Expense {
+  id          String          @id @default(cuid())
+  projectId   String
+  date        DateTime
+  amount      Decimal         @db.Decimal(10, 2)
+  description String
+  category    ExpenseCategory
+  receiptUrl  String?
+  billable    Boolean         @default(true)
+  createdAt   DateTime        @default(now())
+
+  project Project @relation(fields: [projectId], references: [id])
+}
+
+enum ExpenseCategory {
+  SOFTWARE
+  HARDWARE
+  TRAVEL
+  HOSTING
+  DESIGN
+  MARKETING
+  OTHER
+}
