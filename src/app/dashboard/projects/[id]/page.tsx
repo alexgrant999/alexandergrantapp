@@ -1,3 +1,4 @@
+export const dynamic = 'force-dynamic'
 import { getProject } from '@/lib/services/projects'
 import { Badge } from '@/components/ui/Badge'
 import { Button } from '@/components/ui/Button'

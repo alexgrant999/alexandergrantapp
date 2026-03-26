@@ -1,3 +1,5 @@
+export const dynamic = 'force-dynamic'
+
 import { getInvoices } from '@/lib/services/invoices'
 import { Button } from '@/components/ui/Button'
 import { Badge } from '@/components/ui/Badge'

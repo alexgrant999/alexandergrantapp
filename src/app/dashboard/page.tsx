@@ -1,3 +1,4 @@
+export const dynamic = 'force-dynamic'
 import { getInvoices } from '@/lib/services/invoices'
 import { getProjects } from '@/lib/services/projects'
 import { getTimeEntries } from '@/lib/services/time'
