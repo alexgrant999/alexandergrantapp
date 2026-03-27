@@ -178,3 +178,15 @@ enum ExpenseCategory {
   MARKETING
   OTHER
 }
+
+model Resource {
+  id          String   @id @default(cuid())
+  url         String   @unique
+  title       String
+  description String?
+  image       String?
+  submittedBy String?
+  tags        String[] @default([])
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
