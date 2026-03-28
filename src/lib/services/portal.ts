@@ -11,7 +11,7 @@ export async function getPortalData(token: string): Promise<PortalData | null> {
         orderBy: { issueDate: 'desc' },
       },
       subscriptions: {
-        select: { id: true, name: true, amount: true, interval: true, status: true, cancelAtPeriodEnd: true, currentPeriodEnd: true },
+        select: { id: true, name: true, amount: true, interval: true, status: true, cancelAtPeriodEnd: true, currentPeriodEnd: true, stripeCheckoutUrl: true, stripeCheckoutSessionId: true, stripeCustomerId: true },
         orderBy: { createdAt: 'desc' },
       },
     },
@@ -38,6 +38,8 @@ export async function getPortalData(token: string): Promise<PortalData | null> {
       status: s.status.toString(),
       cancelAtPeriodEnd: s.cancelAtPeriodEnd,
       currentPeriodEnd: s.currentPeriodEnd ? s.currentPeriodEnd.toISOString() : null,
+      stripeCheckoutUrl: s.stripeCheckoutUrl,
+      stripeCustomerId: s.stripeCustomerId,
     })),
   }
 }

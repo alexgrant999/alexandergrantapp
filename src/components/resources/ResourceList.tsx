@@ -63,7 +63,7 @@ export function ResourceList({ initialResources }: { initialResources: Resource[
         </div>
       )}
 
-      <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(300px, 1fr))', gap: '16px' }}>
         {filtered.length === 0 && (
           <p style={{ color: '#6b6b8a', textAlign: 'center', padding: '40px 0' }}>
             No resources yet. Be the first to share one!

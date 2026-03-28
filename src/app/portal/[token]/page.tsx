@@ -3,6 +3,7 @@ import { notFound } from 'next/navigation'
 import { Badge } from '@/components/ui/Badge'
 import { formatCurrency, formatDate } from '@/lib/utils'
 import Link from 'next/link'
+import { SubscriptionActions } from './SubscriptionActions'
 
 export default async function PortalPage({ params }: { params: Promise<{ token: string }> }) {
   const { token } = await params
@@ -53,19 +54,28 @@ export default async function PortalPage({ params }: { params: Promise<{ token: 
             <h2 style={{ fontWeight: 600, color: 'var(--text)', marginBottom: 16, fontSize: '1.1rem' }}>Subscriptions</h2>
             <div style={{ background: 'var(--card-bg)', border: '1px solid var(--border)', borderRadius: 16, overflow: 'hidden' }}>
               {data.subscriptions.map((sub, i) => (
-                <div key={sub.id} style={{ padding: '16px 24px', borderBottom: i < data.subscriptions.length - 1 ? '1px solid var(--border)' : 'none', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                  <div>
-                    <p style={{ fontWeight: 600, color: 'var(--text)', fontSize: '0.95rem' }}>{sub.name}</p>
-                    <p style={{ color: 'var(--muted)', fontSize: '0.82rem', marginTop: 2 }}>
-                      {sub.interval.charAt(0) + sub.interval.slice(1).toLowerCase()}
-                      {sub.currentPeriodEnd ? ` · Renews ${formatDate(sub.currentPeriodEnd)}` : ''}
-                      {sub.cancelAtPeriodEnd ? ' · Cancelling' : ''}
-                    </p>
+                <div key={sub.id} style={{ padding: '16px 24px', borderBottom: i < data.subscriptions.length - 1 ? '1px solid var(--border)' : 'none' }}>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                    <div>
+                      <p style={{ fontWeight: 600, color: 'var(--text)', fontSize: '0.95rem' }}>{sub.name}</p>
+                      <p style={{ color: 'var(--muted)', fontSize: '0.82rem', marginTop: 2 }}>
+                        {sub.interval.charAt(0) + sub.interval.slice(1).toLowerCase()}
+                        {sub.currentPeriodEnd ? ` · Renews ${formatDate(sub.currentPeriodEnd)}` : ''}
+                        {sub.cancelAtPeriodEnd ? ' · Cancelling at period end' : ''}
+                      </p>
+                    </div>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: 16 }}>
+                      <span style={{ fontWeight: 700, color: 'var(--text)', fontSize: '0.95rem' }}>{formatCurrency(Number(sub.amount))}</span>
+                      <Badge status={sub.cancelAtPeriodEnd ? 'ON_HOLD' : sub.status} label={sub.cancelAtPeriodEnd ? 'Cancelling' : undefined} />
+                    </div>
                   </div>
-                  <div style={{ display: 'flex', alignItems: 'center', gap: 16 }}>
-                    <span style={{ fontWeight: 700, color: 'var(--text)', fontSize: '0.95rem' }}>{formatCurrency(Number(sub.amount))}</span>
-                    <Badge status={sub.cancelAtPeriodEnd ? 'ON_HOLD' : sub.status} label={sub.cancelAtPeriodEnd ? 'Cancelling' : undefined} />
-                  </div>
+                  <SubscriptionActions
+                    token={token}
+                    subscriptionId={sub.id}
+                    status={sub.status}
+                    stripeCheckoutUrl={sub.stripeCheckoutUrl}
+                    stripeCustomerId={sub.stripeCustomerId}
+                  />
                 </div>
               ))}
             </div>

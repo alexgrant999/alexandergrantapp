@@ -30,5 +30,7 @@ export interface PortalData {
     status: string
     cancelAtPeriodEnd: boolean
     currentPeriodEnd: string | null
+    stripeCheckoutUrl: string | null
+    stripeCustomerId: string | null
   }>
 }

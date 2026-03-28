@@ -19,7 +19,7 @@ type Sub = {
   stripeSubscriptionId: string | null
   stripeCheckoutUrl: string | null
   createdAt: string
-  client: { id: string; name: string; email: string; company: string | null }
+  client: { id: string; name: string; email: string; company: string | null; portalToken: string }
   project: { id: string; name: string } | null
 }
 
@@ -229,6 +229,22 @@ export default function SubscriptionDetailPage() {
           <p className="text-xs text-[#6b6b8a] mb-1">Created</p>
           <p className="text-sm font-medium text-[#e8e8f0]">{fmt(sub.createdAt)}</p>
         </div>
+      </div>
+
+      {/* Client portal link */}
+      <div className="bg-[#16161f] border border-[#1e1e2e] rounded-xl p-4 mb-8 flex items-center justify-between">
+        <div>
+          <p className="text-xs text-[#6b6b8a] mb-0.5">Client portal</p>
+          <p className="text-sm text-[#e8e8f0]">{process.env.NEXT_PUBLIC_APP_URL ?? 'https://alexandergrant.app'}/portal/{sub.client.portalToken}</p>
+        </div>
+        <a
+          href={`/portal/${sub.client.portalToken}`}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="text-xs text-[#6c63ff] hover:text-[#8b85ff] flex items-center gap-1 transition-colors"
+        >
+          Open <ExternalLink size={11} />
+        </a>
       </div>
 
       {/* Payment history */}
