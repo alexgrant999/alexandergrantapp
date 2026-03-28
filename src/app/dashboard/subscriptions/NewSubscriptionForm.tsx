@@ -2,7 +2,7 @@
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { Button } from '@/components/ui/Button'
-import { Plus, X } from 'lucide-react'
+import { Plus, X, Copy, Check } from 'lucide-react'
 
 type Client = { id: string; name: string; projects: { id: string; name: string }[] }
 
@@ -12,6 +12,8 @@ export function NewSubscriptionForm({ clients }: { clients: Client[] }) {
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
   const [selectedClientId, setSelectedClientId] = useState('')
+  const [checkoutUrl, setCheckoutUrl] = useState<string | null>(null)
+  const [copied, setCopied] = useState(false)
 
   const selectedClient = clients.find(c => c.id === selectedClientId)
 
@@ -38,8 +40,24 @@ export function NewSubscriptionForm({ clients }: { clients: Client[] }) {
       setError(data?.error?.issues?.[0]?.message ?? 'Failed to create subscription')
       return
     }
-    setOpen(false)
+    const data = await res.json()
+    setCheckoutUrl(data.checkoutUrl ?? null)
     router.refresh()
+  }
+
+  async function handleCopy() {
+    if (!checkoutUrl) return
+    await navigator.clipboard.writeText(checkoutUrl)
+    setCopied(true)
+    setTimeout(() => setCopied(false), 2000)
+  }
+
+  function handleClose() {
+    setOpen(false)
+    setCheckoutUrl(null)
+    setCopied(false)
+    setError('')
+    setSelectedClientId('')
   }
 
   return (
@@ -51,83 +69,108 @@ export function NewSubscriptionForm({ clients }: { clients: Client[] }) {
           <div className="bg-[#16161f] border border-[#1e1e2e] rounded-2xl p-6 w-full max-w-md shadow-2xl">
             <div className="flex items-center justify-between mb-5">
               <h2 className="text-lg font-semibold text-[#e8e8f0]">New Subscription</h2>
-              <button onClick={() => setOpen(false)} className="text-[#6b6b8a] hover:text-[#e8e8f0]">
+              <button onClick={handleClose} className="text-[#6b6b8a] hover:text-[#e8e8f0]">
                 <X size={18} />
               </button>
             </div>
 
-            <form onSubmit={handleSubmit} className="flex flex-col gap-4">
-              <div>
-                <label className="block text-xs text-[#6b6b8a] mb-1.5">Client</label>
-                <select
-                  name="clientId"
-                  required
-                  value={selectedClientId}
-                  onChange={e => setSelectedClientId(e.target.value)}
-                  className="w-full bg-[#0e0e17] border border-[#1e1e2e] rounded-lg px-3 py-2.5 text-sm text-[#e8e8f0] focus:outline-none focus:border-[#6c63ff]"
-                >
-                  <option value="">Select client…</option>
-                  {clients.map(c => <option key={c.id} value={c.id}>{c.name}</option>)}
-                </select>
-              </div>
-
-              {selectedClient && selectedClient.projects.length > 0 && (
+            {checkoutUrl ? (
+              <div className="flex flex-col gap-4">
+                <p className="text-sm text-emerald-400">Subscription created. Activation email sent.</p>
                 <div>
-                  <label className="block text-xs text-[#6b6b8a] mb-1.5">Project (optional)</label>
+                  <p className="text-xs text-[#6b6b8a] mb-2">Payment link (share manually if needed)</p>
+                  <div className="flex gap-2">
+                    <input
+                      readOnly
+                      value={checkoutUrl}
+                      className="flex-1 bg-[#0e0e17] border border-[#1e1e2e] rounded-lg px-3 py-2 text-xs text-[#e8e8f0] truncate focus:outline-none"
+                    />
+                    <button
+                      onClick={handleCopy}
+                      className="flex items-center gap-1.5 px-3 py-2 bg-[#6c63ff]/20 hover:bg-[#6c63ff]/30 text-[#6c63ff] rounded-lg text-xs font-medium transition-colors"
+                    >
+                      {copied ? <><Check size={12} /> Copied</> : <><Copy size={12} /> Copy</>}
+                    </button>
+                  </div>
+                </div>
+                <div className="flex justify-end pt-1">
+                  <Button onClick={handleClose}>Done</Button>
+                </div>
+              </div>
+            ) : (
+              <form onSubmit={handleSubmit} className="flex flex-col gap-4">
+                <div>
+                  <label className="block text-xs text-[#6b6b8a] mb-1.5">Client</label>
                   <select
-                    name="projectId"
+                    name="clientId"
+                    required
+                    value={selectedClientId}
+                    onChange={e => setSelectedClientId(e.target.value)}
                     className="w-full bg-[#0e0e17] border border-[#1e1e2e] rounded-lg px-3 py-2.5 text-sm text-[#e8e8f0] focus:outline-none focus:border-[#6c63ff]"
                   >
-                    <option value="">No project</option>
-                    {selectedClient.projects.map(p => <option key={p.id} value={p.id}>{p.name}</option>)}
+                    <option value="">Select client…</option>
+                    {clients.map(c => <option key={c.id} value={c.id}>{c.name}</option>)}
                   </select>
                 </div>
-              )}
 
-              <div>
-                <label className="block text-xs text-[#6b6b8a] mb-1.5">Subscription name</label>
-                <input
-                  name="name"
-                  required
-                  placeholder="e.g. Monthly retainer"
-                  className="w-full bg-[#0e0e17] border border-[#1e1e2e] rounded-lg px-3 py-2.5 text-sm text-[#e8e8f0] placeholder-[#6b6b8a] focus:outline-none focus:border-[#6c63ff]"
-                />
-              </div>
+                {selectedClient && selectedClient.projects.length > 0 && (
+                  <div>
+                    <label className="block text-xs text-[#6b6b8a] mb-1.5">Project (optional)</label>
+                    <select
+                      name="projectId"
+                      className="w-full bg-[#0e0e17] border border-[#1e1e2e] rounded-lg px-3 py-2.5 text-sm text-[#e8e8f0] focus:outline-none focus:border-[#6c63ff]"
+                    >
+                      <option value="">No project</option>
+                      {selectedClient.projects.map(p => <option key={p.id} value={p.id}>{p.name}</option>)}
+                    </select>
+                  </div>
+                )}
 
-              <div className="grid grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-xs text-[#6b6b8a] mb-1.5">Amount (AUD)</label>
+                  <label className="block text-xs text-[#6b6b8a] mb-1.5">Subscription name</label>
                   <input
-                    name="amount"
-                    type="number"
-                    min="1"
-                    step="0.01"
+                    name="name"
                     required
-                    placeholder="0.00"
+                    placeholder="e.g. Monthly retainer"
                     className="w-full bg-[#0e0e17] border border-[#1e1e2e] rounded-lg px-3 py-2.5 text-sm text-[#e8e8f0] placeholder-[#6b6b8a] focus:outline-none focus:border-[#6c63ff]"
                   />
                 </div>
-                <div>
-                  <label className="block text-xs text-[#6b6b8a] mb-1.5">Billing interval</label>
-                  <select
-                    name="interval"
-                    required
-                    className="w-full bg-[#0e0e17] border border-[#1e1e2e] rounded-lg px-3 py-2.5 text-sm text-[#e8e8f0] focus:outline-none focus:border-[#6c63ff]"
-                  >
-                    <option value="MONTHLY">Monthly</option>
-                    <option value="QUARTERLY">Quarterly</option>
-                    <option value="ANNUALLY">Annually</option>
-                  </select>
+
+                <div className="grid grid-cols-2 gap-4">
+                  <div>
+                    <label className="block text-xs text-[#6b6b8a] mb-1.5">Amount (USD)</label>
+                    <input
+                      name="amount"
+                      type="number"
+                      min="1"
+                      step="0.01"
+                      required
+                      placeholder="0.00"
+                      className="w-full bg-[#0e0e17] border border-[#1e1e2e] rounded-lg px-3 py-2.5 text-sm text-[#e8e8f0] placeholder-[#6b6b8a] focus:outline-none focus:border-[#6c63ff]"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-xs text-[#6b6b8a] mb-1.5">Billing interval</label>
+                    <select
+                      name="interval"
+                      required
+                      className="w-full bg-[#0e0e17] border border-[#1e1e2e] rounded-lg px-3 py-2.5 text-sm text-[#e8e8f0] focus:outline-none focus:border-[#6c63ff]"
+                    >
+                      <option value="MONTHLY">Monthly</option>
+                      <option value="QUARTERLY">Quarterly</option>
+                      <option value="ANNUALLY">Annually</option>
+                    </select>
+                  </div>
                 </div>
-              </div>
 
-              {error && <p className="text-sm text-red-400">{error}</p>}
+                {error && <p className="text-sm text-red-400">{error}</p>}
 
-              <div className="flex gap-3 justify-end pt-1">
-                <Button type="button" variant="ghost" onClick={() => setOpen(false)}>Cancel</Button>
-                <Button type="submit" disabled={loading}>{loading ? 'Creating…' : 'Create'}</Button>
-              </div>
-            </form>
+                <div className="flex gap-3 justify-end pt-1">
+                  <Button type="button" variant="ghost" onClick={handleClose}>Cancel</Button>
+                  <Button type="submit" disabled={loading}>{loading ? 'Creating…' : 'Create'}</Button>
+                </div>
+              </form>
+            )}
           </div>
         </div>
       )}

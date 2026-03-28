@@ -96,6 +96,7 @@ export async function createSubscription(data: {
       status: 'PENDING',
       stripeCustomerId,
       stripeCheckoutSessionId: session.id,
+      stripeCheckoutUrl: session.url,
     },
     include: { client: true },
   })
@@ -121,7 +122,80 @@ export async function createSubscription(data: {
     `,
   })
 
-  return sub
+  return { ...sub, checkoutUrl: session.url }
+}
+
+export async function refreshCheckoutUrl(id: string) {
+  const sub = await prisma.subscription.findUnique({ where: { id }, include: { client: true } })
+  if (!sub) throw new Error('Subscription not found')
+  if (sub.status !== 'PENDING') throw new Error('Subscription is not pending')
+
+  const intervalConfig = INTERVAL_MAP[sub.interval]
+  const intervalLabel = { MONTHLY: 'month', QUARTERLY: '3 months', ANNUALLY: 'year' }[sub.interval]
+
+  // Verify customer still exists in Stripe; create new one if not
+  let stripeCustomerId = sub.stripeCustomerId
+  if (stripeCustomerId) {
+    try {
+      await stripe.customers.retrieve(stripeCustomerId)
+    } catch {
+      stripeCustomerId = null
+    }
+  }
+  if (!stripeCustomerId) {
+    const customer = await stripe.customers.create({
+      email: sub.client.email,
+      name: sub.client.name,
+      metadata: { clientId: sub.clientId },
+    })
+    stripeCustomerId = customer.id
+    await prisma.client.update({ where: { id: sub.clientId }, data: { stripeCustomerId } })
+    await prisma.subscription.update({ where: { id }, data: { stripeCustomerId } })
+  }
+
+  const price = await stripe.prices.create({
+    currency: 'usd',
+    unit_amount: Math.round(Number(sub.amount) * 100),
+    recurring: intervalConfig,
+    product_data: { name: sub.name },
+  })
+
+  const session = await stripe.checkout.sessions.create({
+    customer: stripeCustomerId,
+    payment_method_types: ['card'],
+    mode: 'subscription',
+    line_items: [{ price: price.id, quantity: 1 }],
+    success_url: `${process.env.NEXT_PUBLIC_APP_URL}/dashboard/subscriptions?activated=true`,
+    cancel_url: `${process.env.NEXT_PUBLIC_APP_URL}/dashboard/subscriptions`,
+    metadata: { clientId: sub.clientId },
+  })
+
+  await prisma.subscription.update({
+    where: { id },
+    data: { stripeCheckoutSessionId: session.id, stripeCheckoutUrl: session.url },
+  })
+
+  await resend.emails.send({
+    from: 'Alexander Grant <alex@alexandergrant.app>',
+    to: sub.client.email,
+    subject: `Set up your subscription — ${sub.name}`,
+    html: `
+      <div style="font-family: sans-serif; max-width: 600px; margin: 0 auto; padding: 40px 20px; background: #f9f9f9;">
+        <h2 style="color: #1a1a2e; margin-bottom: 8px;">${sub.name}</h2>
+        <p style="color: #666; margin-bottom: 8px;">Hi ${sub.client.name},</p>
+        <p style="color: #666; margin-bottom: 32px;">
+          Here's your updated payment link for your subscription at
+          <strong>$${Number(sub.amount).toFixed(2)} USD / ${intervalLabel}</strong>.
+        </p>
+        <a href="${session.url}" style="display: inline-block; background: #6c63ff; color: white; padding: 14px 28px; border-radius: 8px; text-decoration: none; font-weight: 600; font-size: 1em;">
+          Activate Subscription →
+        </a>
+        <p style="color: #bbb; font-size: 0.8em; margin-top: 32px;">Alexander Grant · alex@alexandergrant.app</p>
+      </div>
+    `,
+  })
+
+  return session.url
 }
 
 export async function activateSubscriptionFromCheckout(checkoutSessionId: string, stripeSubscriptionId: string) {

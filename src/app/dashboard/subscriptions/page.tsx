@@ -4,6 +4,7 @@ import { getClients } from '@/lib/services/clients'
 import { Badge } from '@/components/ui/Badge'
 import { formatCurrency, formatDate } from '@/lib/utils'
 import { NewSubscriptionForm } from './NewSubscriptionForm'
+import { PendingLinkButton } from './PendingLinkButton'
 import Link from 'next/link'
 
 export default async function SubscriptionsPage() {
@@ -41,12 +42,13 @@ export default async function SubscriptionsPage() {
               <th className="text-left px-6 py-4 text-xs font-medium text-[#6b6b8a] uppercase tracking-wider">Interval</th>
               <th className="text-left px-6 py-4 text-xs font-medium text-[#6b6b8a] uppercase tracking-wider">Status</th>
               <th className="text-left px-6 py-4 text-xs font-medium text-[#6b6b8a] uppercase tracking-wider">Renews</th>
+              <th className="px-6 py-4"></th>
             </tr>
           </thead>
           <tbody>
             {subs.length === 0 && (
               <tr>
-                <td colSpan={6} className="text-center py-12 text-[#6b6b8a] text-sm">
+                <td colSpan={7} className="text-center py-12 text-[#6b6b8a] text-sm">
                   No subscriptions yet.
                 </td>
               </tr>
@@ -67,6 +69,11 @@ export default async function SubscriptionsPage() {
                 </td>
                 <td className="px-6 py-4 text-sm text-[#6b6b8a]">
                   {sub.currentPeriodEnd ? formatDate(sub.currentPeriodEnd) : '—'}
+                </td>
+                <td className="px-6 py-4 text-right">
+                  {sub.status === 'PENDING' && (
+                    <PendingLinkButton subscriptionId={sub.id} />
+                  )}
                 </td>
               </tr>
             ))}

@@ -117,6 +117,7 @@ model Subscription {
   status                  SubscriptionStatus @default(PENDING)
   stripeSubscriptionId    String?            @unique
   stripeCheckoutSessionId String?            @unique
+  stripeCheckoutUrl       String?
   stripeCustomerId        String?
   currentPeriodStart      DateTime?
   currentPeriodEnd        DateTime?

@@ -5,7 +5,7 @@ import Link from 'next/link'
 import { Button } from '@/components/ui/Button'
 import { Badge } from '@/components/ui/Badge'
 import { Input } from '@/components/ui/Input'
-import { Pencil, X, ExternalLink } from 'lucide-react'
+import { Pencil, X, ExternalLink, Copy, Check, RefreshCw } from 'lucide-react'
 
 type Sub = {
   id: string
@@ -17,6 +17,7 @@ type Sub = {
   currentPeriodStart: string | null
   currentPeriodEnd: string | null
   stripeSubscriptionId: string | null
+  stripeCheckoutUrl: string | null
   createdAt: string
   client: { id: string; name: string; email: string; company: string | null }
   project: { id: string; name: string } | null
@@ -50,9 +51,16 @@ export default function SubscriptionDetailPage() {
   const [editing, setEditing] = useState(false)
   const [cancelling, setCancelling] = useState(false)
   const [saving, setSaving] = useState(false)
+  const [checkoutUrl, setCheckoutUrl] = useState<string | null>(null)
+  const [loadingUrl, setLoadingUrl] = useState(false)
+  const [copied, setCopied] = useState(false)
+  const [resending, setResending] = useState(false)
 
   useEffect(() => {
-    fetch(`/api/subscriptions/${id}`).then(r => r.json()).then(setSub)
+    fetch(`/api/subscriptions/${id}`).then(r => r.json()).then((data: Sub) => {
+      setSub(data)
+      if (data.status === 'PENDING') setCheckoutUrl(data.stripeCheckoutUrl)
+    })
     fetch(`/api/subscriptions/${id}/payments`)
       .then(r => r.json())
       .then(setPayments)
@@ -88,6 +96,33 @@ export default function SubscriptionDetailPage() {
       setSub(s => s ? { ...s, cancelAtPeriodEnd: updated.cancelAtPeriodEnd } : s)
     }
     setCancelling(false)
+  }
+
+  async function handleGetLink() {
+    setLoadingUrl(true)
+    const res = await fetch(`/api/subscriptions/${id}/checkout-url`)
+    if (res.ok) {
+      const data = await res.json()
+      setCheckoutUrl(data.url)
+    }
+    setLoadingUrl(false)
+  }
+
+  async function handleResend() {
+    setResending(true)
+    const res = await fetch(`/api/subscriptions/${id}/checkout-url`, { method: 'POST' })
+    if (res.ok) {
+      const data = await res.json()
+      setCheckoutUrl(data.url)
+    }
+    setResending(false)
+  }
+
+  async function handleCopy() {
+    if (!checkoutUrl) return
+    await navigator.clipboard.writeText(checkoutUrl)
+    setCopied(true)
+    setTimeout(() => setCopied(false), 2000)
   }
 
   if (!sub) return <div className="p-8 text-[#6b6b8a]">Loading...</div>
@@ -140,6 +175,40 @@ export default function SubscriptionDetailPage() {
           </div>
           <Button type="submit" size="sm" disabled={saving}>{saving ? 'Saving...' : 'Save'}</Button>
         </form>
+      )}
+
+      {/* Pending payment link banner */}
+      {sub.status === 'PENDING' && (
+        <div className="bg-yellow-500/10 border border-yellow-500/20 rounded-2xl p-5 mb-8">
+          <p className="text-sm font-medium text-yellow-300 mb-3">Awaiting payment — share this link with {sub.client.name}</p>
+          {checkoutUrl ? (
+            <div className="flex gap-2">
+              <input
+                readOnly
+                value={checkoutUrl}
+                className="flex-1 bg-[#0e0e17] border border-[#1e1e2e] rounded-lg px-3 py-2 text-xs text-[#e8e8f0] truncate focus:outline-none"
+              />
+              <button
+                onClick={handleCopy}
+                className="flex items-center gap-1.5 px-3 py-2 bg-[#6c63ff]/20 hover:bg-[#6c63ff]/30 text-[#6c63ff] rounded-lg text-xs font-medium transition-colors whitespace-nowrap"
+              >
+                {copied ? <><Check size={12} /> Copied</> : <><Copy size={12} /> Copy</>}
+              </button>
+              <button
+                onClick={handleResend}
+                disabled={resending}
+                className="flex items-center gap-1.5 px-3 py-2 bg-[#1e1e2e] hover:bg-[#252535] text-[#6b6b8a] hover:text-[#e8e8f0] rounded-lg text-xs font-medium transition-colors whitespace-nowrap"
+              >
+                <RefreshCw size={12} className={resending ? 'animate-spin' : ''} />
+                {resending ? 'Sending...' : 'Resend email'}
+              </button>
+            </div>
+          ) : (
+            <Button size="sm" onClick={handleGetLink} disabled={loadingUrl}>
+              {loadingUrl ? 'Loading...' : 'Get payment link'}
+            </Button>
+          )}
+        </div>
       )}
 
       {/* Status cards */}
