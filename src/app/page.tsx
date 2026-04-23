@@ -5,15 +5,14 @@ export default function HomePage() {
     <>
       <style>{`
         :root {
-          --bg: #f4efe5;
-          --surface: #ede7dc;
-          --border: #cec7b8;
-          --text: #18150e;
-          --muted: #857c70;
-          --bronze: #9a6c1e;
-          --bronze-light: rgba(154,108,30,.07);
-          --card-bg: #f9f4eb;
-          --accent: #9a6c1e;
+          --bg: #0a0a0a;
+          --surface: #111111;
+          --border: #1f1f1f;
+          --accent: #f59e0b;
+          --accent-dim: rgba(245,158,11,.1);
+          --text: #f0f0f0;
+          --muted: #666;
+          --card-bg: #0e0e0e;
         }
         * { box-sizing: border-box; margin: 0; padding: 0; }
         body {
@@ -24,160 +23,113 @@ export default function HomePage() {
           min-height: 100vh;
         }
 
-        /* Paper grain overlay */
-        body::before {
-          content: '';
-          position: fixed;
-          inset: 0;
-          pointer-events: none;
-          z-index: 9999;
-          opacity: .03;
-          background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
-          background-repeat: repeat;
-          background-size: 200px;
-        }
-
-        /* Top bar */
-        .topbar {
-          background: var(--text);
-          color: var(--bg);
-          padding: 7px 28px;
-          display: flex;
-          justify-content: space-between;
-          align-items: center;
-        }
-        .topbar-text {
-          font-family: 'DM Mono', monospace;
-          font-size: .58rem;
-          letter-spacing: .18em;
-          text-transform: uppercase;
-          opacity: .5;
-        }
-
         /* Hero */
         .hero {
-          padding: 60px 28px 52px;
-          text-align: center;
-          border-bottom: 3px double var(--border);
-          position: relative;
+          padding: 96px 40px 80px;
+          max-width: 1160px;
+          margin: 0 auto;
         }
-        .hero-label {
+        .hero-kicker {
           font-family: 'DM Mono', monospace;
-          font-size: .6rem;
-          letter-spacing: .24em;
+          font-size: .65rem;
+          letter-spacing: .2em;
           text-transform: uppercase;
-          color: var(--bronze);
+          color: var(--accent);
           margin-bottom: 28px;
           display: flex;
           align-items: center;
-          justify-content: center;
-          gap: 14px;
+          gap: 10px;
         }
-        .hero-label::before, .hero-label::after {
+        .hero-kicker::before {
           content: '';
-          width: 48px;
+          width: 28px;
           height: 1px;
-          background: var(--bronze);
-          opacity: .45;
+          background: var(--accent);
         }
         .hero-name {
-          font-family: 'Playfair Display SC', serif;
-          font-size: clamp(2.8rem, 10.5vw, 8.8rem);
-          font-weight: 700;
-          line-height: .9;
-          letter-spacing: -.025em;
+          font-family: 'Bricolage Grotesque', system-ui, sans-serif;
+          font-size: clamp(3.2rem, 9vw, 7.5rem);
+          font-weight: 800;
+          line-height: .93;
+          letter-spacing: -.04em;
           color: var(--text);
           margin-bottom: 36px;
         }
-        .hero-name em {
-          font-family: 'Playfair Display', serif;
-          font-style: italic;
-          color: var(--bronze);
-        }
-        .hero-tagline {
-          font-size: .98rem;
+        .hero-name span { color: var(--accent); }
+        .hero-sub {
+          font-size: 1.05rem;
           color: var(--muted);
-          max-width: 400px;
-          margin: 0 auto 32px;
+          max-width: 480px;
           line-height: 1.75;
+          margin-bottom: 40px;
         }
         .hero-badges {
           display: flex;
-          gap: 6px;
+          gap: 7px;
           flex-wrap: wrap;
-          justify-content: center;
         }
         .badge {
           font-family: 'DM Mono', monospace;
-          font-size: .6rem;
-          letter-spacing: .1em;
+          font-size: .62rem;
+          letter-spacing: .08em;
           text-transform: uppercase;
-          padding: 4px 12px;
+          padding: 5px 12px;
           border: 1px solid var(--border);
           color: var(--muted);
-          background: transparent;
+          transition: border-color .2s, color .2s;
+        }
+        .badge:hover { border-color: var(--accent); color: var(--accent); }
+
+        /* Divider */
+        .divider {
+          border: none;
+          border-top: 1px solid var(--border);
+          margin: 0 40px;
         }
 
-        /* Container */
-        .container { max-width: 1160px; margin: 0 auto; }
-
         /* Section */
-        .section { padding: 60px 28px; }
+        .section { padding: 72px 40px; max-width: 1160px; margin: 0 auto; }
         .section-header {
           display: flex;
           align-items: baseline;
-          gap: 14px;
-          margin-bottom: 40px;
-          padding-bottom: 18px;
-          border-bottom: 1px solid var(--border);
-        }
-        .section-num {
-          font-family: 'DM Mono', monospace;
-          font-size: .58rem;
-          letter-spacing: .16em;
-          color: var(--bronze);
-          opacity: .7;
+          justify-content: space-between;
+          margin-bottom: 48px;
         }
         .section-title {
-          font-family: 'Playfair Display', serif;
-          font-size: 1.7rem;
+          font-family: 'Bricolage Grotesque', system-ui, sans-serif;
+          font-size: 1.5rem;
           font-weight: 700;
-          font-style: italic;
-          letter-spacing: -.02em;
-          color: var(--text);
+          letter-spacing: -.025em;
         }
-        .section-count {
+        .section-meta {
           font-family: 'DM Mono', monospace;
-          font-size: .58rem;
-          letter-spacing: .12em;
+          font-size: .6rem;
+          letter-spacing: .14em;
           text-transform: uppercase;
           color: var(--muted);
-          margin-left: auto;
         }
 
         /* Grid */
         .grid {
           display: grid;
           grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
-          gap: 20px;
+          gap: 16px;
         }
 
         /* Card */
         .card {
           background: var(--card-bg);
           border: 1px solid var(--border);
+          border-radius: 10px;
+          overflow: hidden;
           display: flex;
           flex-direction: column;
-          overflow: hidden;
-          transition: border-color .25s, box-shadow .25s;
+          transition: border-color .25s;
         }
-        .card:hover {
-          border-color: var(--bronze);
-          box-shadow: 4px 6px 28px rgba(24,21,14,.1);
-        }
+        .card:hover { border-color: rgba(245,158,11,.35); }
         .card-screenshot {
           width: 100%;
-          height: 176px;
+          height: 172px;
           overflow: hidden;
           position: relative;
           flex-shrink: 0;
@@ -188,14 +140,19 @@ export default function HomePage() {
           object-fit: cover;
           object-position: top;
           display: block;
-          transition: transform .5s cubic-bezier(.16,1,.3,1);
+          filter: grayscale(40%) brightness(.9);
+          transition: filter .4s ease, transform .4s cubic-bezier(.16,1,.3,1);
         }
-        .card:hover .card-screenshot img { transform: scale(1.05); }
+        .card:hover .card-screenshot img {
+          filter: grayscale(0%) brightness(1);
+          transform: scale(1.04);
+        }
         .card-screenshot::after {
           content: '';
           position: absolute;
-          inset: 0;
-          background: linear-gradient(to bottom, transparent 50%, var(--card-bg) 100%);
+          bottom: 0; left: 0; right: 0;
+          height: 72px;
+          background: linear-gradient(to bottom, transparent, var(--card-bg));
         }
         .card-screenshot-placeholder {
           width: 100%;
@@ -207,40 +164,36 @@ export default function HomePage() {
           background: var(--surface);
         }
         .card-body {
-          padding: 8px 24px 24px;
+          padding: 20px 22px 22px;
           display: flex;
           flex-direction: column;
-          gap: 14px;
+          gap: 12px;
           flex: 1;
-        }
-        .card-num {
-          font-family: 'DM Mono', monospace;
-          font-size: .56rem;
-          letter-spacing: .16em;
-          color: var(--bronze);
-          opacity: .65;
         }
         .card-header { display: flex; align-items: flex-start; gap: 12px; }
         .card-icon {
-          width: 38px;
-          height: 38px;
+          width: 36px;
+          height: 36px;
+          border-radius: 8px;
           display: flex;
           align-items: center;
           justify-content: center;
-          font-size: 1.1rem;
+          font-size: 1rem;
           flex-shrink: 0;
-          border: 1px solid var(--border);
           background: var(--surface);
+          border: 1px solid var(--border);
         }
-        .card-meta { flex: 1; }
+        .card-meta { flex: 1; min-width: 0; }
         .card-name {
-          font-family: 'Playfair Display', serif;
-          font-size: 1.05rem;
+          font-family: 'Bricolage Grotesque', system-ui, sans-serif;
+          font-size: 1rem;
           font-weight: 700;
-          letter-spacing: -.01em;
+          letter-spacing: -.02em;
           color: var(--text);
           margin-bottom: 2px;
-          line-height: 1.3;
+          white-space: nowrap;
+          overflow: hidden;
+          text-overflow: ellipsis;
         }
         .card-type {
           font-family: 'DM Mono', monospace;
@@ -250,18 +203,19 @@ export default function HomePage() {
           color: var(--muted);
         }
         .card-desc {
-          font-size: .875rem;
+          font-size: .865rem;
           color: var(--muted);
-          line-height: 1.7;
+          line-height: 1.65;
         }
         .tags { display: flex; gap: 5px; flex-wrap: wrap; }
         .tag {
           font-family: 'DM Mono', monospace;
-          font-size: .56rem;
-          letter-spacing: .06em;
+          font-size: .57rem;
+          letter-spacing: .05em;
           padding: 2px 8px;
+          border-radius: 4px;
           border: 1px solid var(--border);
-          color: var(--muted);
+          color: #444;
           background: var(--surface);
         }
         .card-footer {
@@ -279,59 +233,57 @@ export default function HomePage() {
           align-items: center;
           gap: 5px;
           padding: 7px 14px;
+          border-radius: 6px;
           font-family: 'DM Mono', monospace;
-          font-size: .62rem;
-          letter-spacing: .1em;
+          font-size: .63rem;
+          letter-spacing: .08em;
           text-transform: uppercase;
           text-decoration: none;
+          font-weight: 500;
           transition: all .15s;
           cursor: pointer;
           border: none;
-          font-weight: 500;
         }
-        .btn-primary { background: var(--text); color: var(--bg); }
-        .btn-primary:hover { background: var(--bronze); }
+        .btn-primary { background: var(--accent); color: #0a0a0a; }
+        .btn-primary:hover { background: #fbbf24; }
         .btn-ghost {
           background: transparent;
           border: 1px solid var(--border);
           color: var(--muted);
         }
-        .btn-ghost:hover { border-color: var(--bronze); color: var(--bronze); }
+        .btn-ghost:hover { border-color: var(--accent); color: var(--accent); }
         .btn-disabled {
           background: transparent;
           border: 1px solid var(--border);
-          color: var(--border);
+          color: #2a2a2a;
           cursor: default;
           pointer-events: none;
         }
 
-        /* Status indicators */
+        /* Status */
         .status {
           display: inline-flex;
           align-items: center;
           gap: 5px;
           font-family: 'DM Mono', monospace;
-          font-size: .58rem;
+          font-size: .59rem;
           letter-spacing: .1em;
           text-transform: uppercase;
         }
-        .status-live { color: #3d8a55; }
-        .status-dev { color: var(--bronze); }
-        .status-mobile { color: #3a6ea0; }
+        .status-live { color: #4ade80; }
+        .status-dev { color: var(--accent); }
+        .status-mobile { color: #60a5fa; }
         .pip { width: 5px; height: 5px; border-radius: 50%; background: currentColor; flex-shrink: 0; }
         @keyframes pulse { 0%,100% { opacity: 1; } 50% { opacity: .25; } }
         .pip-live { animation: pulse 2.5s infinite; }
 
         /* Contact */
-        .contact-section { border-top: 3px double var(--border); }
-
-        /* Divider */
-        .divider { border: none; border-top: 1px solid var(--border); }
+        .contact-wrap { max-width: 520px; }
 
         /* Footer */
         footer {
           border-top: 1px solid var(--border);
-          padding: 32px 28px;
+          padding: 36px 40px;
         }
         .footer-inner {
           max-width: 1160px;
@@ -343,57 +295,52 @@ export default function HomePage() {
           flex-wrap: wrap;
         }
         .footer-name {
-          font-family: 'Playfair Display SC', serif;
-          font-size: .8rem;
-          letter-spacing: .05em;
+          font-family: 'Bricolage Grotesque', system-ui, sans-serif;
+          font-size: .9rem;
+          font-weight: 700;
+          letter-spacing: -.02em;
           color: var(--text);
         }
-        .footer-info {
+        .footer-meta {
           font-family: 'DM Mono', monospace;
-          font-size: .58rem;
+          font-size: .6rem;
           letter-spacing: .1em;
           text-transform: uppercase;
           color: var(--muted);
         }
-        .footer-info a { color: var(--bronze); text-decoration: none; }
-        .footer-info a:hover { text-decoration: underline; }
+        .footer-meta a { color: var(--accent); text-decoration: none; }
+        .footer-meta a:hover { text-decoration: underline; }
 
-        /* Fade-in animation */
+        /* Fade animation */
         @keyframes fadeUp {
-          from { opacity: 0; transform: translateY(14px); }
+          from { opacity: 0; transform: translateY(12px); }
           to { opacity: 1; transform: translateY(0); }
         }
-        .fade-up { animation: fadeUp .75s cubic-bezier(.16,1,.3,1) both; }
-        .delay-1 { animation-delay: .1s; }
-        .delay-2 { animation-delay: .22s; }
-        .delay-3 { animation-delay: .38s; }
+        .fade-up { animation: fadeUp .7s cubic-bezier(.16,1,.3,1) both; }
+        .d1 { animation-delay: .08s; }
+        .d2 { animation-delay: .18s; }
+        .d3 { animation-delay: .3s; }
 
-        @media (max-width: 640px) {
-          .hero { padding: 44px 20px 38px; }
+        @media (max-width: 768px) {
+          .hero { padding: 64px 24px 56px; }
+          .divider { margin: 0 24px; }
+          .section { padding: 56px 24px; }
           .grid { grid-template-columns: 1fr; }
-          .topbar-right { display: none; }
-          .footer-inner { flex-direction: column; text-align: center; gap: 8px; }
-          .section-count { display: none; }
-          .section { padding: 48px 20px; }
+          footer { padding: 32px 24px; }
+          .footer-inner { flex-direction: column; align-items: flex-start; gap: 8px; }
         }
       `}</style>
 
-      {/* Masthead bar */}
-      <div className="topbar">
-        <span className="topbar-text">Alexander Grant — Full-Stack Developer</span>
-        <span className="topbar-text topbar-right">Sydney, Australia · Web & Mobile</span>
-      </div>
-
       {/* Hero */}
       <section className="hero">
-        <div className="hero-label fade-up">Portfolio</div>
-        <h1 className="hero-name fade-up delay-1">
-          Alexander<br /><em>Grant</em>
+        <p className="hero-kicker fade-up">Portfolio</p>
+        <h1 className="hero-name fade-up d1">
+          Alexander<br /><span>Grant</span>
         </h1>
-        <p className="hero-tagline fade-up delay-2">
+        <p className="hero-sub fade-up d2">
           Full-stack developer building web &amp; mobile products across wellness, education, real estate and more.
         </p>
-        <div className="hero-badges fade-up delay-3">
+        <div className="hero-badges fade-up d3">
           <span className="badge">Next.js</span>
           <span className="badge">React</span>
           <span className="badge">Flutter</span>
@@ -403,208 +350,219 @@ export default function HomePage() {
         </div>
       </section>
 
+      <hr className="divider" />
+
       {/* Projects */}
       <section className="section">
-        <div className="container">
-          <div className="section-header">
-            <span className="section-num">01</span>
-            <h2 className="section-title">Selected Work</h2>
-            <span className="section-count">8 Projects</span>
+        <div className="section-header">
+          <h2 className="section-title">Projects</h2>
+          <span className="section-meta">9 selected works</span>
+        </div>
+        <div className="grid">
+
+          <div className="card">
+            <div className="card-screenshot"><img src="/screenshots/findyoga-au.jpg" alt="Find Yoga Australia" /></div>
+            <div className="card-body">
+              <div className="card-header">
+                <div className="card-icon">🧘</div>
+                <div className="card-meta">
+                  <div className="card-name">Find Yoga Australia</div>
+                  <div className="card-type">Yoga Directory &amp; Listings</div>
+                </div>
+              </div>
+              <p className="card-desc">Australia&apos;s yoga studio and class directory. Search by location, style, and level — connecting practitioners with teachers across the country.</p>
+              <div className="tags">
+                <span className="tag">Node.js</span><span className="tag">Keystone.js</span><span className="tag">MongoDB</span><span className="tag">Heroku</span>
+              </div>
+              <div className="card-footer">
+                <span className="status status-live"><span className="pip pip-live"></span>Live</span>
+                <a href="https://findyoga.com.au" target="_blank" rel="noopener" className="btn btn-primary">Visit Site ↗</a>
+              </div>
+            </div>
           </div>
-          <div className="grid">
 
-            <div className="card">
-              <div className="card-screenshot"><img src="/screenshots/findyoga-au.jpg" alt="Find Yoga Australia" /></div>
-              <div className="card-body">
-                <div className="card-num">01 / 08</div>
-                <div className="card-header">
-                  <div className="card-icon">🧘</div>
-                  <div className="card-meta">
-                    <div className="card-name">Find Yoga Australia</div>
-                    <div className="card-type">Yoga Directory &amp; Listings</div>
-                  </div>
+          <div className="card">
+            <div className="card-screenshot"><img src="/screenshots/balispirit.jpg" alt="Bali Spirit Festival" /></div>
+            <div className="card-body">
+              <div className="card-header">
+                <div className="card-icon">🌴</div>
+                <div className="card-meta">
+                  <div className="card-name">Bali Spirit Festival</div>
+                  <div className="card-type">Event Scheduling App</div>
                 </div>
-                <p className="card-desc">Australia&apos;s yoga studio and class directory. Search by location, style, and level — connecting practitioners with teachers across the country.</p>
-                <div className="tags">
-                  <span className="tag">Node.js</span><span className="tag">Keystone.js</span><span className="tag">MongoDB</span><span className="tag">Heroku</span>
-                </div>
-                <div className="card-footer">
-                  <span className="status status-live"><span className="pip pip-live"></span>Live</span>
-                  <a href="https://findyoga.com.au" target="_blank" rel="noopener" className="btn btn-primary">Visit Site ↗</a>
-                </div>
+              </div>
+              <p className="card-desc">AI-powered festival scheduling app. Browse sessions, build personalised schedules, and discover events — powered by Gemini AI and Supabase.</p>
+              <div className="tags">
+                <span className="tag">React 19</span><span className="tag">Vite</span><span className="tag">Supabase</span><span className="tag">Gemini AI</span>
+              </div>
+              <div className="card-footer">
+                <span className="status status-live"><span className="pip pip-live"></span>Live</span>
+                <a href="https://bali-spirit.vercel.app/" target="_blank" rel="noopener" className="btn btn-primary">Visit Site ↗</a>
               </div>
             </div>
-
-            <div className="card">
-              <div className="card-screenshot"><img src="/screenshots/balispirit.jpg" alt="Bali Spirit Festival" /></div>
-              <div className="card-body">
-                <div className="card-num">02 / 08</div>
-                <div className="card-header">
-                  <div className="card-icon">🌴</div>
-                  <div className="card-meta">
-                    <div className="card-name">Bali Spirit Festival</div>
-                    <div className="card-type">Event Scheduling App</div>
-                  </div>
-                </div>
-                <p className="card-desc">AI-powered festival scheduling app for Bali Spirit Festival. Browse sessions, build personalised schedules, and discover events — powered by Gemini AI and Supabase.</p>
-                <div className="tags">
-                  <span className="tag">React 19</span><span className="tag">Vite</span><span className="tag">Supabase</span><span className="tag">Gemini AI</span>
-                </div>
-                <div className="card-footer">
-                  <span className="status status-live"><span className="pip pip-live"></span>Live</span>
-                  <a href="https://bali-spirit.vercel.app/" target="_blank" rel="noopener" className="btn btn-primary">Visit Site ↗</a>
-                </div>
-              </div>
-            </div>
-
-            <div className="card">
-              <div className="card-screenshot"><img src="/screenshots/vibro-acoustic.jpg" alt="Vibro-Acoustic App" /></div>
-              <div className="card-body">
-                <div className="card-num">03 / 08</div>
-                <div className="card-header">
-                  <div className="card-icon">🎵</div>
-                  <div className="card-meta">
-                    <div className="card-name">Vibro-Acoustic App</div>
-                    <div className="card-type">Sound Therapy Player</div>
-                  </div>
-                </div>
-                <p className="card-desc">An immersive vibroacoustic therapy sound experience. Stream curated therapeutic audio sessions designed to promote deep relaxation and wellbeing.</p>
-                <div className="tags">
-                  <span className="tag">Next.js 15</span><span className="tag">React 19</span><span className="tag">Web Audio API</span>
-                </div>
-                <div className="card-footer">
-                  <span className="status status-live"><span className="pip pip-live"></span>Live</span>
-                  <a href="https://vibroapp.vercel.app" target="_blank" rel="noopener" className="btn btn-primary">Visit Site ↗</a>
-                </div>
-              </div>
-            </div>
-
-            <div className="card">
-              <div className="card-screenshot"><img src="/screenshots/tcm-study.jpg" alt="TCM Study" /></div>
-              <div className="card-body">
-                <div className="card-num">04 / 08</div>
-                <div className="card-header">
-                  <div className="card-icon">📚</div>
-                  <div className="card-meta">
-                    <div className="card-name">TCM Study</div>
-                    <div className="card-type">Adaptive Learning Platform</div>
-                  </div>
-                </div>
-                <p className="card-desc">Traditional Chinese Medicine exam prep with spaced repetition, flashcards, case studies, and an adaptive learning engine that adjusts to your knowledge gaps.</p>
-                <div className="tags">
-                  <span className="tag">Next.js 14</span><span className="tag">Supabase</span><span className="tag">TanStack Query</span><span className="tag">Recharts</span>
-                </div>
-                <div className="card-footer">
-                  <span className="status status-live"><span className="pip pip-live"></span>Live</span>
-                  <a href="https://tcm-study.vercel.app" target="_blank" rel="noopener" className="btn btn-primary">Visit Site ↗</a>
-                </div>
-              </div>
-            </div>
-
-            <div className="card">
-              <div className="card-screenshot"><img src="/screenshots/real-estate.jpg" alt="Real Estate Dashboard" /></div>
-              <div className="card-body">
-                <div className="card-num">05 / 08</div>
-                <div className="card-header">
-                  <div className="card-icon">🏠</div>
-                  <div className="card-meta">
-                    <div className="card-name">Real Estate Dashboard</div>
-                    <div className="card-type">Market Analysis Tool</div>
-                  </div>
-                </div>
-                <p className="card-desc">Data-driven real estate analysis dashboard. Visualise market trends, compare suburbs, and surface insights from property data using interactive charts.</p>
-                <div className="tags">
-                  <span className="tag">Next.js 14</span><span className="tag">Recharts</span><span className="tag">SQLite</span><span className="tag">Tailwind</span>
-                </div>
-                <div className="card-footer">
-                  <span className="status status-live"><span className="pip pip-live"></span>Live</span>
-                  <a href="https://real-estate-steel-three.vercel.app" target="_blank" rel="noopener" className="btn btn-primary">Visit Site ↗</a>
-                </div>
-              </div>
-            </div>
-
-            <div className="card">
-              <div className="card-screenshot"><img src="/screenshots/iemerge-appstore.jpg" alt="iEmerge" /></div>
-              <div className="card-body">
-                <div className="card-num">06 / 08</div>
-                <div className="card-header">
-                  <div className="card-icon">🌱</div>
-                  <div className="card-meta">
-                    <div className="card-name">iEmerge</div>
-                    <div className="card-type">Wellness Platform</div>
-                  </div>
-                </div>
-                <p className="card-desc">A wellness platform blending Spotify playlist generation via OpenAI with guided meditation, breathing exercises, and mindfulness content via a Flutter mobile app.</p>
-                <div className="tags">
-                  <span className="tag">Next.js 14</span><span className="tag">OpenAI</span><span className="tag">Spotify API</span><span className="tag">Flutter</span><span className="tag">Firebase</span>
-                </div>
-                <div className="card-footer">
-                  <span className="status status-mobile"><span className="pip"></span>App Store</span>
-                  <a href="https://apps.apple.com/pl/app/iemerge-app/id6503445578" target="_blank" rel="noopener" className="btn btn-primary">Download ↗</a>
-                </div>
-              </div>
-            </div>
-
-            <div className="card">
-              <div className="card-screenshot" style={{ background: 'linear-gradient(135deg,#ede7dc,#e0d9ce)' }}>
-                <div className="card-screenshot-placeholder">🎧</div>
-              </div>
-              <div className="card-body">
-                <div className="card-num">07 / 08</div>
-                <div className="card-header">
-                  <div className="card-icon">🎧</div>
-                  <div className="card-meta">
-                    <div className="card-name">Orphius</div>
-                    <div className="card-type">Mobile Audio App</div>
-                  </div>
-                </div>
-                <p className="card-desc">A Flutter meditation and audio app featuring YouTube integration, an RSS podcast feed reader, and a Supabase backend with Firebase auth for a smooth mobile experience.</p>
-                <div className="tags">
-                  <span className="tag">Flutter</span><span className="tag">Supabase</span><span className="tag">Firebase</span><span className="tag">YouTube API</span>
-                </div>
-                <div className="card-footer">
-                  <span className="status status-mobile"><span className="pip"></span>App Store</span>
-                  <a href="https://apps.apple.com/us/app/orpheusb/id6502888343" target="_blank" rel="noopener" className="btn btn-primary">Download ↗</a>
-                </div>
-              </div>
-            </div>
-
-            <div className="card">
-              <div className="card-screenshot"><img src="/screenshots/playday.jpg" alt="Playday" /></div>
-              <div className="card-body">
-                <div className="card-num">08 / 08</div>
-                <div className="card-header">
-                  <div className="card-icon">🎉</div>
-                  <div className="card-meta">
-                    <div className="card-name">Playday</div>
-                    <div className="card-type">Children&apos;s Activity Booking</div>
-                  </div>
-                </div>
-                <p className="card-desc">Multi-location booking platform for children&apos;s activities. Features parent and admin portals, Stripe memberships, class scheduling, and capacity management.</p>
-                <div className="tags">
-                  <span className="tag">Next.js 15</span><span className="tag">Supabase</span><span className="tag">Stripe</span><span className="tag">Tailwind</span>
-                </div>
-                <div className="card-footer">
-                  <span className="status status-dev"><span className="pip"></span>In Dev</span>
-                  <span className="btn btn-disabled">Coming Soon</span>
-                </div>
-              </div>
-            </div>
-
           </div>
+
+          <div className="card">
+            <div className="card-screenshot"><img src="/screenshots/vibro-acoustic.jpg" alt="Vibro-Acoustic App" /></div>
+            <div className="card-body">
+              <div className="card-header">
+                <div className="card-icon">🎵</div>
+                <div className="card-meta">
+                  <div className="card-name">Vibro-Acoustic App</div>
+                  <div className="card-type">Sound Therapy Player</div>
+                </div>
+              </div>
+              <p className="card-desc">An immersive vibroacoustic therapy sound experience. Stream curated therapeutic audio sessions designed to promote deep relaxation and wellbeing.</p>
+              <div className="tags">
+                <span className="tag">Next.js 15</span><span className="tag">React 19</span><span className="tag">Web Audio API</span>
+              </div>
+              <div className="card-footer">
+                <span className="status status-live"><span className="pip pip-live"></span>Live</span>
+                <a href="https://vibroapp.vercel.app" target="_blank" rel="noopener" className="btn btn-primary">Visit Site ↗</a>
+              </div>
+            </div>
+          </div>
+
+          <div className="card">
+            <div className="card-screenshot"><img src="/screenshots/tcm-study.jpg" alt="TCM Study" /></div>
+            <div className="card-body">
+              <div className="card-header">
+                <div className="card-icon">📚</div>
+                <div className="card-meta">
+                  <div className="card-name">TCM Study</div>
+                  <div className="card-type">Adaptive Learning Platform</div>
+                </div>
+              </div>
+              <p className="card-desc">Traditional Chinese Medicine exam prep with spaced repetition, flashcards, case studies, and an adaptive learning engine that adjusts to your knowledge gaps.</p>
+              <div className="tags">
+                <span className="tag">Next.js 14</span><span className="tag">Supabase</span><span className="tag">TanStack Query</span><span className="tag">Recharts</span>
+              </div>
+              <div className="card-footer">
+                <span className="status status-live"><span className="pip pip-live"></span>Live</span>
+                <a href="https://tcm-study.vercel.app" target="_blank" rel="noopener" className="btn btn-primary">Visit Site ↗</a>
+              </div>
+            </div>
+          </div>
+
+          <div className="card">
+            <div className="card-screenshot"><img src="/screenshots/real-estate.jpg" alt="Real Estate Dashboard" /></div>
+            <div className="card-body">
+              <div className="card-header">
+                <div className="card-icon">🏠</div>
+                <div className="card-meta">
+                  <div className="card-name">Real Estate Dashboard</div>
+                  <div className="card-type">Market Analysis Tool</div>
+                </div>
+              </div>
+              <p className="card-desc">Data-driven real estate analysis dashboard. Visualise market trends, compare suburbs, and surface insights from property data using interactive charts.</p>
+              <div className="tags">
+                <span className="tag">Next.js 14</span><span className="tag">Recharts</span><span className="tag">SQLite</span><span className="tag">Tailwind</span>
+              </div>
+              <div className="card-footer">
+                <span className="status status-live"><span className="pip pip-live"></span>Live</span>
+                <a href="https://real-estate-steel-three.vercel.app" target="_blank" rel="noopener" className="btn btn-primary">Visit Site ↗</a>
+              </div>
+            </div>
+          </div>
+
+          <div className="card">
+            <div className="card-screenshot"><img src="/screenshots/sewing-class.jpg" alt="TRNZK Sewing Classes" /></div>
+            <div className="card-body">
+              <div className="card-header">
+                <div className="card-icon">🧵</div>
+                <div className="card-meta">
+                  <div className="card-name">TRNZK Sewing Classes</div>
+                  <div className="card-type">Class Booking System</div>
+                </div>
+              </div>
+              <p className="card-desc">Term-based sewing school booking platform. Stripe checkout with deposits, per-class capacity tracking, and an admin dashboard for managing bookings and revenue.</p>
+              <div className="tags">
+                <span className="tag">Next.js 15</span><span className="tag">Prisma</span><span className="tag">Stripe</span><span className="tag">PostgreSQL</span>
+              </div>
+              <div className="card-footer">
+                <span className="status status-live"><span className="pip pip-live"></span>Live</span>
+                <a href="https://sewing-class.vercel.app" target="_blank" rel="noopener" className="btn btn-primary">Visit Site ↗</a>
+              </div>
+            </div>
+          </div>
+
+          <div className="card">
+            <div className="card-screenshot"><img src="/screenshots/iemerge-appstore.jpg" alt="iEmerge" /></div>
+            <div className="card-body">
+              <div className="card-header">
+                <div className="card-icon">🌱</div>
+                <div className="card-meta">
+                  <div className="card-name">iEmerge</div>
+                  <div className="card-type">Wellness Platform</div>
+                </div>
+              </div>
+              <p className="card-desc">A wellness platform blending Spotify playlist generation via OpenAI with guided meditation, breathing exercises, and mindfulness content via a Flutter mobile app.</p>
+              <div className="tags">
+                <span className="tag">Next.js 14</span><span className="tag">OpenAI</span><span className="tag">Spotify API</span><span className="tag">Flutter</span><span className="tag">Firebase</span>
+              </div>
+              <div className="card-footer">
+                <span className="status status-mobile"><span className="pip"></span>App Store</span>
+                <a href="https://apps.apple.com/pl/app/iemerge-app/id6503445578" target="_blank" rel="noopener" className="btn btn-primary">Download ↗</a>
+              </div>
+            </div>
+          </div>
+
+          <div className="card">
+            <div className="card-screenshot" style={{ background: 'linear-gradient(135deg,#0d0d1a,#141428)' }}>
+              <div className="card-screenshot-placeholder">🎧</div>
+            </div>
+            <div className="card-body">
+              <div className="card-header">
+                <div className="card-icon">🎧</div>
+                <div className="card-meta">
+                  <div className="card-name">Orphius</div>
+                  <div className="card-type">Mobile Audio App</div>
+                </div>
+              </div>
+              <p className="card-desc">A Flutter meditation and audio app featuring YouTube integration, an RSS podcast feed reader, and a Supabase backend with Firebase auth for a smooth mobile experience.</p>
+              <div className="tags">
+                <span className="tag">Flutter</span><span className="tag">Supabase</span><span className="tag">Firebase</span><span className="tag">YouTube API</span>
+              </div>
+              <div className="card-footer">
+                <span className="status status-mobile"><span className="pip"></span>App Store</span>
+                <a href="https://apps.apple.com/us/app/orpheusb/id6502888343" target="_blank" rel="noopener" className="btn btn-primary">Download ↗</a>
+              </div>
+            </div>
+          </div>
+
+          <div className="card">
+            <div className="card-screenshot"><img src="/screenshots/playday.jpg" alt="Playday" /></div>
+            <div className="card-body">
+              <div className="card-header">
+                <div className="card-icon">🎉</div>
+                <div className="card-meta">
+                  <div className="card-name">Playday</div>
+                  <div className="card-type">Children&apos;s Activity Booking</div>
+                </div>
+              </div>
+              <p className="card-desc">Multi-location booking platform for children&apos;s activities. Features parent and admin portals, Stripe memberships, class scheduling, and capacity management.</p>
+              <div className="tags">
+                <span className="tag">Next.js 15</span><span className="tag">Supabase</span><span className="tag">Stripe</span><span className="tag">Tailwind</span>
+              </div>
+              <div className="card-footer">
+                <span className="status status-dev"><span className="pip"></span>In Dev</span>
+                <span className="btn btn-disabled">Coming Soon</span>
+              </div>
+            </div>
+          </div>
+
         </div>
       </section>
 
       <hr className="divider" />
 
       {/* Contact */}
-      <section className="section contact-section">
-        <div className="container" style={{ maxWidth: 560 }}>
-          <div className="section-header">
-            <span className="section-num">02</span>
-            <h2 className="section-title">Get in Touch</h2>
-          </div>
-          <p style={{ fontFamily: "'DM Mono', monospace", fontSize: '.7rem', letterSpacing: '.12em', textTransform: 'uppercase', color: 'var(--muted)', marginBottom: 28 }}>
+      <section className="section">
+        <div className="section-header">
+          <h2 className="section-title">Get in Touch</h2>
+        </div>
+        <div className="contact-wrap">
+          <p style={{ fontFamily: "'DM Mono', monospace", fontSize: '.65rem', letterSpacing: '.12em', textTransform: 'uppercase', color: 'var(--muted)', marginBottom: 24 }}>
             Send a message on WhatsApp
           </p>
           <WhatsAppForm />
@@ -614,10 +572,8 @@ export default function HomePage() {
       <footer>
         <div className="footer-inner">
           <span className="footer-name">Alexander Grant</span>
-          <span className="footer-info">Full-stack developer &mdash; Sydney, Australia</span>
-          <span className="footer-info">
-            <a href="mailto:alex@alexandergrant.app">alex@alexandergrant.app</a>
-          </span>
+          <span className="footer-meta">Full-stack developer — Sydney, Australia</span>
+          <span className="footer-meta"><a href="mailto:alex@alexandergrant.app">alex@alexandergrant.app</a></span>
         </div>
       </footer>
     </>
