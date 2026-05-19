@@ -6,6 +6,7 @@ import { Button } from '@/components/ui/Button'
 import { Badge } from '@/components/ui/Badge'
 import { Input } from '@/components/ui/Input'
 import { Pencil, X, ExternalLink, Copy, Check, RefreshCw } from 'lucide-react'
+import { formatCurrency, formatDate } from '@/lib/utils'
 
 type Sub = {
   id: string
@@ -35,11 +36,11 @@ type Payment = {
 
 function fmt(d: string | null) {
   if (!d) return '—'
-  return new Intl.DateTimeFormat('en-AU', { day: 'numeric', month: 'short', year: 'numeric' }).format(new Date(d))
+  return formatDate(d)
 }
 
 function fmtCurrency(n: number) {
-  return new Intl.NumberFormat('en-AU', { style: 'currency', currency: 'AUD' }).format(n)
+  return formatCurrency(n)
 }
 
 export default function SubscriptionDetailPage() {

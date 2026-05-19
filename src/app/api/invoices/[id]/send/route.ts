@@ -37,16 +37,16 @@ export async function POST(req: Request, { params }: { params: Promise<{ id: str
             ${invoice.items.map(item => `
               <tr>
                 <td style="padding: 8px 0; color: #333; border-bottom: 1px solid #f0f0f0;">${item.description}</td>
-                <td style="padding: 8px 0; text-align: right; color: #333; border-bottom: 1px solid #f0f0f0;">$${Number(item.amount).toFixed(2)}</td>
+                <td style="padding: 8px 0; text-align: right; color: #333; border-bottom: 1px solid #f0f0f0;">AU$${Number(item.amount).toFixed(2)}</td>
               </tr>
             `).join('')}
             <tr>
               <td style="padding: 16px 0 8px; color: #666;">Subtotal</td>
-              <td style="padding: 16px 0 8px; text-align: right; color: #666;">$${Number(invoice.subtotal).toFixed(2)}</td>
+              <td style="padding: 16px 0 8px; text-align: right; color: #666;">AU$${Number(invoice.subtotal).toFixed(2)}</td>
             </tr>
             <tr>
               <td style="padding: 4px 0; color: #666;">Tax</td>
-              <td style="padding: 4px 0; text-align: right; color: #666;">$${Number(invoice.tax).toFixed(2)}</td>
+              <td style="padding: 4px 0; text-align: right; color: #666;">AU$${Number(invoice.tax).toFixed(2)}</td>
             </tr>
             <tr style="border-top: 2px solid #eee;">
               <td style="padding: 12px 0 0; font-weight: bold; color: #1a1a2e; font-size: 1.1em;">Total</td>

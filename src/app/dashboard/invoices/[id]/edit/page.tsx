@@ -6,6 +6,7 @@ import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 import { Plus, Trash2, Zap } from 'lucide-react'
 import { use } from 'react'
+import { formatCurrency } from '@/lib/utils'
 
 interface LineItem { description: string; quantity: string; rate: string }
 interface Client { id: string; name: string; projects: { id: string; name: string }[] }
@@ -307,7 +308,7 @@ export default function EditInvoicePage({ params }: { params: Promise<{ id: stri
                     </div>
                     <div className="col-span-2 flex items-center justify-between">
                       <span className="text-sm text-[#e8e8f0] font-medium">
-                        ${((parseFloat(item.quantity) || 0) * (parseFloat(item.rate) || 0)).toFixed(2)}
+                        {formatCurrency((parseFloat(item.quantity) || 0) * (parseFloat(item.rate) || 0))}
                       </span>
                       {items.length > 1 && (
                         <button type="button" onClick={() => removeItem(i)} className="text-[#6b6b8a] hover:text-red-400 transition-colors ml-2">
@@ -332,15 +333,15 @@ export default function EditInvoicePage({ params }: { params: Promise<{ id: stri
           <div className="border-t border-[#1e1e2e] pt-4 flex flex-col gap-2 items-end">
             <div className="flex gap-8 text-sm">
               <span className="text-[#6b6b8a]">Subtotal</span>
-              <span className="text-[#e8e8f0] w-24 text-right">${subtotal.toFixed(2)}</span>
+              <span className="text-[#e8e8f0] w-24 text-right">{formatCurrency(subtotal)}</span>
             </div>
             <div className="flex gap-8 text-sm">
               <span className="text-[#6b6b8a]">Tax ({taxRate}%)</span>
-              <span className="text-[#e8e8f0] w-24 text-right">${tax.toFixed(2)}</span>
+              <span className="text-[#e8e8f0] w-24 text-right">{formatCurrency(tax)}</span>
             </div>
             <div className="flex gap-8 text-base font-bold border-t border-[#1e1e2e] pt-2 mt-1">
               <span className="text-[#e8e8f0]">Total</span>
-              <span className="text-[#6c63ff] w-24 text-right">${total.toFixed(2)}</span>
+              <span className="text-[#6c63ff] w-24 text-right">{formatCurrency(total)}</span>
             </div>
           </div>
         </div>
