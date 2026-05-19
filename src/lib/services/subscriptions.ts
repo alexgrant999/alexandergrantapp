@@ -68,7 +68,7 @@ export async function createSubscription(data: {
   const intervalConfig = INTERVAL_MAP[data.interval]
 
   const price = await stripe.prices.create({
-    currency: 'usd',
+    currency: 'aud',
     unit_amount: Math.round(parseFloat(data.amount) * 100),
     recurring: intervalConfig,
     product_data: { name: data.name },
@@ -111,7 +111,7 @@ export async function createSubscription(data: {
         <p style="color: #666; margin-bottom: 8px;">Hi ${client.name},</p>
         <p style="color: #666; margin-bottom: 32px;">
           Alexander Grant has set up a subscription for you at
-          <strong>$${parseFloat(data.amount).toFixed(2)} USD / ${intervalLabel}</strong>.
+          <strong>$${parseFloat(data.amount).toFixed(2)} AUD / ${intervalLabel}</strong>.
           Click below to enter your payment details and activate it.
         </p>
         <a href="${session.url}" style="display: inline-block; background: #6c63ff; color: white; padding: 14px 28px; border-radius: 8px; text-decoration: none; font-weight: 600; font-size: 1em;">
@@ -154,7 +154,7 @@ export async function refreshCheckoutUrl(id: string) {
   }
 
   const price = await stripe.prices.create({
-    currency: 'usd',
+    currency: 'aud',
     unit_amount: Math.round(Number(sub.amount) * 100),
     recurring: intervalConfig,
     product_data: { name: sub.name },
@@ -185,7 +185,7 @@ export async function refreshCheckoutUrl(id: string) {
         <p style="color: #666; margin-bottom: 8px;">Hi ${sub.client.name},</p>
         <p style="color: #666; margin-bottom: 32px;">
           Here's your updated payment link for your subscription at
-          <strong>$${Number(sub.amount).toFixed(2)} USD / ${intervalLabel}</strong>.
+          <strong>$${Number(sub.amount).toFixed(2)} AUD / ${intervalLabel}</strong>.
         </p>
         <a href="${session.url}" style="display: inline-block; background: #6c63ff; color: white; padding: 14px 28px; border-radius: 8px; text-decoration: none; font-weight: 600; font-size: 1em;">
           Activate Subscription →

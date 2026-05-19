@@ -16,7 +16,7 @@ export async function createCheckoutSession(invoice: {
     line_items: [
       {
         price_data: {
-          currency: 'usd',
+          currency: 'aud',
           product_data: { name: `Invoice ${invoice.number} — Alexander Grant` },
           unit_amount: Math.round(Number(invoice.total) * 100),
         },

@@ -35,11 +35,11 @@ type Payment = {
 
 function fmt(d: string | null) {
   if (!d) return '—'
-  return new Intl.DateTimeFormat('en-US', { month: 'short', day: 'numeric', year: 'numeric' }).format(new Date(d))
+  return new Intl.DateTimeFormat('en-AU', { day: 'numeric', month: 'short', year: 'numeric' }).format(new Date(d))
 }
 
 function fmtCurrency(n: number) {
-  return new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(n)
+  return new Intl.NumberFormat('en-AU', { style: 'currency', currency: 'AUD' }).format(n)
 }
 
 export default function SubscriptionDetailPage() {

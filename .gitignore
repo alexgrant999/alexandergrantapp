@@ -5,3 +5,6 @@ node_modules/
 .next/
 prisma/migrations/
 .DS_Store
+
+.obsidian
+_stale_duplicates/
