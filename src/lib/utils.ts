@@ -6,7 +6,9 @@ export function cn(...inputs: ClassValue[]) {
 }
 
 export function formatCurrency(amount: number | string): string {
-  return `AU$${new Intl.NumberFormat('en-AU', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(Number(amount))}`
+  const n = Number(amount)
+  const hasCents = n % 1 !== 0
+  return `AU$${new Intl.NumberFormat('en-AU', { minimumFractionDigits: hasCents ? 2 : 0, maximumFractionDigits: 2 }).format(n)}`
 }
 
 export function formatDate(date: Date | string): string {
