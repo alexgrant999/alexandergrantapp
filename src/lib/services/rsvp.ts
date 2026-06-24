@@ -62,7 +62,7 @@ async function notifyBySms(rsvp: RsvpRecord) {
   if (!sid || !token || !from) return
 
   const plus = rsvp.attending && rsvp.plusOne ? ' (+1)' : ''
-  const body = `RSVP: ${rsvp.name} ${rsvp.attending ? `is coming${plus} 🎉` : 'can’t make it'} — birthday Jul 11`
+  const body = `RSVP: ${rsvp.name} ${rsvp.attending ? `is coming${plus} 🎉` : 'can’t make it'}, birthday Jul 11`
 
   const res = await fetch(`https://api.twilio.com/2010-04-01/Accounts/${sid}/Messages.json`, {
     method: 'POST',
