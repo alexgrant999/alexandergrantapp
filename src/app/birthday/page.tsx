@@ -88,12 +88,12 @@ export default function BirthdayPage() {
           padding: 'clamp(56px, 9vw, 104px) 0 clamp(48px, 8vw, 88px)',
         }}
       >
-        <div className="fly-reveal" style={{ ...eyebrow, fontSize: 'clamp(13px, 1.6vw, 17px)', paddingLeft: '.42em' }}>
+        <div className="fly-reveal" style={{ ...eyebrow, fontSize: 'clamp(15px, 1.6vw, 17px)', paddingLeft: '.42em' }}>
           Please Join Us to
         </div>
 
         <div className="fly-reveal" style={{ animationDelay: '.12s', display: 'flex', flexDirection: 'column', alignItems: 'center', marginTop: 'clamp(28px, 6vw, 64px)' }}>
-          <div style={{ fontStyle: 'italic', fontWeight: 400, fontSize: 'clamp(34px, 7vw, 58px)', lineHeight: 1, color: 'var(--cream)' }}>
+          <div style={{ fontStyle: 'italic', fontWeight: 400, fontSize: 'clamp(36px, 7vw, 58px)', lineHeight: 1, color: 'var(--cream)' }}>
             Celebrate with
           </div>
           <div
@@ -109,7 +109,7 @@ export default function BirthdayPage() {
           >
             Alex
           </div>
-          <div style={{ fontStyle: 'italic', fontWeight: 400, fontSize: 'clamp(17px, 3vw, 27px)', lineHeight: 1.3, color: 'rgba(243,236,221,.8)', marginTop: 14 }}>
+          <div style={{ fontStyle: 'italic', fontWeight: 400, fontSize: 'clamp(21px, 3vw, 27px)', lineHeight: 1.3, color: 'rgba(243,236,221,.8)', marginTop: 14 }}>
             a birthday by the harbor, under the fireworks
           </div>
         </div>
@@ -117,20 +117,20 @@ export default function BirthdayPage() {
         <Divider className="fly-reveal" style={{ animationDelay: '.24s', marginTop: 'clamp(26px, 5vw, 40px)' }} />
 
         <div className="fly-reveal" style={{ animationDelay: '.32s', display: 'flex', flexDirection: 'column', alignItems: 'center', marginTop: 'clamp(26px, 5vw, 36px)' }}>
-          <div style={{ ...eyebrow, color: 'var(--cream)', fontWeight: 500, fontSize: 'clamp(16px, 2.4vw, 21px)', letterSpacing: '.22em', paddingLeft: '.22em' }}>
+          <div style={{ ...eyebrow, color: 'var(--cream)', fontWeight: 500, fontSize: 'clamp(19px, 2.4vw, 21px)', letterSpacing: '.22em', paddingLeft: '.22em' }}>
             Saturday · July 11 · 6:30 PM
           </div>
-          <div style={{ fontWeight: 500, fontSize: 'clamp(20px, 3.6vw, 30px)', color: 'var(--cream)', marginTop: 18 }}>
+          <div style={{ fontWeight: 500, fontSize: 'clamp(22px, 3.6vw, 30px)', color: 'var(--cream)', marginTop: 18 }}>
             261 Three Mile Harbor / Hog Creek Road
           </div>
-          <div style={{ fontStyle: 'italic', fontWeight: 400, fontSize: 'clamp(17px, 2.8vw, 24px)', color: 'var(--accent)', marginTop: 2 }}>
+          <div style={{ fontStyle: 'italic', fontWeight: 400, fontSize: 'clamp(20px, 2.8vw, 24px)', color: 'var(--accent)', marginTop: 2 }}>
             East Hampton, New York
           </div>
           <div
             style={{
               fontFamily: 'var(--font-sans)',
               fontWeight: 300,
-              fontSize: 'clamp(12px, 1.6vw, 15px)',
+              fontSize: 'clamp(15px, 1.6vw, 16px)',
               letterSpacing: '.16em',
               textTransform: 'uppercase',
               color: 'rgba(243,236,221,.62)',
@@ -156,10 +156,10 @@ export default function BirthdayPage() {
             marginTop: 'clamp(36px, 7vw, 52px)',
           }}
         >
-          <div style={{ ...eyebrow, fontSize: 'clamp(12px, 1.5vw, 14px)', letterSpacing: '.4em', paddingLeft: '.4em' }}>
+          <div style={{ ...eyebrow, fontSize: 'clamp(14px, 1.5vw, 15px)', letterSpacing: '.4em', paddingLeft: '.4em' }}>
             The Grand Finale
           </div>
-          <div style={{ fontStyle: 'italic', fontWeight: 400, fontSize: 'clamp(18px, 2.8vw, 26px)', lineHeight: 1.4, color: 'var(--cream)', marginTop: 12 }}>
+          <div style={{ fontStyle: 'italic', fontWeight: 400, fontSize: 'clamp(21px, 2.8vw, 26px)', lineHeight: 1.4, color: 'var(--cream)', marginTop: 12 }}>
             Featuring the Clamshell Foundation fireworks over Three Mile Harbor
           </div>
         </div>
