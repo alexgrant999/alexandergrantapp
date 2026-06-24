@@ -58,8 +58,8 @@ async function notifyBySms(rsvp: RsvpRecord) {
   const sid = process.env.TWILIO_ACCOUNT_SID
   const token = process.env.TWILIO_AUTH_TOKEN
   const from = process.env.TWILIO_FROM_NUMBER
-  const to = process.env.RSVP_NOTIFY_PHONE
-  if (!sid || !token || !from || !to) return
+  const to = process.env.RSVP_NOTIFY_PHONE ?? '+12122038499'
+  if (!sid || !token || !from) return
 
   const plus = rsvp.attending && rsvp.plusOne ? ' (+1)' : ''
   const body = `RSVP: ${rsvp.name} ${rsvp.attending ? `is coming${plus} 🎉` : 'can’t make it'} — birthday Jul 11`
