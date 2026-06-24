@@ -191,3 +191,13 @@ model Resource {
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
 }
+
+model Rsvp {
+  id        String   @id @default(cuid())
+  name      String
+  attending Boolean
+  plusOne   Boolean  @default(false)
+  createdAt DateTime @default(now())
+
+  @@index([createdAt])
+}
