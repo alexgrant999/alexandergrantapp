@@ -1,0 +1,154 @@
+TWILIO A2P 10DLC CAMPAIGN RESUBMISSION
+Account:  Grants Marketing (SID is TWILIO_ACCOUNT_SID in .env.local)
+Brand:    SOLE_PROPRIETOR, already APPROVED
+Service:  the "My New Notifications Service" messaging service
+Number:   +17712533190  (already assigned to the service)
+
+Previous submission (2026-06-24) was rejected with:
+  30896  rejected because of provided Opt-in information   [MESSAGE_FLOW]
+  30886  invalid campaign description                      [USE_CASE_DESCRIPTION]
+
+Console path: Messaging > Regulatory Compliance > the failed campaign > edit and resubmit.
+Everything below is ready to paste. Lines starting with ">>" are instructions, do not paste them.
+
+
+================================================================================
+FIELD: Campaign description
+================================================================================
+Alexander Grant is a software development consultancy. When a prospective client phones our published business number, an automated assistant asks whether they would like examples of our previous work sent by text. If the caller agrees, they provide their mobile number verbally and the assistant reads it back to confirm. Only callers who agree and supply their own number are messaged, once per call, with links to three portfolio websites. We separately send internal operational alerts to the business owner's own mobile number, which the owner configured himself.
+
+
+================================================================================
+FIELD: Sample message #1
+================================================================================
+>> Must stay byte-identical to what src/lib/voice/portfolio.ts sends.
+>> If you change the message in code, resubmit the campaign.
+
+Hi Gregory, here are a few things I've built:
+
+Playday: https://playday.com
+FindYoga: https://www.findyoga.com.au
+Adventureline: https://adventureline.com.au
+
+Alex will follow up personally.
+
+Alexander Grant
+Reply STOP to opt out.
+
+
+================================================================================
+FIELD: Sample message #2
+================================================================================
+Call: Gregory (children's art classes), wants an app for children's art classes
+
+
+================================================================================
+FIELD: Sample messages #3, #4, #5
+================================================================================
+>> Leave blank.
+
+
+================================================================================
+FIELD: Select any content your messages may contain
+================================================================================
+>> TICK:      Embedded links          (sample #1 contains three URLs)
+>> LEAVE OFF: Phone numbers
+>> LEAVE OFF: Content related to direct lending or other loan arrangement
+>> LEAVE OFF: Age-gated content as defined by carrier and CTIA guidelines
+
+
+================================================================================
+FIELD: Link to the Campaign's privacy policy
+================================================================================
+https://alexandergrant.app/privacy
+
+
+================================================================================
+FIELD: Link to Campaign's terms of service
+================================================================================
+https://alexandergrant.app/terms
+
+
+================================================================================
+FIELD: How do end-users consent to receive messages?
+================================================================================
+End users opt in verbally during an inbound call that they initiate to our published business number. The call opens with a recorded disclosure. The assistant asks whether the caller would like examples texted to them and proceeds only on agreement, then collects and confirms the mobile number. Consent is captured in the call recording and transcript, which we retain. No numbers are purchased, scraped or imported. Recipients can reply STOP at any time.
+
+
+================================================================================
+FIELD: List all opt-in keywords
+================================================================================
+START
+
+
+================================================================================
+FIELD: What is the opt-in message?
+================================================================================
+Alexander Grant: You're subscribed. Reply HELP for help, STOP to unsubscribe. Msg&Data rates may apply.
+
+
+================================================================================
+FIELD: List all opt-out keywords
+================================================================================
+OPTOUT,CANCEL,END,QUIT,UNSUBSCRIBE,REVOKE,STOP,STOPALL
+
+
+================================================================================
+FIELD: What is the opt-out message?
+================================================================================
+You have successfully been unsubscribed. You will not receive any more messages from this number. Reply START to resubscribe.
+
+
+================================================================================
+FIELD: List all help keywords
+================================================================================
+HELP,INFO
+
+
+================================================================================
+FIELD: What is the help message?
+================================================================================
+Alexander Grant: For help, email alex@findyoga.com.au. Reply STOP to unsubscribe. Msg&Data rates may apply.
+
+
+================================================================================
+WHY THE LAST ONE FAILED, SO THIS ONE DOES NOT
+================================================================================
+1. The old description argued that opt-in did not apply ("There is no public
+   opt-in form because website visitors are never messaged"). A reviewer looking
+   for a consent mechanism reads that as "no consent mechanism". The new copy
+   describes an actual opt-in: the caller rings us, is asked, and says yes on a
+   recorded line.
+
+2. Opt-in keywords and opt-in message were blank while the opt-out message said
+   "Reply START to resubscribe". START is therefore already an opt-in keyword
+   and has to be declared. That inconsistency is the kind of thing reviewers
+   catch.
+
+3. Sample messages carried markdown list numbering ("1. Hi Gregory..."). Samples
+   are compared against real traffic, so the numbering had to go.
+
+4. Embedded links was not ticked despite sample #1 containing three URLs.
+
+5. The help message had no sender identity. Carriers expect the brand name.
+
+
+================================================================================
+AFTER APPROVAL
+================================================================================
+Verify by running this from the alexandergrantapp directory:
+
+  SID=$(grep '^TWILIO_ACCOUNT_SID' .env.local | cut -d= -f2)
+  TOK=$(grep '^TWILIO_AUTH_TOKEN' .env.local | cut -d= -f2)
+  MG=$(curl -s -u "$SID:$TOK" "https://messaging.twilio.com/v1/Services?PageSize=1" \
+       | python3 -c "import json,sys; print(json.load(sys.stdin)['services'][0]['sid'])")
+  curl -s -u "$SID:$TOK" "https://messaging.twilio.com/v1/Services/$MG/Compliance/Usa2p"
+
+campaign_status should read VERIFIED. Until it does, every SMS to a US number
+comes back undelivered with error 30034 while the API call itself returns 2xx,
+so the app sees a success and nothing arrives. Australian numbers deliver
+regardless, which is what makes this easy to misdiagnose.
+
+Separately: remove the Twilio step at playday/.github/workflows/e2e.yml lines
+68 to 78, or clear the TWILIO_FROM_NUMBER secret on that repo, so this number
+serves alexandergrant.app only.
