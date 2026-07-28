@@ -201,3 +201,29 @@ model Rsvp {
 
   @@index([createdAt])
 }
+
+model VoiceCall {
+  id             String    @id @default(cuid())
+  conversationId String?   @unique
+  agentId        String?
+
+  callerNumber String?
+  callerName   String?
+  business     String?
+  interest     String?
+  timeline     String?
+  budget       String?
+
+  summary       String?
+  transcript    Json?
+  durationSecs  Int?
+  outcome       String?
+  portfolioSent Boolean   @default(false)
+  startedAt     DateTime?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([createdAt])
+  @@index([callerNumber])
+}
