@@ -356,9 +356,35 @@ export default function HomePage() {
       <section className="section">
         <div className="section-header">
           <h2 className="section-title">Projects</h2>
-          <span className="section-meta">9 selected works</span>
+          <span className="section-meta">10 selected works</span>
         </div>
         <div className="grid">
+
+          <div className="card">
+            <div className="card-screenshot">
+              <div className="card-screenshot-placeholder" style={{ background: 'linear-gradient(135deg,#B20839,#7C0A2B)', flexDirection: 'column', gap: '8px' }}>
+                <span style={{ fontSize: '1.9rem' }}>⛰️</span>
+                <span style={{ fontFamily: "'DM Mono', monospace", fontSize: '.72rem', letterSpacing: '.3em', color: 'rgba(255,255,255,.92)', fontWeight: 700 }}>ADVENTURELINE</span>
+              </div>
+            </div>
+            <div className="card-body">
+              <div className="card-header">
+                <div className="card-icon">📈</div>
+                <div className="card-meta">
+                  <div className="card-name">Adventureline</div>
+                  <div className="card-type">Ecommerce Growth Marketing</div>
+                </div>
+              </div>
+              <p className="card-desc">Growth and performance marketing for an Australian outdoor apparel brand on Shopify. Paid advertising (Google &amp; Meta), SEO, email automation, and analytics, all focused on new-customer acquisition and live performance reporting.</p>
+              <div className="tags">
+                <span className="tag">Shopify</span><span className="tag">Google Ads</span><span className="tag">Meta Ads</span><span className="tag">GA4</span><span className="tag">Mailchimp</span>
+              </div>
+              <div className="card-footer">
+                <span className="status status-live"><span className="pip pip-live"></span>Active engagement</span>
+                <span className="card-type" style={{ fontSize: '.7rem' }}>Growth partner</span>
+              </div>
+            </div>
+          </div>
 
           <div className="card">
             <div className="card-screenshot"><img src="/screenshots/findyoga-au.jpg" alt="Find Yoga Australia" /></div>

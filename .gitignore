@@ -8,3 +8,4 @@ prisma/migrations/
 
 .obsidian
 _stale_duplicates/
+.playwright-mcp/

@@ -124,9 +124,14 @@ export default function InvoiceDetailPage({ params }: { params: Promise<{ id: st
               </>
             )}
             {invoice.status === 'SENT' && (
-              <Button onClick={markPaid} disabled={loading && action === 'paid'} size="sm" variant="ghost">
-                <CheckCircle size={12} /> Mark as Paid
-              </Button>
+              <>
+                <Button onClick={openEmailPreview} size="sm" variant="ghost">
+                  <Send size={12} /> Resend
+                </Button>
+                <Button onClick={markPaid} disabled={loading && action === 'paid'} size="sm" variant="ghost">
+                  <CheckCircle size={12} /> Mark as Paid
+                </Button>
+              </>
             )}
             <Button onClick={handleDelete} disabled={loading} size="sm" variant="ghost">
               <Trash2 size={12} /> {confirmDelete ? 'Confirm Delete' : 'Delete'}
