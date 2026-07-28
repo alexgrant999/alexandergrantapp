@@ -187,7 +187,7 @@ async function notifyBySms(call: CallRecord) {
   if (!to) return
 
   const who = call.callerName || call.callerNumber || 'Unknown'
-  const what = call.interest ? ` — ${call.interest.slice(0, 90)}` : ''
+  const what = call.interest ? `, wants ${call.interest.slice(0, 90)}` : ''
   await sendSms(to, `Call: ${who}${call.business ? ` (${call.business})` : ''}${what}`)
 }
 

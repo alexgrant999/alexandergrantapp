@@ -29,8 +29,13 @@ export const PORTFOLIO: PortfolioItem[] = [
   },
 ]
 
+/**
+ * Must stay byte-identical to sample message #1 on the Twilio A2P campaign.
+ * Carriers compare real traffic against the registered samples, so changing the
+ * wording here means resubmitting the campaign.
+ */
 export function portfolioSms(name?: string | null) {
   const greeting = name ? `Hi ${name.split(' ')[0]}, ` : ''
   const links = PORTFOLIO.map(p => `${p.label}: ${p.url}`).join('\n')
-  return `${greeting}here are a few things I've built:\n\n${links}\n\nAlex will follow up personally. — Alexander Grant`
+  return `${greeting}here are a few things I've built:\n\n${links}\n\nAlex will follow up personally.\n\nAlexander Grant\nReply STOP to opt out.`
 }
