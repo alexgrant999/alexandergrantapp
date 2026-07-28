@@ -28,7 +28,23 @@ const VOICE_ID = process.env.ELEVENLABS_VOICE_ID ?? ''
  * Fall back to 'claude-haiku-4-5' if turns feel sluggish on a real call.
  * `npm run voice:models` prints everything ElevenLabs currently accepts.
  */
-const LLM = 'claude-sonnet-5'
+const LLM = 'qwen35-397b-a17b'
+
+/**
+ * Structural guards against the repetition problem, independent of model choice.
+ *
+ * max_tokens caps a turn so a model that starts rambling or emits a second copy
+ * of its answer gets cut off by the runtime rather than relying on the prompt
+ * asking nicely. 250 is comfortably above a legitimate two-sentence turn plus a
+ * tool call, so it only ever bites on a runaway.
+ *
+ * reasoning_effort keeps thinking-enabled models from generating the internal
+ * planning text that leaked into speech on the first two calls. The API enum
+ * accepts none/minimal/low/medium/high/xhigh/max but support is per-model:
+ * qwen35-397b-a17b rejects 'none' and 'minimal', so 'low' is its floor.
+ */
+const MAX_TOKENS = 250
+const REASONING_EFFORT = 'low'
 
 const FIRST_MESSAGE =
   "Hi, you've reached Alexander Grant. I'm Alex's AI assistant, and this call's recorded so I can pass your details on. What are you working on?"
@@ -167,6 +183,9 @@ export function buildAgentConfig(toolIds: string[] = []) {
           prompt: SYSTEM_PROMPT,
           llm: LLM,
           temperature: 0.3,
+          max_tokens: MAX_TOKENS,
+          reasoning_effort: REASONING_EFFORT,
+          enable_reasoning_summary: false,
           tool_ids: toolIds,
         },
       },
