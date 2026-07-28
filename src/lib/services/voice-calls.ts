@@ -51,23 +51,27 @@ export async function recordCall(payload: PostCallWebhook) {
     ? new Date(data.metadata.start_time_unix_secs * 1000)
     : null
 
-  // A row may already exist from the mid-call portfolio tool. Prefer whatever
-  // the tool captured (the caller confirmed it out loud) over the extraction.
-  const orphan = await findOrphanFromTool(data.conversation_id, callerNumber)
+  // The mid-call portfolio tool may already have written a row, either keyed by
+  // this conversation id or (if the id didn't resolve) as an orphan matched on
+  // phone number. Either way its values win: the caller confirmed them out loud,
+  // and blindly overwriting would wipe portfolioSent back to false.
+  const existing = await prisma.voiceCall.findUnique({ where: { conversationId: data.conversation_id } })
+  const orphan = existing ? null : await findOrphanFromTool(data.conversation_id, callerNumber)
+  const prior = existing ?? orphan
 
   const record = {
     agentId: data.agent_id ?? null,
-    callerNumber: callerNumber ?? orphan?.callerNumber ?? null,
-    callerName: orphan?.callerName ?? collectedString(fields.caller_name),
+    callerNumber: callerNumber ?? prior?.callerNumber ?? null,
+    callerName: prior?.callerName ?? collectedString(fields.caller_name),
     business: collectedString(fields.business),
-    interest: orphan?.interest ?? collectedString(fields.interest),
+    interest: prior?.interest ?? collectedString(fields.interest),
     timeline: collectedString(fields.timeline),
     budget: collectedString(fields.budget),
     summary: data.analysis?.transcript_summary ?? null,
     transcript: (data.transcript ?? []) as object,
     durationSecs: data.metadata?.call_duration_secs ?? null,
     outcome: data.analysis?.call_successful ?? data.status ?? null,
-    portfolioSent: orphan?.portfolioSent ?? false,
+    portfolioSent: prior?.portfolioSent ?? false,
     startedAt,
   }
 

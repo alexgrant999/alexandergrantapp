@@ -21,11 +21,14 @@ export const APP_URL =
 const VOICE_ID = process.env.ELEVENLABS_VOICE_ID ?? ''
 
 /**
- * Voice conversations punish latency, so this favours a fast model.
- * Swap for a stronger model if the qualifying gets sloppy — the dashboard
- * lists what's currently available on your plan.
+ * Voice punishes latency, but gemini-2.0-flash kept leaking its planning into
+ * speech and repeating whole sentences even after the prompt forbade both.
+ * Instruction-following matters more here than the last 200ms.
+ *
+ * Fall back to 'claude-haiku-4-5' if turns feel sluggish on a real call.
+ * `npm run voice:models` prints everything ElevenLabs currently accepts.
  */
-const LLM = 'gemini-2.0-flash-001'
+const LLM = 'claude-sonnet-5'
 
 const FIRST_MESSAGE =
   "Hi, you've reached Alexander Grant. I'm Alex's AI assistant, and this call's recorded so I can pass your details on. What are you working on?"

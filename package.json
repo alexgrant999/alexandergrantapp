@@ -11,7 +11,8 @@
     "db:migrate": "prisma migrate dev",
     "db:studio": "prisma studio",
     "voice:sync": "tsx --env-file=.env.local scripts/sync-voice-agent.ts",
-    "voice:voices": "tsx --env-file=.env.local scripts/sync-voice-agent.ts --voices"
+    "voice:voices": "tsx --env-file=.env.local scripts/sync-voice-agent.ts --voices",
+    "voice:models": "tsx --env-file=.env.local scripts/sync-voice-agent.ts --models"
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^0.80.0",

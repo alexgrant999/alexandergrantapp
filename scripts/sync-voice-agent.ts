@@ -23,6 +23,22 @@ async function call(path: string, init: RequestInit = {}) {
   return text ? JSON.parse(text) : {}
 }
 
+/**
+ * There's no "list supported LLMs" endpoint, but the agent PATCH validator
+ * enumerates the valid enum values when you send it a bogus one.
+ */
+async function listModels() {
+  const res = await fetch(`${API}/convai/agents/${process.env.ELEVENLABS_AGENT_ID}`, {
+    method: 'PATCH',
+    headers: { 'xi-api-key': KEY!, 'Content-Type': 'application/json' },
+    body: JSON.stringify({ conversation_config: { agent: { prompt: { llm: '__invalid__' } } } }),
+  })
+  const models = [...new Set([...(await res.text()).matchAll(/'([a-zA-Z0-9._-]+)'/g)].map(m => m[1]))]
+  console.log(`\n${models.length} models accepted by ElevenLabs:\n`)
+  for (const m of models.sort()) console.log(`  ${m}`)
+  console.log('\nSet LLM in src/lib/voice/agent.ts, then npm run voice:sync\n')
+}
+
 async function listVoices() {
   const { voices } = await call('/voices')
   console.log(`\n${voices.length} voices:\n`)
@@ -71,6 +87,7 @@ async function sync() {
 async function main() {
   if (!KEY) throw new Error('ELEVENLABS_API_KEY is not set')
   if (process.argv.includes('--voices')) return listVoices()
+  if (process.argv.includes('--models')) return listModels()
   if (!process.env.VOICE_TOOL_SECRET) throw new Error('VOICE_TOOL_SECRET is not set')
   if (/localhost|127\.0\.0\.1/.test(APP_URL)) {
     throw new Error(
