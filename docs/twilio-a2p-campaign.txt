@@ -4,9 +4,30 @@ Brand:    SOLE_PROPRIETOR, already APPROVED
 Service:  the "My New Notifications Service" messaging service
 Number:   +17712533190  (already assigned to the service)
 
-Previous submission (2026-06-24) was rejected with:
-  30896  rejected because of provided Opt-in information   [MESSAGE_FLOW]
-  30886  invalid campaign description                      [USE_CASE_DESCRIPTION]
+REJECTION HISTORY
+  2026-06-24  30896 opt-in information        [MESSAGE_FLOW]
+              30886 invalid description       [USE_CASE_DESCRIPTION]
+  2026-07-29  30909 could not verify the CTA  [MESSAGE_FLOW]
+              ...30886 cleared, so the description rewrite worked.
+              ...opt_in_message and opt_in_keywords had ALSO saved as empty. Fill them.
+
+WHAT CHANGED FOR THIS ATTEMPT
+  A verbal-only opt-in is unverifiable. A reviewer has a browser, not a phone: they
+  cannot ring the number and hear the assistant ask permission, and they will not take
+  it on trust. Every sub-code Twilio listed (30907 URL validation, 30919 website lacks
+  use case info, 30921 site requires auth, 30924 consent language, 30925 checkbox must
+  be unchecked) assumes there is a PAGE to inspect. So there is now one:
+
+      https://alexandergrant.app/sms
+
+  Public, no login, consent checkbox unchecked by default, CTIA disclosures on the page
+  rather than behind a link, Privacy and Terms linked beside the checkbox.
+
+  Also fixed: /privacy and /terms previously described the site as a personal page for a
+  private event and stated that visitors are NEVER texted, which flatly contradicted this
+  campaign. A reviewer following those links saw the contradiction. Both now describe the
+  consultancy and the real SMS program. That contradiction is the likeliest reason the
+  July attempt failed, more than any wording in the fields below.
 
 Console path: Messaging > Regulatory Compliance > the failed campaign > edit and resubmit.
 Everything below is ready to paste. Lines starting with ">>" are instructions, do not paste them.
@@ -15,7 +36,7 @@ Everything below is ready to paste. Lines starting with ">>" are instructions, d
 ================================================================================
 FIELD: Campaign description
 ================================================================================
-Alexander Grant is a software development consultancy. When a prospective client phones our published business number, an automated assistant asks whether they would like examples of our previous work sent by text. If the caller agrees, they provide their mobile number verbally and the assistant reads it back to confirm. Only callers who agree and supply their own number are messaged, once per call, with links to three portfolio websites. We separately send internal operational alerts to the business owner's own mobile number, which the owner configured himself.
+Alexander Grant is a software development consultancy. Prospective clients request examples of our previous work and we text them links to three portfolio websites. They request this either by submitting the opt-in form at https://alexandergrant.app/sms, or by calling our published business number, where an automated assistant offers to text the examples and proceeds only if the caller agrees. Only people who supply their own number and actively agree are messaged, once per request. We separately send internal operational alerts to the business owner's own mobile number, which the owner configured himself.
 
 
 ================================================================================
@@ -70,14 +91,26 @@ https://alexandergrant.app/terms
 
 
 ================================================================================
-FIELD: How do end-users consent to receive messages?
+FIELD: How do end-users consent to receive messages?  (this is MESSAGE_FLOW, the field that failed twice)
 ================================================================================
-End users opt in verbally during an inbound call that they initiate to our published business number. The call opens with a recorded disclosure. The assistant asks whether the caller would like examples texted to them and proceeds only on agreement, then collects and confirms the mobile number. Consent is captured in the call recording and transcript, which we retain. No numbers are purchased, scraped or imported. Recipients can reply STOP at any time.
+>> Lead with the web form. It is the path a reviewer can actually open and verify.
+>> The phone path is secondary. Last time it was the only path given and 30909 followed.
+
+Consumers opt in in one of two ways.
+
+(1) Web form. At https://alexandergrant.app/sms the consumer enters their own mobile number and ticks a consent checkbox that is unchecked by default. The checkbox reads: "By checking this box, you agree to receive text messages from Alexander Grant at the mobile number provided. These messages contain links to examples of previous work. Message frequency varies, typically one message per request. Message and data rates may apply. Reply STOP to unsubscribe or HELP for help." Links to our Privacy Policy and Terms of Service appear beside the checkbox. The page states the business name, what the messages contain, message frequency, that rates may apply, and how to opt out.
+
+(2) By phone. The consumer calls our published business number. An automated assistant asks whether they would like examples of our work texted to them, and proceeds only if they agree. It then collects their mobile number and reads it back for confirmation. Calls open with a recorded-call disclosure, and the recording and transcript are retained as the consent record.
+
+We store the exact consent wording, the timestamp, and the origin of every opt-in. No numbers are purchased, rented, scraped or imported. Recipients can reply STOP at any time to unsubscribe.
 
 
 ================================================================================
 FIELD: List all opt-in keywords
 ================================================================================
+>> WARNING: this saved as EMPTY on the July attempt even though it was filled in.
+>> After submitting, verify it stuck (see AFTER SUBMITTING at the bottom of this file).
+
 START
 
 
@@ -112,25 +145,48 @@ Alexander Grant: For help, email alex@findyoga.com.au. Reply STOP to unsubscribe
 
 
 ================================================================================
-WHY THE LAST ONE FAILED, SO THIS ONE DOES NOT
+WHY EACH ATTEMPT FAILED
 ================================================================================
-1. The old description argued that opt-in did not apply ("There is no public
-   opt-in form because website visitors are never messaged"). A reviewer looking
-   for a consent mechanism reads that as "no consent mechanism". The new copy
-   describes an actual opt-in: the caller rings us, is asked, and says yes on a
-   recorded line.
-
+June (30886 + 30896)
+1. The description argued that opt-in did not apply ("There is no public opt-in
+   form because website visitors are never messaged"). A reviewer looking for a
+   consent mechanism reads that as "no consent mechanism".
 2. Opt-in keywords and opt-in message were blank while the opt-out message said
-   "Reply START to resubscribe". START is therefore already an opt-in keyword
-   and has to be declared. That inconsistency is the kind of thing reviewers
-   catch.
-
-3. Sample messages carried markdown list numbering ("1. Hi Gregory..."). Samples
-   are compared against real traffic, so the numbering had to go.
-
+   "Reply START to resubscribe". START is already an opt-in keyword and has to
+   be declared.
+3. Sample messages carried markdown list numbering ("1. Hi Gregory...").
 4. Embedded links was not ticked despite sample #1 containing three URLs.
+5. The help message had no sender identity.
 
-5. The help message had no sender identity. Carriers expect the brand name.
+July (30909)
+6. The description error cleared, so points 1 and 3 to 5 were fixed. What
+   remained was that the ONLY opt-in path was verbal. A reviewer cannot ring a
+   number and listen to an assistant ask permission. Nothing was inspectable.
+   Fixed by building https://alexandergrant.app/sms.
+7. /privacy and /terms still described a personal site for a private event and
+   said visitors are NEVER texted, contradicting the campaign outright. Anyone
+   clicking the policy links saw it. Both rewritten. This is probably the real
+   reason July failed.
+8. Opt-in keywords and opt-in message saved as empty AGAIN despite point 2.
+   Check them after submitting, do not assume the console kept them.
+
+
+================================================================================
+AFTER SUBMITTING (do this immediately, before waiting on review)
+================================================================================
+Confirm the console actually saved what you typed. Twice now the opt-in fields
+have come back empty:
+
+  SID=$(grep '^TWILIO_ACCOUNT_SID' .env.local | cut -d= -f2)
+  TOK=$(grep '^TWILIO_AUTH_TOKEN' .env.local | cut -d= -f2)
+  MG=$(curl -s -u "$SID:$TOK" "https://messaging.twilio.com/v1/Services?PageSize=1" \
+       | python3 -c "import json,sys; print(json.load(sys.stdin)['services'][0]['sid'])")
+  curl -s -u "$SID:$TOK" "https://messaging.twilio.com/v1/Services/$MG/Compliance/Usa2p" \
+  | python3 -m json.tool | grep -E 'opt_in|message_flow|campaign_status'
+
+opt_in_message and opt_in_keywords must NOT be null. message_flow must contain
+the alexandergrant.app/sms URL. If they are empty, the submission went in
+without them and will fail again.
 
 
 ================================================================================
