@@ -57,8 +57,8 @@ export default function SmsOptInPage() {
             <dt className="font-medium text-gray-900">Opting out</dt>
             <dd>
               Reply STOP to any message to unsubscribe. Reply HELP for help, or email{' '}
-              <a href="mailto:alex@alexandergrant.app" className="underline">
-                alex@alexandergrant.app
+              <a href="mailto:alexandergrantapp@gmail.com" className="underline">
+                alexandergrantapp@gmail.com
               </a>
               .
             </dd>

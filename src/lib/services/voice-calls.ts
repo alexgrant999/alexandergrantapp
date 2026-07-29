@@ -182,13 +182,22 @@ async function notifyByEmail(call: CallRecord) {
   })
 }
 
+/**
+ * Registered as sample message #2 on the A2P campaign, so it has to carry the
+ * brand name and opt-out language that carriers check for even though it only
+ * ever goes to the business owner's own phone.
+ */
+export function callAlertSms(call: Pick<CallRecord, 'callerName' | 'callerNumber' | 'business' | 'interest'>) {
+  const who = call.callerName || call.callerNumber || 'Unknown'
+  const business = call.business ? ` (${call.business})` : ''
+  const what = call.interest ? `, wants ${call.interest.slice(0, 90)}` : ''
+  return `Alexander Grant: new call from ${who}${business}${what}. Reply STOP to opt out.`
+}
+
 async function notifyBySms(call: CallRecord) {
   const to = process.env.VOICE_NOTIFY_PHONE ?? process.env.RSVP_NOTIFY_PHONE
   if (!to) return
-
-  const who = call.callerName || call.callerNumber || 'Unknown'
-  const what = call.interest ? `, wants ${call.interest.slice(0, 90)}` : ''
-  await sendSms(to, `Call: ${who}${call.business ? ` (${call.business})` : ''}${what}`)
+  await sendSms(to, callAlertSms(call))
 }
 
 async function sendSms(to: string, body: string) {

@@ -117,7 +117,7 @@ export async function createSubscription(data: {
         <a href="${session.url}" style="display: inline-block; background: #6c63ff; color: white; padding: 14px 28px; border-radius: 8px; text-decoration: none; font-weight: 600; font-size: 1em;">
           Activate Subscription →
         </a>
-        <p style="color: #bbb; font-size: 0.8em; margin-top: 32px;">Alexander Grant · alex@alexandergrant.app</p>
+        <p style="color: #bbb; font-size: 0.8em; margin-top: 32px;">Alexander Grant · alexandergrantapp@gmail.com</p>
       </div>
     `,
   })
@@ -190,7 +190,7 @@ export async function refreshCheckoutUrl(id: string) {
         <a href="${session.url}" style="display: inline-block; background: #6c63ff; color: white; padding: 14px 28px; border-radius: 8px; text-decoration: none; font-weight: 600; font-size: 1em;">
           Activate Subscription →
         </a>
-        <p style="color: #bbb; font-size: 0.8em; margin-top: 32px;">Alexander Grant · alex@alexandergrant.app</p>
+        <p style="color: #bbb; font-size: 0.8em; margin-top: 32px;">Alexander Grant · alexandergrantapp@gmail.com</p>
       </div>
     `,
   })

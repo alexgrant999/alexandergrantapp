@@ -56,7 +56,7 @@ export async function POST(req: Request, { params }: { params: Promise<{ id: str
         </div>
         <a href="${portalUrl}" style="display: inline-block; background: #6c63ff; color: white; padding: 14px 28px; border-radius: 8px; text-decoration: none; font-weight: 600; font-size: 1em;">View &amp; Pay Invoice →</a>
         <p style="color: #999; font-size: 0.85em; margin-top: 32px;">Due by ${new Date(invoice.dueDate).toLocaleDateString('en-AU', { day: 'numeric', month: 'long', year: 'numeric' })}</p>
-        <p style="color: #bbb; font-size: 0.8em; margin-top: 8px;">Alexander Grant · alex@alexandergrant.app</p>
+        <p style="color: #bbb; font-size: 0.8em; margin-top: 8px;">Alexander Grant · alexandergrantapp@gmail.com</p>
       </div>
     `,
   })

@@ -86,7 +86,7 @@ export function PortalInvoiceClient({ token, id }: { token: string; id: string }
             <div>
               <p style={{ color: 'var(--muted)', fontSize: '0.75rem', textTransform: 'uppercase', letterSpacing: '0.06em', marginBottom: 4 }}>From</p>
               <p style={{ color: 'var(--text)', fontWeight: 600 }}>Alexander Grant</p>
-              <p style={{ color: 'var(--muted)', fontSize: '0.85rem' }}>alex@alexandergrant.app</p>
+              <p style={{ color: 'var(--muted)', fontSize: '0.85rem' }}>alexandergrantapp@gmail.com</p>
             </div>
             <div>
               <p style={{ color: 'var(--muted)', fontSize: '0.75rem', textTransform: 'uppercase', letterSpacing: '0.06em', marginBottom: 4 }}>To</p>

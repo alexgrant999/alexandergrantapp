@@ -599,7 +599,7 @@ export default function HomePage() {
         <div className="footer-inner">
           <span className="footer-name">Alexander Grant</span>
           <span className="footer-meta">Full-stack developer — Sydney, Australia</span>
-          <span className="footer-meta"><a href="mailto:alex@alexandergrant.app">alex@alexandergrant.app</a></span>
+          <span className="footer-meta"><a href="mailto:alexandergrantapp@gmail.com">alexandergrantapp@gmail.com</a></span>
         </div>
       </footer>
     </>

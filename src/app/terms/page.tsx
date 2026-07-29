@@ -51,8 +51,8 @@ export default function TermsPage() {
         </p>
         <p className="mt-3">
           <strong>Help.</strong> Reply HELP or INFO to any message, or email{' '}
-          <a href="mailto:alex@alexandergrant.app" className="underline">
-            alex@alexandergrant.app
+          <a href="mailto:alexandergrantapp@gmail.com" className="underline">
+            alexandergrantapp@gmail.com
           </a>
           .
         </p>
@@ -92,8 +92,8 @@ export default function TermsPage() {
         <h2 className="font-semibold text-gray-900 mb-2">Contact</h2>
         <p>
           Questions?{' '}
-          <a href="mailto:alex@alexandergrant.app" className="underline">
-            alex@alexandergrant.app
+          <a href="mailto:alexandergrantapp@gmail.com" className="underline">
+            alexandergrantapp@gmail.com
           </a>
         </p>
       </section>

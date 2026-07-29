@@ -31,6 +31,6 @@ export async function submitOptIn(_prev: OptInState, formData: FormData): Promis
     return { status: 'success', delivered }
   } catch (err) {
     console.error('[sms-opt-in] failed to save', err)
-    return { status: 'error', message: 'Something went wrong. Please email alex@alexandergrant.app instead.' }
+    return { status: 'error', message: 'Something went wrong. Please email alexandergrantapp@gmail.com instead.' }
   }
 }

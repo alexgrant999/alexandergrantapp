@@ -88,8 +88,8 @@ export default function PrivacyPage() {
           Consent records are kept for as long as you remain subscribed and for a reasonable period
           afterwards, so that we can evidence consent if a carrier or regulator asks. To have your
           data deleted, email{' '}
-          <a href="mailto:alex@alexandergrant.app" className="underline">
-            alex@alexandergrant.app
+          <a href="mailto:alexandergrantapp@gmail.com" className="underline">
+            alexandergrantapp@gmail.com
           </a>
           .
         </p>
@@ -99,8 +99,8 @@ export default function PrivacyPage() {
         <h2 className="font-semibold text-gray-900 mb-2">Contact</h2>
         <p>
           For privacy enquiries, email{' '}
-          <a href="mailto:alex@alexandergrant.app" className="underline">
-            alex@alexandergrant.app
+          <a href="mailto:alexandergrantapp@gmail.com" className="underline">
+            alexandergrantapp@gmail.com
           </a>
           .
         </p>
