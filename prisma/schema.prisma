@@ -202,6 +202,24 @@ model Rsvp {
   @@index([createdAt])
 }
 
+/// Proof of consent for the SMS program. Carriers can ask for this, so the exact
+/// wording the person agreed to is stored alongside the number rather than being
+/// inferred from whatever the page says today.
+model SmsOptIn {
+  id          String    @id @default(cuid())
+  phone       String    @unique
+  name        String?
+  source      String    @default("web")
+  consentText String
+  userAgent   String?
+  ipHash      String?
+  optedOutAt  DateTime?
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+
+  @@index([createdAt])
+}
+
 model VoiceCall {
   id             String    @id @default(cuid())
   conversationId String?   @unique
