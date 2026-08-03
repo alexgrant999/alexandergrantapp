@@ -45,3 +45,17 @@ export const smsOptInSchema = z.object({
 })
 
 export type SmsOptInInput = z.infer<typeof smsOptInSchema>
+
+/**
+ * The email route exists so that agreeing to SMS is never the price of seeing
+ * the work. Carrier review rejected the earlier form as forced consent because
+ * ticking the box was the only way to get the links. There is deliberately no
+ * consent checkbox here: the visitor asked for one email and that is all they
+ * get, so there is nothing recurring to consent to.
+ */
+export const emailExamplesSchema = z.object({
+  email: z.email('Enter a valid email address'),
+  name: z.string().trim().max(80).optional().or(z.literal('').transform(() => undefined)),
+})
+
+export type EmailExamplesInput = z.infer<typeof emailExamplesSchema>

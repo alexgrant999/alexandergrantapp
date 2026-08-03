@@ -1,7 +1,9 @@
 TWILIO A2P 10DLC CAMPAIGN RESUBMISSION
-Account:  Grants Marketing (SID is TWILIO_ACCOUNT_SID in .env.local)
-Brand:    SOLE_PROPRIETOR, already APPROVED
-Service:  the "My New Notifications Service" messaging service
+Account:  Grants Marketing (SID is TWILIO_ACCOUNT_SID in .env.local, do not paste
+          it in here, GitHub push protection blocks the AC... pattern as a secret)
+Brand:    BNf411ec3aac6360c7d47102dc1f495d4c  SOLE_PROPRIETOR, already APPROVED
+Service:  MGe358a0bc7abeb3d1d9785543fc713cdc
+Campaign: QE2c6890da8086d771620e9b13fadeba0b  (status FAILED)
 Number:   +17712533190  (already assigned to the service)
 
 REJECTION HISTORY
@@ -10,6 +12,114 @@ REJECTION HISTORY
   2026-07-29  30909 could not verify the CTA  [MESSAGE_FLOW]
               ...30886 cleared, so the description rewrite worked.
               ...opt_in_message and opt_in_keywords had ALSO saved as empty. Fill them.
+  2026-08-03  30896 opt-in information        [OPT_IN_MESSAGE]
+              30917 multiple opt-in workflow incomplete  [MESSAGE_FLOW]
+              ...30909 cleared. The rewritten message_flow DID save, verified
+              ...against the API, and the reviewer did open /sms. The page worked.
+              ...opt_in_message and opt_in_keywords were STILL null. Third time.
+              ...See REVIEWER NOTES and STOP USING THE CONSOLE below.
+
+
+================================================================================
+STOP USING THE CONSOLE FOR THE OPT-IN FIELDS
+================================================================================
+Read from the live campaign on 2026-08-03, after the July resubmission:
+
+  message_flow      saved correctly, the full three-path rewrite is there
+  description       saved correctly
+  opt_in_keywords   null
+  opt_in_message    null
+  help_message      "Reply STOP to unsubscribe. Msg&Data Rates May Apply."
+                    ...not the version in this file, and no brand name
+  opt_out_message   no brand name, not the version in this file
+
+So the long free-text fields save and the opt-in and auto-reply fields do not.
+Three attempts, same four fields empty or stale every time. Stop retyping them
+into the console and expecting a different result. Set them over the API instead,
+using the call under SETTING THE FIELDS OVER THE API at the bottom of this file.
+
+That mismatch is the whole rejection. message_flow declares a text opt-in path
+while opt_in_keywords and opt_in_message sit empty, so the campaign contradicts
+itself. 30896 points straight at OPT_IN_MESSAGE and 30917 at MESSAGE_FLOW.
+
+
+================================================================================
+REVIEWER NOTES, 2026-08-03, verbatim in substance
+================================================================================
+1. Forced Consent Violation (https://alexandergrant.app/sms)
+   "Your current signup workflow bundles SMS messaging consent directly into your
+   mandatory Terms of Service or treats consent as a required condition to
+   complete a transaction or create an account. Consumers must be provided an
+   explicit skip option or a separate checkbox, allowing them to decline
+   messaging and still utilize your business services."
+
+   True on both counts as the page then stood. The consent checkbox was required
+   to submit, so ticking it was the only way to get the links, and the Privacy
+   and Terms links were rendered inside that same checkbox label, which reads as
+   bundling site terms into the messaging consent. Fixed, see PAGE CHANGES.
+
+2. Opt-In Error: the link "lacks purpose details on types of messages"
+   Wanted all four of: type of messages, frequency, "message and data rates may
+   apply", and opt-out instructions. All four were on the page, but only as small
+   grey print inside the checkbox label. They are now normal body text directly
+   above the form as well. Fixed, see PAGE CHANGES.
+
+3. Incomplete Opt-In Description
+   "You have selected multiple opt-in acquisition methods such as [Web opt-in, by
+   phone and text opt-in] but your step-by-step description only accounts for
+   [Web opt-in, by phone]."
+
+   The keyword path was in message_flow, but as one sentence next to two detailed
+   paragraphs, and with opt_in_keywords empty there was nothing to corroborate it.
+   Path (2) below is now described to the same depth as the other two.
+
+
+================================================================================
+PAGE CHANGES MADE 2026-08-03
+================================================================================
+Deploy these before touching the campaign. A reviewer who opens /sms and sees the
+old form will reject on note 1 again no matter what the fields say.
+
+  Links are now printed on /sms itself, with blurbs, above both forms. Anyone can
+  read the work without giving a number or ticking anything.
+
+  An email route was added next to the SMS form. Same three links, one message,
+  no checkbox, no record kept, deliberately outside the A2P program.
+
+  The consent checkbox label now contains the SMS consent sentence and nothing
+  else. Privacy and Terms moved out of the label to their own line below the
+  form, followed by "Agreeing to receive text messages is not a condition of
+  using this site or of working with us."
+
+  The four disclosures were promoted from small grey print inside the label to
+  normal body text above the form. They still appear in the label too.
+
+  The page now names the text-START path, so all three declared opt-in methods
+  are visible on the page a reviewer inspects.
+
+  CONSENT_TEXT itself is unchanged, so it still matches the quotation inside
+  message_flow byte for byte. Keep it that way.
+
+Also added, because the campaign declares a keyword path that nothing answered:
+
+  src/lib/sms/auto-replies.ts holds OPT_IN_MESSAGE, HELP_MESSAGE, OPT_OUT_MESSAGE
+  and the keyword lists. These are registered copy. The strings pasted into the
+  campaign must equal the strings in that file, the same rule the message samples
+  already follow.
+
+  src/app/api/webhooks/twilio/sms/route.ts answers inbound texts. START records
+  consent with its own wording and replies with the confirmation followed by the
+  portfolio message. HELP replies with the help message. STOP updates the record
+  only, since Twilio has already blocked the number and replied. The signature is
+  verified against TWILIO_SMS_WEBHOOK_URL.
+
+  REQUIRED CONFIG, this does nothing until it is done:
+    1. Set TWILIO_SMS_WEBHOOK_URL in Vercel to the exact URL entered in step 2.
+       https://alexandergrant.app/api/webhooks/twilio/sms
+    2. Twilio Console > Phone Numbers > +17712533190 > Messaging >
+       "A message comes in" > Webhook, HTTP POST, that same URL.
+       No trailing slash, and it must match the env var character for character
+       or every request fails signature verification with a 403.
 
 WHAT CHANGED FOR THIS ATTEMPT
   A verbal-only opt-in is unverifiable. A reviewer has a browser, not a phone: they
@@ -47,7 +157,10 @@ Everything below is ready to paste. Lines starting with ">>" are instructions, d
 ================================================================================
 FIELD: Campaign description
 ================================================================================
-Alexander Grant is a software development consultancy. Prospective clients request examples of our previous work and we text them links to three portfolio websites. They request this either by submitting the opt-in form at https://alexandergrant.app/sms, or by calling our published business number, where an automated assistant offers to text the examples and proceeds only if the caller agrees. Only people who supply their own number and actively agree are messaged, once per request. We separately send internal operational alerts to the business owner's own mobile number, which the owner configured himself.
+>> Must name all three opt-in methods, the same three as message_flow and the
+>> same three ticked on the application profile. Listing fewer is what drew 30917.
+
+Alexander Grant is a software development consultancy. Prospective clients request examples of our previous work and we text them links to three portfolio websites. They request this in one of three ways: submitting the opt-in form at https://alexandergrant.app/sms, texting START to our published business number, or calling that number, where an automated assistant offers to text the examples and proceeds only if the caller agrees. Only people who supply their own number and actively agree are messaged, once per request. The same links are also printed on the opt-in page itself and can be emailed instead, so nobody has to accept text messages to get them. We separately send internal operational alerts to the business owner's own mobile number, which the owner configured himself.
 
 
 ================================================================================
@@ -108,34 +221,38 @@ https://alexandergrant.app/terms
 ================================================================================
 FIELD: How do end-users consent to receive messages?  (this is MESSAGE_FLOW, the field that failed twice)
 ================================================================================
->> Lead with the web form. It is the path a reviewer can actually open and verify.
->> The phone path is secondary. Last time it was the only path given and 30909 followed.
->> Four things this field was missing and now has, all named in the 30909 checklist:
->>   the Privacy and Terms URLs written out IN this field, not just "links appear
->>   beside the checkbox"; frequency and rates as plain statements outside the
->>   quoted checkbox copy; the words "no login" against 30921; and the START
->>   keyword path, which was declared in opt_in_keywords but described nowhere.
->> All three paths must stay listed here. The campaign description names the phone
->> path, so dropping it from this field creates a contradiction a reviewer will see.
+>> 30917 is about depth, not presence. The July version did mention the keyword
+>> path, in one sentence, next to two full paragraphs, and the reviewer still
+>> counted it as undescribed. Every path a consumer can take must carry the same
+>> weight: where they encounter it, what they do, what they get back verbatim.
+>> Rules for this field:
+>>   Describe exactly the methods ticked on the application profile. Three ticked,
+>>   three described. Fewer is 30917. More is a reviewer looking for a page that
+>>   does not exist.
+>>   Quote the opt_in_message inside path (2) word for word, matching the
+>>   opt_in_message field. The two corroborate each other.
+>>   Quote the checkbox copy inside path (1) word for word, matching CONSENT_TEXT
+>>   in src/lib/validators/sms-opt-in.ts and therefore the live page.
+>>   Say plainly that consent is optional. Note 1 on the last rejection was a
+>>   forced-consent finding and this sentence is the direct answer to it.
+>>   Keep the Privacy and Terms URLs written out here, not just referred to.
 
-Consumers opt in in one of three ways. All paths are listed here.
+Consumers opt in in one of three ways. All three are described in full below.
 
-(1) Web form, primary. At https://alexandergrant.app/sms, a page that is publicly reachable with no login and no paywall, the consumer enters their own mobile number and ticks a consent checkbox that is unchecked by default. The checkbox reads: "By checking this box, you agree to receive text messages from Alexander Grant at the mobile number provided. These messages contain links to examples of previous work. Message frequency varies, typically one message per request. Message and data rates may apply. Reply STOP to unsubscribe or HELP for help." No message is sent unless that box is ticked. The page states the business name, what the messages contain, message frequency, that message and data rates may apply, and how to opt out, all visible on the page itself rather than behind a link.
+(1) Web form. At https://alexandergrant.app/sms, a page reachable with no login, the consumer enters their own mobile number and ticks a consent checkbox that is unchecked by default and covers text messaging only. It reads: "By checking this box, you agree to receive text messages from Alexander Grant at the mobile number provided. These messages contain links to examples of previous work. Message frequency varies, typically one message per request. Message and data rates may apply. Reply STOP to unsubscribe or HELP for help." No message is sent unless it is ticked. Consent is optional: the same links are printed on the page and can be emailed instead, so nobody has to agree to messaging to get the content or to work with us.
 
-(2) Keyword. The consumer texts START to +1 771 253 3190 and receives the opt-in confirmation message declared below.
+(2) Text keyword. The consumer texts START to +1 771 253 3190. The keyword and number are published on https://alexandergrant.app/sms beside the form. They immediately receive: "Alexander Grant: You're subscribed and will receive links to examples of our work. Msg frequency varies, typically one msg per request. Reply HELP for help, STOP to unsubscribe. Msg&Data rates may apply." The portfolio message follows. Texting the keyword is itself the consent. No message goes to any number that has not texted in.
 
-(3) By phone, secondary. The consumer calls our published business number. An automated assistant asks whether they would like examples of our work texted to them, and proceeds only if they agree. It then collects their mobile number and reads it back for confirmation. Calls open with a recorded-call disclosure, and the recording and transcript are retained as the consent record.
+(3) By phone. The consumer calls +1 771 253 3190. An automated assistant asks whether they would like examples of our work texted to them and proceeds only if they agree, then collects the number and reads it back to confirm. Calls open with a recorded-call disclosure, and the recording and transcript are kept as the consent record.
 
-Message frequency varies, typically one message per request. Message and data rates may apply. Terms and Conditions: https://alexandergrant.app/terms. Privacy Policy: https://alexandergrant.app/privacy, which states that mobile numbers and consent are never sold, rented or shared with third parties for marketing purposes.
-
-We store the exact consent wording, the timestamp, and the origin of every opt-in. No numbers are purchased, rented, scraped or imported. Recipients can reply STOP at any time to unsubscribe.
+Message frequency varies. Message and data rates may apply. Terms: https://alexandergrant.app/terms. Privacy: https://alexandergrant.app/privacy, which states mobile numbers are never sold, rented or shared with third parties for marketing. We store the consent wording, timestamp and origin of every opt-in. No numbers are purchased, rented, scraped or imported.
 
 
 ================================================================================
 FIELD: List all opt-in keywords
 ================================================================================
->> WARNING: this saved as EMPTY on the July attempt even though it was filled in.
->> After submitting, verify it stuck (see AFTER SUBMITTING at the bottom of this file).
+>> WARNING: this has saved as EMPTY on all three attempts. Do not type it into
+>> the console again. Set it over the API, see SETTING THE FIELDS OVER THE API.
 >> START only. Do not add JOIN. Twilio's default opt-out handling already answers
 >> START, YES and UNSTOP natively; JOIN would need a handler in the messaging
 >> webhook, and declaring a keyword that does nothing is worse than not declaring it.
@@ -149,6 +266,8 @@ FIELD: What is the opt-in message?
 >> TCR checks this for four things: brand name, confirmation of enrollment,
 >> message frequency, and opt-out instructions. The old version had three.
 >> Frequency was the missing one, so it is now stated explicitly.
+>> Must equal OPT_IN_MESSAGE in src/lib/sms/auto-replies.ts, which is what the
+>> number actually replies, and it is quoted inside message_flow path (2) too.
 
 Alexander Grant: You're subscribed and will receive links to examples of our work. Msg frequency varies, typically one msg per request. Reply HELP for help, STOP to unsubscribe. Msg&Data rates may apply.
 
@@ -164,6 +283,7 @@ FIELD: What is the opt-out message?
 ================================================================================
 >> Brand name added. June point 5 was a help message with no sender identity;
 >> the opt-out message had the same gap and was not caught then.
+>> Must equal OPT_OUT_MESSAGE in src/lib/sms/auto-replies.ts.
 
 Alexander Grant: You have successfully been unsubscribed. You will not receive any more messages from this number. Reply START to resubscribe.
 
@@ -184,6 +304,7 @@ FIELD: What is the help message?
 >> just inspected has a discrepancy to point at, and this campaign has already
 >> died twice on the gap between what the fields claim and what the site shows.
 >> If this address ever changes, change all seven places in the same commit.
+>> Must equal HELP_MESSAGE in src/lib/sms/auto-replies.ts.
 
 Alexander Grant: For help, email alexandergrantapp@gmail.com. Reply STOP to unsubscribe. Msg&Data rates may apply.
 
@@ -214,15 +335,88 @@ July (30909)
 8. Opt-in keywords and opt-in message saved as empty AGAIN despite point 2.
    Check them after submitting, do not assume the console kept them.
 
+August (30896 + 30917)
+9. Points 6 and 7 worked. 30909 cleared, message_flow saved intact, and the
+    reviewer opened /sms and quoted it back. The page did its job.
+10. Consent was still compulsory. Ticking the box was the only way to get the
+    links, and the Privacy and Terms links sat inside the checkbox label, so the
+    reviewer read site terms as bundled into messaging consent. Both fixed.
+11. The four required disclosures were present but only as small grey print
+    inside that label, and the reviewer recorded them as absent. Presence is not
+    enough, they have to be legible where a consumer decides. Now body text.
+12. The keyword path got one sentence while the other two got paragraphs, which
+    counted as undescribed against the three methods ticked on the profile.
+13. Opt-in keywords and opt-in message empty for the THIRD time. This is not
+    forgetfulness, the console form is dropping them. Hence the API script.
+
+
+================================================================================
+SETTING THE FIELDS OVER THE API
+================================================================================
+Use this instead of the console for opt_in_keywords, opt_in_message, help_message
+and opt_out_message. Those four have never once survived a console save.
+
+Run it only AFTER the page changes are live at https://alexandergrant.app/sms.
+Updating the campaign puts it straight back into carrier review, and a reviewer
+opening the old form rejects again on the forced-consent note regardless of what
+these fields say.
+
+The script is committed at scripts/a2p-update.py. It parses the three message
+strings out of src/lib/sms/auto-replies.ts rather than holding its own copies, so
+what the campaign claims the number replies always equals what the number really
+replies. Editing those constants and rerunning is the only supported way to
+change them.
+
+  python3 scripts/a2p-update.py --check     read the stored values, change nothing
+  python3 scripts/a2p-update.py             write the four fields
+
+--check needs no arguments and touches nothing, so run it first and last. It
+reads TWILIO_ACCOUNT_SID and TWILIO_AUTH_TOKEN from the environment, falling back
+to .env.local. The write path prints every value and waits for you to type "yes"
+before sending, then reads the campaign back and marks anything still empty.
+
+Verified working against the live campaign on 2026-08-03, read-only path.
+
+message_flow and description are long free text and have always saved from the
+console, so they are not in this script. Paste those two in the console as usual,
+confirm they read back correctly, then run this for the four that do not stick.
+
+If the POST comes back 4xx saying the campaign cannot be updated in its current
+state, stop. Do NOT delete the campaign and create a new one: the vetting fee is
+charged once per campaign and a fresh campaign is a fresh fee. Open a Twilio
+support ticket quoting campaign QE2c6890da8086d771620e9b13fadeba0b and the fact
+that opt_in_message and opt_in_keywords have failed to persist three times.
+
 
 ================================================================================
 BEFORE SUBMITTING
 ================================================================================
-Field character limits, all confirmed in range 2026-07-29:
-  message_flow      1885 of 2049 max.  Tight. If you add to it, cut something.
+Order of operations, and it matters more than anything else in this file:
+  1. Merge and deploy the page changes.
+  2. Open https://alexandergrant.app/sms in a private window and check it live.
+  3. Paste message_flow and description into the console, read them back.
+  4. Run scripts/a2p-update.py for the four fields the console drops.
+  5. Confirm all six read back correctly from the API before review starts.
+Doing 3 or 4 before 1 wastes the review cycle, because the reviewer will be
+looking at the old form while reading the new copy.
+
+Field character limits, confirmed in range 2026-08-03:
+  message_flow      2030 of 2049 max.  19 characters of headroom. If you add a
+                    word, cut a word, and re-measure before pasting.
+  description        789 of 4096 max
   opt_in_message     203 of 320 max
   opt_out_message    142 of 320 max
-  help_message       110 of 320 max
+  help_message       114 of 320 max
+
+Check the live page against the three reviewer notes, not just against this file:
+  The three portfolio links are readable without entering anything.
+  The email form works and sends. Test it once to a real address.
+  The consent checkbox loads UNCHECKED. A pre-ticked box is an automatic 30925.
+  The checkbox label mentions text messages ONLY, with no Privacy or Terms link
+    inside it.
+  The four disclosures are readable body text above the form, not small grey
+    print, and they still also appear inside the label.
+  The page names all three opt-in paths, including text START.
 
 The support email is settled: alexandergrantapp@gmail.com, consistent across the
 help message field and every public page. Confirm the mailbox is actually being
@@ -235,14 +429,19 @@ cannot be one, so changing those would break invoice and subscription email for
 live clients. Outbound mail comes from the domain, replies and support go to the
 gmail address. Nothing a carrier reviewer sees is affected either way.
 
-Confirm nothing on the live site has drifted since it was checked today. Open
-/sms in a private window with no session and verify the consent checkbox loads
-UNCHECKED. A pre-ticked box is an automatic 30925.
+Still unverified, and now the weakest point left: the phone path. If path (3)
+stays declared, the assistant has to actually say the frequency and "message and
+data rates may apply" before it sends. Its prompt is not in this repo, so nobody
+has confirmed it does. Two attempts have now been lost to describing something a
+reviewer could not verify. Either confirm the wording, or cut path (3) from
+message_flow, the matching sentence from the campaign description, and the
+matching tick on the application profile, all three together.
 
-If the phone path stays declared, the assistant has to actually say the frequency
-and "message and data rates may apply" before it sends. Its prompt is not in this
-repo, so it was not verified. Either confirm it does, or cut path (3) from
-message_flow AND the matching sentence from the campaign description, together.
+Text START now has a handler, but it is inert until the webhook is configured on
+the number and TWILIO_SMS_WEBHOOK_URL is set. Do both, then text START from a
+phone and confirm two messages come back. Until the campaign is approved that
+test only works from an Australian number, since US-bound sends still fail with
+30034, which is the whole reason this campaign exists.
 
 
 ================================================================================
