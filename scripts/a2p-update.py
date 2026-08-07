@@ -45,6 +45,8 @@ REPO_ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 AUTO_REPLIES = os.path.join(REPO_ROOT, "src", "lib", "sms", "auto-replies.ts")
 CONSENT_SRC = os.path.join(REPO_ROOT, "src", "lib", "validators", "sms-opt-in.ts")
 VOICE_SRC = os.path.join(REPO_ROOT, "src", "lib", "voice", "agent.ts")
+PORTFOLIO_SRC = os.path.join(REPO_ROOT, "src", "lib", "voice", "portfolio.ts")
+CALLS_SRC = os.path.join(REPO_ROOT, "src", "lib", "services", "voice-calls.ts")
 ENV_FILE = os.path.join(REPO_ROOT, ".env.local")
 
 WATCHED = ["opt_in_keywords", "opt_in_message", "help_keywords",
@@ -93,6 +95,43 @@ def ts_const(source: str, name: str) -> str:
     if not value:
         sys.exit(f"Parsed {name} as empty. Check the format of {AUTO_REPLIES}.")
     return value
+
+
+def message_samples() -> list[str]:
+    """
+    Rebuild the two registered samples from the code that sends them.
+
+    Carriers compare live traffic against these, so a sample that drifts from the
+    sender is worse than no sample. Both templates are asserted rather than
+    assumed: if either is edited, this stops instead of registering copy the
+    number no longer sends. "Gregory" is the placeholder recipient in both.
+    """
+    portfolio = open(PORTFOLIO_SRC).read()
+    template = (
+        "`${greeting}here are a few things I've built:"
+        "\\n\\n${links}\\n\\nAlex will follow up personally."
+        "\\n\\nAlexander Grant\\nReply STOP to opt out.`"
+    )
+    if template not in portfolio:
+        sys.exit(f"portfolioSms() in {PORTFOLIO_SRC} no longer matches sample #1. Update this script.")
+
+    links = "\n".join(
+        f"{label}: {url}"
+        for label, url in re.findall(r"label: '([^']+)',\s*\n\s*url: '([^']+)'", portfolio)
+    )
+    if links.count("\n") != 2:
+        sys.exit("Expected three portfolio items. Sample #1 would not match what is sent.")
+
+    alert = "`Alexander Grant: new call from ${who}${business}${what}. Reply STOP to opt out.`"
+    if alert not in open(CALLS_SRC).read():
+        sys.exit(f"callAlertSms() in {CALLS_SRC} no longer matches sample #2. Update this script.")
+
+    return [
+        f"Hi Gregory, here are a few things I've built:\n\n{links}\n\n"
+        "Alex will follow up personally.\n\nAlexander Grant\nReply STOP to opt out.",
+        "Alexander Grant: new call from Gregory (children's art classes), "
+        "wants an app for children's art classes. Reply STOP to opt out.",
+    ]
 
 
 def ts_list(source: str, name: str) -> list[str]:
@@ -184,9 +223,17 @@ def build() -> list[tuple[str, str]]:
     )
 
     fields = [
+        # The four content flags are required on every update, not just at
+        # creation: omitting them is a 400, and the API will not carry over the
+        # stored values. Links is true because sample #1 carries three URLs.
+        ("HasEmbeddedLinks", "true"),
+        ("HasEmbeddedPhone", "false"),
+        ("AgeGated", "false"),
+        ("DirectLending", "false"),
         ("Description", DESCRIPTION),
         ("MessageFlow", message_flow),
         ("OptInMessage", opt_in),
+        *[("MessageSamples", sample) for sample in message_samples()],
         ("HelpMessage", ts_const(source, "HELP_MESSAGE")),
         ("OptOutMessage", ts_const(source, "OPT_OUT_MESSAGE")),
     ]

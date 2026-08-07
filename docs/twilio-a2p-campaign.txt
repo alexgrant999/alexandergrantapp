@@ -12,6 +12,12 @@ REJECTION HISTORY
   2026-07-29  30909 could not verify the CTA  [MESSAGE_FLOW]
               ...30886 cleared, so the description rewrite worked.
               ...opt_in_message and opt_in_keywords had ALSO saved as empty. Fill them.
+  2026-08-07  submitted by accident, carrying the OLD July copy. A probe POST
+              sent while isolating a 400 succeeded, and a successful POST is a
+              submission. Status went to PENDING_DCA1_REVIEW with opt_in_message
+              and opt_in_keywords still null, so it will fail on 30896 again.
+              The corrected payload is ready and cannot be written until it does.
+              See WHAT THE UPDATE ENDPOINT ACTUALLY REQUIRES.
   2026-08-03  30896 opt-in information        [OPT_IN_MESSAGE]
               30917 multiple opt-in workflow incomplete  [MESSAGE_FLOW]
               ...30909 cleared. The rewritten message_flow DID save, verified
@@ -353,33 +359,63 @@ August (30896 + 30917)
 ================================================================================
 SETTING THE FIELDS OVER THE API
 ================================================================================
-Use this instead of the console for opt_in_keywords, opt_in_message, help_message
-and opt_out_message. Those four have never once survived a console save.
+Use this instead of the console. Every field is written here now, including
+description and message_flow, because the copy quotes strings that live in the
+app and typing them by hand is how they drift.
 
 Run it only AFTER the page changes are live at https://alexandergrant.app/sms.
 Updating the campaign puts it straight back into carrier review, and a reviewer
 opening the old form rejects again on the forced-consent note regardless of what
 these fields say.
 
-The script is committed at scripts/a2p-update.py. It parses the three message
-strings out of src/lib/sms/auto-replies.ts rather than holding its own copies, so
-what the campaign claims the number replies always equals what the number really
-replies. Editing those constants and rerunning is the only supported way to
-change them.
+The script is committed at scripts/a2p-update.py. It holds no consumer-facing
+copy of its own. Everything is parsed out of the source that produces it:
+
+  CONSENT_TEXT          src/lib/validators/sms-opt-in.ts   the checkbox label
+  OPT_IN_MESSAGE        src/lib/sms/auto-replies.ts        the START reply
+  HELP_MESSAGE          src/lib/sms/auto-replies.ts        the HELP reply
+  OPT_OUT_MESSAGE       src/lib/sms/auto-replies.ts        the STOP reply
+  VOICE_CONSENT_SCRIPT  src/lib/voice/agent.ts             what the assistant says
+  PORTFOLIO             src/lib/voice/portfolio.ts         sample message #1
+
+Sample #1 is rebuilt from PORTFOLIO, and both sample templates are asserted
+before anything is sent, so an edit to portfolioSms() or callAlertSms() stops the
+script rather than registering copy the number no longer sends.
 
   python3 scripts/a2p-update.py --check     read the stored values, change nothing
-  python3 scripts/a2p-update.py             write the four fields
+  python3 scripts/a2p-update.py --diff      render the copy locally, send nothing
+  python3 scripts/a2p-update.py             write every field
 
---check needs no arguments and touches nothing, so run it first and last. It
-reads TWILIO_ACCOUNT_SID and TWILIO_AUTH_TOKEN from the environment, falling back
-to .env.local. The write path prints every value and waits for you to type "yes"
-before sending, then reads the campaign back and marks anything still empty.
+--check and --diff touch nothing. Run --diff to read the copy, --check first and
+last. The write path prints every value, waits for you to type "yes", then reads
+the campaign back and marks anything still empty.
 
-Verified working against the live campaign on 2026-08-03, read-only path.
 
-message_flow and description are long free text and have always saved from the
-console, so they are not in this script. Paste those two in the console as usual,
-confirm they read back correctly, then run this for the four that do not stick.
+WHAT THE UPDATE ENDPOINT ACTUALLY REQUIRES, learned the hard way 2026-08-07
+--------------------------------------------------------------------------
+POST /v1/Services/{MG}/Compliance/Usa2p/{QE} is not a patch. It rejects a partial
+body, and it does not carry stored values forward. Every one of these must be
+sent on every update or the call fails:
+
+  HasEmbeddedLinks  HasEmbeddedPhone  AgeGated  DirectLending
+  Description  MessageFlow  MessageSamples
+
+Omitting the four flags returns 20001 naming them. Omitting Description or
+MessageFlow returns 20001 naming those. Omitting MessageSamples returns
+400 "Unable to process JSON", which names nothing and reads like a payload
+encoding fault. It is not. It means a required field is missing.
+
+CRITICAL, and this is what cost the 2026-08-07 cycle: the campaign can only be
+updated in FAILURE state. The moment a POST succeeds the status moves to
+IN_PROGRESS / PENDING_DCA1_REVIEW and every further update returns
+
+  "Campaign update is allowed only for FAILURE state(s)."
+
+until the review comes back. So there is exactly ONE write per review cycle. Do
+not POST to this endpoint to test connectivity, to isolate an error, or to see
+what a parameter does. Any successful probe locks in whatever was in that probe's
+body as the submission. Use --diff, which sends nothing, for everything except
+the one real write.
 
 If the POST comes back 4xx saying the campaign cannot be updated in its current
 state, stop. Do NOT delete the campaign and create a new one: the vetting fee is
@@ -429,19 +465,31 @@ cannot be one, so changing those would break invoice and subscription email for
 live clients. Outbound mail comes from the domain, replies and support go to the
 gmail address. Nothing a carrier reviewer sees is affected either way.
 
-Still unverified, and now the weakest point left: the phone path. If path (3)
-stays declared, the assistant has to actually say the frequency and "message and
-data rates may apply" before it sends. Its prompt is not in this repo, so nobody
-has confirmed it does. Two attempts have now been lost to describing something a
-reviewer could not verify. Either confirm the wording, or cut path (3) from
-message_flow, the matching sentence from the campaign description, and the
-matching tick on the application profile, all three together.
+The phone path is fixed as of 2026-08-07. The assistant said nothing about
+frequency, rates or STOP before taking a number, so path (3) described consent
+that was not being obtained. The wording now lives in VOICE_CONSENT_SCRIPT in
+src/lib/voice/agent.ts, is spoken in full before any number is collected, and is
+quoted into message_flow from that constant. Editing it means npm run voice:sync
+AND resubmitting the campaign. Verified live in the ElevenLabs agent prompt.
 
-Text START now has a handler, but it is inert until the webhook is configured on
-the number and TWILIO_SMS_WEBHOOK_URL is set. Do both, then text START from a
-phone and confirm two messages come back. Until the campaign is approved that
-test only works from an Australian number, since US-bound sends still fail with
-30034, which is the whole reason this campaign exists.
+Text START is live as of 2026-08-07:
+  sms_url on +17712533190 was pointing at https://api.elevenlabs.io/twilio/
+  inbound-sms, so the handler in this repo never ran. It now points at
+  https://alexandergrant.app/api/webhooks/twilio/sms. voice_url is untouched and
+  still ElevenLabs. If ElevenLabs ever re-imports the number it may overwrite
+  sms_url again, so check it before any resubmission.
+  The messaging service has use_inbound_webhook_on_number: true, so the number's
+  own sms_url is what routes inbound. Setting inbound_request_url on the service
+  would do nothing while that flag is true.
+  TWILIO_SMS_WEBHOOK_URL is set in Vercel production. Verified end to end with a
+  correctly signed POST carrying a body that classifies as 'unknown', which
+  returns 200 and sends nothing. An unsigned POST returns 403. Use that pair to
+  re-test after any deploy without texting anyone.
+
+Still worth doing once from a phone: text START and confirm two messages come
+back. Until the campaign is approved that only works from an Australian number,
+since US-bound sends still fail with 30034, which is the whole reason this
+campaign exists.
 
 
 ================================================================================
