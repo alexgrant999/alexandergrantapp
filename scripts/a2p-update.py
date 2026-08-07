@@ -1,20 +1,29 @@
 #!/usr/bin/env python3
 """
-Sets the four A2P campaign fields that the Twilio console will not keep.
+Writes the whole A2P campaign over the API, because the console loses fields.
 
-opt_in_keywords, opt_in_message, help_message and opt_out_message have saved as
-null or stale on all three submissions to date. message_flow and description are
-long free text and have always persisted from the console, so they are not
-touched here.
+opt_in_keywords, opt_in_message, help_message and opt_out_message saved as null
+or stale on all three submissions to date. description and message_flow did
+persist from the console, but they are set here too: the copy quotes three
+strings that live in the app, and typing them by hand is how they drift.
 
-The message strings are parsed out of src/lib/sms/auto-replies.ts rather than
-copied, because what the campaign claims the number replies has to equal what the
-number actually replies. One source of truth, no drift.
+Nothing in this file holds its own copy of any consumer-facing wording. It is
+all parsed out of the source that produces it:
+
+    CONSENT_TEXT          src/lib/validators/sms-opt-in.ts   the checkbox label
+    OPT_IN_MESSAGE        src/lib/sms/auto-replies.ts        the START reply
+    HELP_MESSAGE          src/lib/sms/auto-replies.ts        the HELP reply
+    OPT_OUT_MESSAGE       src/lib/sms/auto-replies.ts        the STOP reply
+    VOICE_CONSENT_SCRIPT  src/lib/voice/agent.ts             what the assistant says
+
+So what the campaign claims happens is what actually happens. Change one of those
+constants and rerun this, that is the only supported way to change the copy.
 
 Usage, from the repo root:
 
     python3 scripts/a2p-update.py --check     read the stored values, change nothing
-    python3 scripts/a2p-update.py             write the four fields
+    python3 scripts/a2p-update.py --diff      render the copy locally, send nothing
+    python3 scripts/a2p-update.py             write every field
 
 Writing puts the campaign back into carrier review. Deploy the site first.
 See docs/twilio-a2p-campaign.txt.
@@ -34,10 +43,44 @@ CAMPAIGN_SID = "QE2c6890da8086d771620e9b13fadeba0b"
 
 REPO_ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 AUTO_REPLIES = os.path.join(REPO_ROOT, "src", "lib", "sms", "auto-replies.ts")
+CONSENT_SRC = os.path.join(REPO_ROOT, "src", "lib", "validators", "sms-opt-in.ts")
+VOICE_SRC = os.path.join(REPO_ROOT, "src", "lib", "voice", "agent.ts")
 ENV_FILE = os.path.join(REPO_ROOT, ".env.local")
 
 WATCHED = ["opt_in_keywords", "opt_in_message", "help_keywords",
-           "help_message", "opt_out_keywords", "opt_out_message"]
+           "help_message", "opt_out_keywords", "opt_out_message",
+           "description", "message_flow"]
+
+# Confirmed against the API 2026-08-03. Exceeding one of these is a 400, and the
+# console silently truncates instead, which is worse.
+LIMITS = {"Description": 4096, "MessageFlow": 2049, "OptInMessage": 320,
+          "HelpMessage": 320, "OptOutMessage": 320}
+
+# Three opt-in methods are ticked on the application profile, so three are
+# described, each to the same depth. Describing the keyword path in one sentence
+# beside two paragraphs is what drew 30917 on the third attempt.
+DESCRIPTION = (
+    "Alexander Grant is a software development consultancy. Prospective clients request examples "
+    "of our previous work and we text them links to three portfolio websites. They request this in "
+    "one of three ways: submitting the opt-in form at https://alexandergrant.app/sms, texting START "
+    "to our published business number, or calling that number, where an automated assistant states "
+    "the message terms and proceeds only if the caller agrees. Only people who supply their own "
+    "number and actively agree are messaged, once per request. The same links are also printed on "
+    "the opt-in page itself and can be emailed instead, so nobody has to accept text messages to "
+    "get them. We separately send internal operational alerts to the business owner's own mobile "
+    "number, which the owner configured himself."
+)
+
+# {consent}, {opt_in} and {voice} are filled from the app, never typed here.
+MESSAGE_FLOW = """Consumers opt in in one of three ways. All three are described in full.
+
+(1) Web form. At https://alexandergrant.app/sms, a public page with no login, the consumer enters their own mobile number and ticks a consent checkbox, unchecked by default, covering text messaging only. It reads: "{consent}" No message is sent unless it is ticked. Consent is optional: the same links are printed on that page and can be emailed instead, so nobody has to agree to messaging to get them.
+
+(2) Text keyword. The consumer texts START to +1 771 253 3190. The keyword and number are published on that page. They immediately receive: "{opt_in}" The portfolio message follows. Texting the keyword is itself the consent.
+
+(3) By phone. The consumer calls +1 771 253 3190. Before any number is taken the automated assistant says: "{voice}" It proceeds only if the caller agrees after hearing that, then reads the number back to confirm. Calls open with a recorded-call disclosure and the recording is the consent record.
+
+Terms: https://alexandergrant.app/terms. Privacy: https://alexandergrant.app/privacy, which states mobile numbers are never sold, rented or shared with third parties for marketing. We store the consent wording, timestamp and origin of every opt-in. No numbers are purchased, rented or scraped."""
 
 
 def ts_const(source: str, name: str) -> str:
@@ -117,21 +160,33 @@ def show(campaign: dict) -> None:
     print(f"campaign_status: {campaign.get('campaign_status')}")
     for key in WATCHED:
         value = campaign.get(key)
+        shown = repr(value) if not value or len(repr(value)) <= 110 else repr(value)[:107] + "..."
         flag = "  <-- EMPTY" if not value else ""
-        print(f"  {key}: {value!r}{flag}")
+        print(f"  {key}: {shown}{flag}")
+
+    flow = campaign.get("message_flow") or ""
+    if "alexandergrant.app/sms" not in flow:
+        print("\n  <-- message_flow does not mention the opt-in page. That is a rejection.")
+
+    for error in campaign.get("errors") or []:
+        print(f"\n  error {error['error_code']} on {','.join(error['fields'])}: {error['description']}")
 
 
-def main() -> None:
-    sid, token = credentials()
-
-    if "--check" in sys.argv:
-        show(request(sid, token, None)["compliance"][0])
-        return
-
+def build() -> list[tuple[str, str]]:
+    """Assemble every field from the app's own constants."""
     source = open(AUTO_REPLIES).read()
+    opt_in = ts_const(source, "OPT_IN_MESSAGE")
+
+    message_flow = MESSAGE_FLOW.format(
+        consent=ts_const(open(CONSENT_SRC).read(), "CONSENT_TEXT"),
+        opt_in=opt_in,
+        voice=ts_const(open(VOICE_SRC).read(), "VOICE_CONSENT_SCRIPT"),
+    )
 
     fields = [
-        ("OptInMessage", ts_const(source, "OPT_IN_MESSAGE")),
+        ("Description", DESCRIPTION),
+        ("MessageFlow", message_flow),
+        ("OptInMessage", opt_in),
         ("HelpMessage", ts_const(source, "HELP_MESSAGE")),
         ("OptOutMessage", ts_const(source, "OPT_OUT_MESSAGE")),
     ]
@@ -142,10 +197,34 @@ def main() -> None:
     for keyword in ts_list(source, "OPT_OUT_KEYWORDS"):
         fields.append(("OptOutKeywords", keyword))
 
-    print("About to write these to campaign " + CAMPAIGN_SID + ":\n")
+    over = [f"{name} is {len(value)} characters, limit {LIMITS[name]}"
+            for name, value in fields
+            if name in LIMITS and len(value) > LIMITS[name]]
+    if over:
+        sys.exit("Too long to send:\n  " + "\n  ".join(over))
+
+    return fields
+
+
+def main() -> None:
+    if "--check" in sys.argv:
+        sid, token = credentials()
+        show(request(sid, token, None)["compliance"][0])
+        return
+
+    fields = build()
+
+    print("Campaign " + CAMPAIGN_SID + "\n")
     for name, value in fields:
-        print(f"  {name} = {value!r}")
-    print("\nThis resubmits the campaign for carrier review.")
+        room = f"  [{len(value)}/{LIMITS[name]}]" if name in LIMITS else ""
+        print(f"  {name}{room}\n    {value}\n")
+
+    if "--diff" in sys.argv:
+        print("Rendered only. Nothing sent.")
+        return
+
+    sid, token = credentials()
+    print("This resubmits the campaign for carrier review.")
     if input("Type 'yes' to continue: ").strip() != "yes":
         sys.exit("Nothing sent.")
 

@@ -49,6 +49,20 @@ const REASONING_EFFORT = 'low'
 const FIRST_MESSAGE =
   "Hi, you've reached Alexander Grant. I'm Alex's AI assistant, and this call's recorded so I can pass your details on. What are you working on?"
 
+/**
+ * The spoken consent wording for the phone opt-in path, exported so the A2P
+ * campaign can quote it rather than keep its own copy. scripts/a2p-update.py
+ * reads this constant and drops it verbatim into message_flow, the same rule
+ * the auto-replies already follow: what we tell carriers the assistant says has
+ * to be what it actually says.
+ *
+ * Carriers want four things in a verbal opt-in: what the messages are, how
+ * often, that rates may apply, and how to stop. All four are here. Editing this
+ * means resubmitting the campaign.
+ */
+export const VOICE_CONSENT_SCRIPT =
+  "I can text you links to a few things Alex has built. Message frequency varies, usually one message per request, and message and data rates may apply. You can reply STOP at any time to unsubscribe, or HELP for help. Would you like me to send it?"
+
 const SYSTEM_PROMPT = `You are the inbound assistant for Alexander Grant, an independent full-stack developer.
 
 # About Alex
@@ -77,7 +91,7 @@ Say this in full, as one turn, before you ask for any number. It is the register
 consent wording for our SMS program and it is the one place the one-or-two-sentence
 rule does not apply. Do not paraphrase it, shorten it or split it across turns:
 
-"I can text you links to a few things Alex has built. Message frequency varies, usually one message per request, and message and data rates may apply. You can reply STOP at any time to unsubscribe, or HELP for help. Would you like me to send it?"
+"${VOICE_CONSENT_SCRIPT}"
 
 Only continue if they clearly agree after hearing all of that. If they say no, or if they
 are unsure, do not ask again and do not take a number. Move on and tell them the same
