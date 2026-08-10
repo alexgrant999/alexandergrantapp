@@ -24,6 +24,23 @@ REJECTION HISTORY
               ...against the API, and the reviewer did open /sms. The page worked.
               ...opt_in_message and opt_in_keywords were STILL null. Third time.
               ...See REVIEWER NOTES and STOP USING THE CONSOLE below.
+  2026-08-10  30923 consent required for service  [MESSAGE_FLOW]
+              ...the review of the accidental 2026-08-07 submission, which carried
+              ...the old July message_flow. That copy never said consent was
+              ...optional, and opt_in_message was null, so the forced-consent
+              ...finding repeated even though the fixed page was already live.
+              ...Same day: campaign returned to FAILED, the corrected payload was
+              ...written via scripts/a2p-update.py, and the campaign went back
+              ...into review (IN_PROGRESS). Pre-flight checks all passed: /sms
+              ...live with the fixed form, sms_url still pointing at the app.
+              ...Post-write readback and a fresh GET both show the new
+              ...message_flow and description SAVED, but opt_in_message,
+              ...opt_in_keywords, help_message and opt_out_message did NOT
+              ...persist. Fourth time, and this attempt went over the API, so it
+              ...is NOT a console bug: the update endpoint accepts these fields
+              ...and silently drops them. Open the support ticket described under
+              ...SETTING THE FIELDS OVER THE API. Do not wait for the review to
+              ...come back first; the ticket does not touch the campaign state.
 
 
 ================================================================================
@@ -43,6 +60,13 @@ So the long free-text fields save and the opt-in and auto-reply fields do not.
 Three attempts, same four fields empty or stale every time. Stop retyping them
 into the console and expecting a different result. Set them over the API instead,
 using the call under SETTING THE FIELDS OVER THE API at the bottom of this file.
+
+UPDATE 2026-08-10: the API write was tried and the same four fields still did
+not persist, verified with a fresh GET after the POST. So this is not a console
+bug, the update endpoint itself accepts OptInMessage, OptInKeywords, HelpMessage
+and OptOutMessage and silently drops them. The message_flow now quotes the
+opt-in message verbatim in path (2), which is the only corroboration a reviewer
+gets until Twilio support fixes the field persistence. Open the ticket.
 
 That mismatch is the whole rejection. message_flow declares a text opt-in path
 while opt_in_keywords and opt_in_message sit empty, so the campaign contradicts
@@ -421,7 +445,8 @@ If the POST comes back 4xx saying the campaign cannot be updated in its current
 state, stop. Do NOT delete the campaign and create a new one: the vetting fee is
 charged once per campaign and a fresh campaign is a fresh fee. Open a Twilio
 support ticket quoting campaign QE2c6890da8086d771620e9b13fadeba0b and the fact
-that opt_in_message and opt_in_keywords have failed to persist three times.
+that opt_in_message and opt_in_keywords have failed to persist four times, the
+fourth over the API itself on 2026-08-10, ruling out the console form.
 
 
 ================================================================================
