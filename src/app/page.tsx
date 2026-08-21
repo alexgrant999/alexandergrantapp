@@ -277,6 +277,95 @@ export default function HomePage() {
         @keyframes pulse { 0%,100% { opacity: 1; } 50% { opacity: .25; } }
         .pip-live { animation: pulse 2.5s infinite; }
 
+        /* Spotlight */
+        .spotlight {
+          background: var(--card-bg);
+          border: 1px solid var(--border);
+          border-radius: 12px;
+          padding: 40px;
+          display: flex;
+          flex-direction: column;
+          gap: 32px;
+        }
+        .spotlight-top {
+          display: flex;
+          align-items: flex-start;
+          justify-content: space-between;
+          gap: 20px;
+          flex-wrap: wrap;
+        }
+        .spotlight-brand {
+          font-family: 'DM Mono', monospace;
+          font-size: .8rem;
+          letter-spacing: .3em;
+          font-weight: 700;
+          color: var(--text);
+        }
+        .spotlight-headline {
+          font-family: 'Bricolage Grotesque', system-ui, sans-serif;
+          font-size: clamp(1.4rem, 3.2vw, 2.1rem);
+          font-weight: 700;
+          letter-spacing: -.03em;
+          line-height: 1.25;
+          max-width: 720px;
+        }
+        .spotlight-headline span { color: var(--accent); }
+        .stat-grid {
+          display: grid;
+          grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
+          gap: 14px;
+        }
+        .stat {
+          border: 1px solid var(--border);
+          border-radius: 8px;
+          padding: 18px 20px;
+          background: var(--surface);
+        }
+        .stat-value {
+          font-family: 'Bricolage Grotesque', system-ui, sans-serif;
+          font-size: 1.9rem;
+          font-weight: 800;
+          letter-spacing: -.03em;
+          color: var(--accent);
+          line-height: 1.1;
+        }
+        .stat-label {
+          font-family: 'DM Mono', monospace;
+          font-size: .6rem;
+          letter-spacing: .1em;
+          text-transform: uppercase;
+          color: var(--muted);
+          margin-top: 8px;
+          line-height: 1.5;
+        }
+        .spotlight-desc {
+          font-size: .92rem;
+          color: var(--muted);
+          line-height: 1.75;
+          max-width: 760px;
+        }
+        .spotlight-quote {
+          border-left: 2px solid var(--accent);
+          padding-left: 20px;
+          font-size: .95rem;
+          color: var(--text);
+          font-style: italic;
+          line-height: 1.7;
+        }
+        .spotlight-quote cite {
+          display: block;
+          margin-top: 8px;
+          font-style: normal;
+          font-family: 'DM Mono', monospace;
+          font-size: .62rem;
+          letter-spacing: .12em;
+          text-transform: uppercase;
+          color: var(--muted);
+        }
+        @media (max-width: 768px) {
+          .spotlight { padding: 28px 22px; }
+        }
+
         /* Contact */
         .contact-wrap { max-width: 520px; }
 
@@ -352,6 +441,53 @@ export default function HomePage() {
 
       <hr className="divider" />
 
+      {/* Client Spotlight */}
+      <section className="section">
+        <div className="section-header">
+          <h2 className="section-title">Client Spotlight</h2>
+          <span className="section-meta">Ecommerce growth</span>
+        </div>
+        <div className="spotlight">
+          <div className="spotlight-top">
+            <div>
+              <div className="spotlight-brand">⛰️ ADVENTURELINE</div>
+              <div className="card-type" style={{ marginTop: 6 }}>Australian outdoor apparel, Shopify</div>
+            </div>
+            <span className="status status-live"><span className="pip pip-live"></span>Active engagement</span>
+          </div>
+          <h3 className="spotlight-headline">
+            Two record months in a row. <span>+34% sales</span> and <span>+47% orders</span> year on year across June and July.
+          </h3>
+          <div className="stat-grid">
+            <div className="stat">
+              <div className="stat-value">+69%</div>
+              <div className="stat-label">July sales vs last year, biggest July ever</div>
+            </div>
+            <div className="stat">
+              <div className="stat-value">+84%</div>
+              <div className="stat-label">July orders vs last year</div>
+            </div>
+            <div className="stat">
+              <div className="stat-value">-29%</div>
+              <div className="stat-label">Ad spend in July, while return per dollar improved</div>
+            </div>
+            <div className="stat">
+              <div className="stat-value">2x</div>
+              <div className="stat-label">Organic search position roughly halved year on year</div>
+            </div>
+          </div>
+          <p className="spotlight-desc">
+            I run growth for Adventureline as an ongoing partner: Google and Meta advertising, SEO, email automation (welcome series, review requests, abandoned cart), and a live reporting dashboard the owners check themselves. June was the highest turnover month in the brand&apos;s history, July followed as the biggest July ever. The two months together did $14,598 against $10,896 for the same period last year. When the owners asked to cut costs, I dialled spend back 29% and efficiency went up, not down.
+          </p>
+          <blockquote className="spotlight-quote">
+            &ldquo;Numbers are moving in the right direction which is great&hellip; Thanks again for the help in steering us in the right direction!&rdquo;
+            <cite>Matt Browne, Owner, Adventureline Clothing Company</cite>
+          </blockquote>
+        </div>
+      </section>
+
+      <hr className="divider" />
+
       {/* Projects */}
       <section className="section">
         <div className="section-header">
@@ -375,7 +511,7 @@ export default function HomePage() {
                   <div className="card-type">Ecommerce Growth Marketing</div>
                 </div>
               </div>
-              <p className="card-desc">Growth and performance marketing for an Australian outdoor apparel brand on Shopify. Paid advertising (Google &amp; Meta), SEO, email automation, and analytics, all focused on new-customer acquisition and live performance reporting.</p>
+              <p className="card-desc">Growth and performance marketing for an Australian outdoor apparel brand on Shopify. Paid advertising (Google &amp; Meta), SEO, email automation, and analytics. Delivered two record months back to back: +34% sales and +47% orders year on year.</p>
               <div className="tags">
                 <span className="tag">Shopify</span><span className="tag">Google Ads</span><span className="tag">Meta Ads</span><span className="tag">GA4</span><span className="tag">Mailchimp</span>
               </div>
