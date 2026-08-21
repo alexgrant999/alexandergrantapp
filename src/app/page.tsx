@@ -278,6 +278,7 @@ export default function HomePage() {
         .pip-live { animation: pulse 2.5s infinite; }
 
         /* Spotlight */
+        .spotlight-stack { display: flex; flex-direction: column; gap: 20px; }
         .spotlight {
           background: var(--card-bg);
           border: 1px solid var(--border);
@@ -444,9 +445,10 @@ export default function HomePage() {
       {/* Client Spotlight */}
       <section className="section">
         <div className="section-header">
-          <h2 className="section-title">Client Spotlight</h2>
-          <span className="section-meta">Ecommerce growth</span>
+          <h2 className="section-title">Client Spotlights</h2>
+          <span className="section-meta">Real results, real stores</span>
         </div>
+        <div className="spotlight-stack">
         <div className="spotlight">
           <div className="spotlight-top">
             <div>
@@ -483,6 +485,45 @@ export default function HomePage() {
             &ldquo;Numbers are moving in the right direction which is great&hellip; Thanks again for the help in steering us in the right direction!&rdquo;
             <cite>Matt Browne, Owner, Adventureline Clothing Company</cite>
           </blockquote>
+        </div>
+
+        <div className="spotlight">
+          <div className="spotlight-top">
+            <div>
+              <div className="spotlight-brand">🎨 PLAYDAY</div>
+              <div className="card-type" style={{ marginTop: 6 }}>NYC children&apos;s art studios, custom booking platform</div>
+            </div>
+            <span className="status status-live"><span className="pip pip-live"></span>Tribeca live</span>
+          </div>
+          <h3 className="spotlight-headline">
+            A new studio opened on a platform built from scratch. <span>35 families</span> and <span>50 kids</span> booked through it in the opening weekend.
+          </h3>
+          <div className="stat-grid">
+            <div className="stat">
+              <div className="stat-value">35</div>
+              <div className="stat-label">Families booked in the Tribeca opening weekend</div>
+            </div>
+            <div className="stat">
+              <div className="stat-value">50</div>
+              <div className="stat-label">Kids through the platform in one weekend</div>
+            </div>
+            <div className="stat">
+              <div className="stat-value">5.0</div>
+              <div className="stat-label">Star feedback from the first families, collected in-platform</div>
+            </div>
+            <div className="stat">
+              <div className="stat-value">49</div>
+              <div className="stat-label">Free-class conversion offers rescued by a same-day fix</div>
+            </div>
+          </div>
+          <p className="spotlight-desc">
+            I built Playday&apos;s multi-location booking platform end to end, replacing their Wix setup: class bookings, family accounts, payments, a parent-to-staff messaging inbox, a website assistant that captures leads, and review automation. Their new Tribeca studio launched as the first location on it, the test case for rolling out across the group. When opening-weekend data showed the free open studio was silently consuming each child&apos;s First Activity Free offer, I caught it in the numbers and fixed it the same day, keeping the conversion path open for 49 of the 50 kids. I also run their Google and Meta advertising and their Klaviyo email and SMS.
+          </p>
+          <blockquote className="spotlight-quote">
+            &ldquo;Thanks so much for the incredible work you are putting into this.&rdquo;
+            <cite>Megan Smith, Director of Family Relations, Playday</cite>
+          </blockquote>
+        </div>
         </div>
       </section>
 
@@ -702,13 +743,13 @@ export default function HomePage() {
                   <div className="card-type">Children&apos;s Activity Booking</div>
                 </div>
               </div>
-              <p className="card-desc">Multi-location booking platform for children&apos;s activities. Features parent and admin portals, Stripe memberships, class scheduling, and capacity management.</p>
+              <p className="card-desc">Multi-location booking platform for children&apos;s activities. Parent and admin portals, memberships, class scheduling, capacity management, and family messaging. Live at the new Tribeca studio: 35 families booked in the opening weekend.</p>
               <div className="tags">
                 <span className="tag">Next.js 15</span><span className="tag">Supabase</span><span className="tag">Stripe</span><span className="tag">Tailwind</span>
               </div>
               <div className="card-footer">
-                <span className="status status-dev"><span className="pip"></span>In Dev</span>
-                <span className="btn btn-disabled">Coming Soon</span>
+                <span className="status status-live"><span className="pip pip-live"></span>Live</span>
+                <a href="https://tribeca.playday.com" target="_blank" rel="noopener" className="btn btn-primary">Visit Site ↗</a>
               </div>
             </div>
           </div>
