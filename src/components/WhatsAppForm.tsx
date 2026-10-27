@@ -1,5 +1,6 @@
 'use client'
 import { useState } from 'react'
+import { sendGAEvent } from '@next/third-parties/google'
 
 export function WhatsAppForm() {
   const [name, setName] = useState('')
@@ -8,6 +9,7 @@ export function WhatsAppForm() {
   function sendWhatsApp() {
     if (!msg) return
     const text = name ? `Hi, I'm ${name}. ${msg}` : msg
+    sendGAEvent('event', 'generate_lead', { method: 'whatsapp' })
     window.open('https://wa.me/12122038499?text=' + encodeURIComponent(text), '_blank')
   }
 
