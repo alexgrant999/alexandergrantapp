@@ -1,0 +1,33 @@
+{
+  "slug": "adventureline",
+  "name": "Adventureline",
+  "url": "adventureline.com.au",
+  "frame": "browser",
+  "shots": [
+    {
+      "file": "01.mp4",
+      "seconds": 6.4,
+      "label": "Store home"
+    },
+    {
+      "file": "02.mp4",
+      "seconds": 5.6,
+      "label": "Browse a collection"
+    },
+    {
+      "file": "03.mp4",
+      "seconds": 8.9,
+      "label": "Product and sizes"
+    },
+    {
+      "file": "04.mp4",
+      "seconds": 6.1,
+      "label": "Product photos"
+    },
+    {
+      "file": "05.mp4",
+      "seconds": 5.7,
+      "label": "Shop by category"
+    }
+  ]
+}

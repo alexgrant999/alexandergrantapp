@@ -1,0 +1,28 @@
+{
+  "slug": "acuapp",
+  "name": "AcuApp",
+  "url": "acuapp.io",
+  "frame": "browser",
+  "shots": [
+    {
+      "file": "01.mp4",
+      "seconds": 7.17,
+      "label": "Free TCM exam prep"
+    },
+    {
+      "file": "02.mp4",
+      "seconds": 8.97,
+      "label": "Pattern library"
+    },
+    {
+      "file": "03.mp4",
+      "seconds": 5.57,
+      "label": "Flip flashcards"
+    },
+    {
+      "file": "04.mp4",
+      "seconds": 5.7,
+      "label": "Practice quiz"
+    }
+  ]
+}

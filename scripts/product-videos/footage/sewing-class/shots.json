@@ -1,0 +1,28 @@
+{
+  "slug": "sewing-class",
+  "name": "TRNZK Sewing Classes",
+  "url": "sewing-class.vercel.app",
+  "frame": "browser",
+  "shots": [
+    {
+      "file": "01.mp4",
+      "seconds": 6.5,
+      "label": "Term and classes"
+    },
+    {
+      "file": "02.mp4",
+      "seconds": 5,
+      "label": "Spots left"
+    },
+    {
+      "file": "03.mp4",
+      "seconds": 7.1,
+      "label": "Start a booking"
+    },
+    {
+      "file": "04.mp4",
+      "seconds": 6.4,
+      "label": "Choose and pay"
+    }
+  ]
+}

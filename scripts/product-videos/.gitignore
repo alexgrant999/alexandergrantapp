@@ -1,0 +1,5 @@
+node_modules/
+raw/
+out/
+footage/**/*.mp4
+footage/**/*.png

@@ -11,7 +11,8 @@ export const metadata: Metadata = {
 }
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
-  const gaId = process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID
+  // Local runs and preview deployments would otherwise send page views to the live property.
+  const gaId = process.env.VERCEL_ENV === 'production' ? process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID : undefined
   return (
     <html lang="en">
       <head>
