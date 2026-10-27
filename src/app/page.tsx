@@ -1,4 +1,4 @@
-import Image from 'next/image'
+import Image, { getImageProps } from 'next/image'
 import { WhatsAppForm } from '@/components/WhatsAppForm'
 import { ProductVideo } from '@/components/ProductVideo'
 import photos from '../../public/images/home/images.json'
@@ -21,8 +21,24 @@ const work = [
   ['iEmerge', 'A wellness app on the iOS App Store', 'https://apps.apple.com/pl/app/iemerge-app/id6503445578', 'iemerge'],
 ]
 
+// Art direction: a wide crop for desktop and a tall crop of the same photo for phones.
+function heroImage() {
+  const wide = photo('hero')
+  const tall = photo('hero-mobile')
+  if (!wide || !tall) return null
+  const common = { alt: wide.alt, loading: 'eager', fetchPriority: 'high' } as const
+  const { props: { srcSet: wideSet } } = getImageProps({ ...common, src: wide.src, width: wide.width, height: wide.height, sizes: '100vw' })
+  // On phones the photo fills 78svh, so the tall crop renders a little wider than the viewport.
+  const { props } = getImageProps({ ...common, src: tall.src, width: tall.width, height: tall.height, sizes: '115vw' })
+  return (
+    <picture>
+      <source media="(min-width: 801px)" srcSet={wideSet} sizes="100vw" />
+      <img {...props} className="hero-img" />
+    </picture>
+  )
+}
+
 export default function HomePage() {
-  const hero = photo('hero')
   const band = photo('band')
   return (
     <main>
@@ -34,26 +50,29 @@ export default function HomePage() {
         ::selection { background:var(--red); color:white; }
         a { color:inherit; }
         .page { width:min(1440px,100%); margin:auto; padding:0 clamp(18px,3.2vw,52px); }
-        .nav { height:88px; display:grid; grid-template-columns:1fr auto 1fr; align-items:center; border-bottom:1px solid var(--ink); }
+        .nav { height:88px; display:grid; grid-template-columns:1fr auto 1fr; align-items:center; border-bottom:1px solid #f3f0e866; color:var(--paper); }
         .wordmark { font:800 1.05rem/1 'Instrument Serif',serif; letter-spacing:.01em; }
         .nav-mid { font-size:.72rem; text-transform:uppercase; letter-spacing:.16em; }
         .nav a { justify-self:end; text-decoration:none; border-bottom:1px solid; font-size:.86rem; padding-bottom:2px; }
-        .hero { min-height:690px; display:grid; grid-template-columns:minmax(0,1.45fr) minmax(290px,.55fr); border-bottom:1px solid var(--ink); }
-        .hero-main { padding:clamp(70px,10vw,150px) clamp(24px,5vw,78px) 70px 0; border-right:1px solid var(--ink); position:relative; }
-        .hero-tag { margin:0 0 24px; text-transform:uppercase; letter-spacing:.14em; font-size:.72rem; font-weight:700; color:var(--red); }
-        h1 { margin:0; max-width:980px; font:400 clamp(4.2rem,9.2vw,9rem)/.82 'Instrument Serif',serif; letter-spacing:-.055em; }
+        .hero { position:relative; background:var(--ink); }
+        .hero-img { position:absolute; inset:0; width:100%; height:100%; object-fit:cover; object-position:58% 50%; filter:sepia(.08) saturate(.94); }
+        .hero-shade { position:absolute; inset:0; background:linear-gradient(#191916b3, #19191600 30%), linear-gradient(to top, #19191659, #19191600 35%); }
+        .hero-inner { position:relative; min-height:100svh; display:flex; flex-direction:column; padding-bottom:clamp(18px,3.2vw,52px); }
+        .hero-box { margin-top:auto; width:min(580px,100%); padding:clamp(26px,3vw,44px); background:var(--paper); }
+        .hero-tag { margin:0 0 20px; text-transform:uppercase; letter-spacing:.14em; font-size:.72rem; font-weight:700; color:var(--red); }
+        h1 { margin:0; font:400 clamp(3.4rem,6vw,6rem)/.86 'Instrument Serif',serif; letter-spacing:-.05em; }
         h1 i { color:var(--red); font-weight:400; }
-        .hero-bottom { margin-top:clamp(55px,8vw,110px); display:grid; grid-template-columns:1fr 1fr; gap:35px; align-items:end; }
-        .hero-copy { max-width:520px; font-size:clamp(1.05rem,1.5vw,1.32rem); line-height:1.48; margin:0; }
-        .arrow-link { justify-self:end; display:flex; width:154px; height:154px; border-radius:50%; background:var(--red); color:white; align-items:center; justify-content:center; text-align:center; text-decoration:none; font-size:.78rem; text-transform:uppercase; letter-spacing:.11em; transition:transform .3s ease, border-radius .3s ease; }
+        .hero-bottom { margin-top:clamp(24px,3vw,38px); display:grid; grid-template-columns:1fr auto; gap:24px; align-items:center; }
+        .hero-copy { font-size:clamp(1rem,1.25vw,1.14rem); line-height:1.5; margin:0; }
+        .arrow-link { justify-self:end; display:flex; width:118px; height:118px; border-radius:50%; background:var(--red); color:white; align-items:center; justify-content:center; text-align:center; text-decoration:none; font-size:.68rem; text-transform:uppercase; letter-spacing:.11em; transition:transform .3s ease, border-radius .3s ease; }
         .arrow-link:hover { transform:rotate(-7deg) scale(1.04); border-radius:42% 58% 47% 53%; }
-        .hero-notes { display:flex; flex-direction:column; justify-content:space-between; padding:28px 0 32px clamp(24px,3vw,42px); }
         .photo { display:block; width:100%; height:auto; background:var(--faint); filter:sepia(.08) saturate(.94); }
-        .hero-photo { margin:28px 0; }
-        .margin-note { font-family:'Caveat',cursive; font-size:1.45rem; line-height:1.1; transform:rotate(-3deg); max-width:220px; }
-        .scorecard { border-top:1px solid var(--ink); }
-        .score-row { display:grid; grid-template-columns:1fr auto; padding:14px 0; border-bottom:1px solid var(--faint); font-size:.8rem; }
-        .score-row strong { color:var(--red); font-size:1.05rem; }
+        .margin-note { margin:clamp(22px,2.6vw,32px) 0 0; font-family:'Caveat',cursive; font-size:1.35rem; line-height:1.1; transform:rotate(-2deg); }
+        .scorecard { margin-top:16px; display:grid; grid-template-columns:repeat(3,1fr); border-top:1px solid var(--ink); }
+        .score { padding:16px 12px 0 0; }
+        .score + .score { padding-left:14px; border-left:1px solid var(--faint); }
+        .score strong { display:block; color:var(--red); font:400 clamp(1.55rem,2.1vw,2rem)/1 'Instrument Serif',serif; letter-spacing:-.02em; }
+        .score span { display:block; margin-top:6px; font-size:.74rem; line-height:1.35; color:var(--muted); }
         .section { padding:clamp(80px,10vw,150px) 0; border-bottom:1px solid var(--ink); }
         .section-head { display:grid; grid-template-columns:1fr 2fr; gap:30px; margin-bottom:clamp(55px,8vw,105px); }
         .kicker { text-transform:uppercase; letter-spacing:.17em; font-size:.7rem; font-weight:700; color:var(--red); }
@@ -119,16 +138,16 @@ export default function HomePage() {
         footer { background:var(--ink); color:var(--paper); }
         .footer { width:min(1440px,100%); margin:auto; padding:28px clamp(18px,3.2vw,52px); display:flex; justify-content:space-between; gap:20px; font-size:.72rem; text-transform:uppercase; letter-spacing:.12em; }
         @keyframes rise { from { opacity:0; transform:translateY(25px); } to { opacity:1; transform:none; } }
-        .hero-tag,h1,.hero-bottom { animation:rise .75s both cubic-bezier(.2,.8,.2,1); }
-        h1 { animation-delay:.1s; } .hero-bottom { animation-delay:.2s; }
+        .hero-box { animation:rise .8s .15s both cubic-bezier(.2,.8,.2,1); }
         @media (max-width:800px) {
           .nav { grid-template-columns:1fr auto; } .nav-mid { display:none; }
-          .hero { grid-template-columns:1fr; min-height:0; }
-          .hero-main { border-right:0; padding-right:0; }
-          h1 { font-size:clamp(4rem,20vw,7rem); }
-          .hero-notes { border-top:1px solid var(--ink); padding:25px 0; flex-direction:column; gap:25px; }
-          .hero-photo { margin:0; max-width:460px; }
-          .margin-note { display:none; } .scorecard { flex:1; }
+          .hero { background:var(--paper); }
+          .hero-img, .hero-shade { bottom:auto; height:78svh; }
+          .hero-img { object-position:50% 20%; }
+          .hero-inner { min-height:0; }
+          .hero-box { margin-top:52svh; }
+          h1 { font-size:clamp(3.2rem,15vw,5rem); }
+          .margin-note { display:none; }
           .section-head,.case,.contact-inner { grid-template-columns:1fr; }
           .case-title { border-right:0; padding-right:0; }
           .case h3 { margin-top:35px; }
@@ -144,8 +163,11 @@ export default function HomePage() {
         }
         @media (max-width:520px) {
           .hero-bottom { grid-template-columns:1fr; }
-          .arrow-link { justify-self:start; width:120px; height:120px; }
-          .hero-notes { display:block; } .hero-photo { margin-bottom:25px; }
+          .arrow-link { justify-self:start; width:104px; height:104px; }
+          .scorecard { grid-template-columns:1fr; }
+          .score, .score + .score { display:flex; justify-content:space-between; align-items:baseline; gap:16px; padding:12px 0; border-left:0; border-bottom:1px solid var(--faint); }
+          .score strong { order:2; font-size:1.4rem; }
+          .score span { margin:0; font-size:.8rem; }
           .metrics { grid-template-columns:1fr; }
           .metric + .metric { border-left:0; border-top:1px solid var(--ink); padding-left:0; }
           .metric span { max-width:none; }
@@ -153,33 +175,33 @@ export default function HomePage() {
         @media (prefers-reduced-motion:reduce) { * { animation:none!important; scroll-behavior:auto!important; } }
       `}</style>
 
-      <div className="page">
-        <nav className="nav" aria-label="Main navigation">
-          <div className="wordmark">Alexander Grant</div>
-          <div className="nav-mid">Growth + systems for independent business</div>
-          <a href="#contact">Let’s talk ↘</a>
-        </nav>
-
-        <section className="hero">
-          <div className="hero-main">
+      <section className="hero">
+        {heroImage()}
+        <div className="hero-shade" />
+        <div className="page hero-inner">
+          <nav className="nav" aria-label="Main navigation">
+            <div className="wordmark">Alexander Grant</div>
+            <div className="nav-mid">Growth + systems for independent business</div>
+            <a href="#contact">Let’s talk ↘</a>
+          </nav>
+          <div className="hero-box">
             <p className="hero-tag">Independent growth partner</p>
             <h1>More sales.<br /><i>Less theatre.</i></h1>
             <div className="hero-bottom">
               <p className="hero-copy">I help independent shops grow with sharper advertising, useful automation, and software built around the way the business actually works.</p>
               <a className="arrow-link" href="#contact">Start a<br />conversation ↓</a>
             </div>
-          </div>
-          <aside className="hero-notes" aria-label="At a glance">
-            <p className="margin-note">The numbers should move.<br />Everything else is commentary.</p>
-            {hero && <Image className="photo hero-photo" src={hero.src} width={hero.width} height={hero.height} alt={hero.alt} sizes="(max-width: 800px) 100vw, (min-width: 1440px) 330px, 25vw" preload />}
+            <p className="margin-note">The numbers should move. Everything else is commentary.</p>
             <div className="scorecard">
-              <div className="score-row"><span>Adventureline July sales</span><strong>+69%</strong></div>
-              <div className="score-row"><span>Playday opening weekend</span><strong>35 families</strong></div>
-              <div className="score-row"><span>Reporting</span><strong>Monthly</strong></div>
+              <div className="score"><strong>+69%</strong><span>Adventureline July sales</span></div>
+              <div className="score"><strong>35 families</strong><span>Playday opening weekend</span></div>
+              <div className="score"><strong>Monthly</strong><span>Reporting</span></div>
             </div>
-          </aside>
-        </section>
+          </div>
+        </div>
+      </section>
 
+      <div className="page">
         <section className="section" id="results">
           <header className="section-head"><p className="kicker">01 / The evidence</p><h2>Work that shows up in the till.</h2></header>
           <article className="case">
