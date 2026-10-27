@@ -35,7 +35,7 @@ export function WhatsAppForm() {
         className="wa-input"
       />
       <button type="submit" className="wa-button">
-        Send via WhatsApp<span aria-hidden="true"> ↗</span><span className="sr-only"> (opens WhatsApp in a new tab)</span>
+        Send via WhatsApp<span className="sr-only"> (opens WhatsApp in a new tab)</span>
       </button>
     </form>
   )
