@@ -82,7 +82,7 @@ export function ProductVideo({ slug, label, className }: ProductVideoProps) {
         aria-pressed={stopped}
         onClick={() => setStopped(s => !s)}
       >
-        <svg width="12" height="12" viewBox="0 0 12 12" fill="currentColor" aria-hidden="true">
+        <svg width="16" height="16" viewBox="0 0 12 12" fill="currentColor" aria-hidden="true">
           {stopped ? <path d="M3 1.5v9l7.5-4.5z" /> : <path d="M2.5 1.5H5v9H2.5zM7 1.5h2.5v9H7z" />}
         </svg>
       </button>
