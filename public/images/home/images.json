@@ -1,0 +1,72 @@
+[
+  {
+    "slot": "hero",
+    "src": "/images/home/hero.jpg",
+    "width": 1600,
+    "height": 2000,
+    "alt": "A florist in a grey apron wrapping a bouquet at the counter of a small flower shop, under paper lamps and string lights.",
+    "photographer": "Anna Shvets",
+    "photographerUrl": "https://www.pexels.com/@shvetsa",
+    "pexelsUrl": "https://www.pexels.com/photo/a-florist-arranging-flowers-5894064/",
+    "alternates": [
+      "https://www.pexels.com/photo/couple-art-creative-working-9736864/",
+      "https://www.pexels.com/photo/skilled-artisan-crafting-leather-belts-in-workshop-34599616/"
+    ]
+  },
+  {
+    "slot": "band",
+    "src": "/images/home/band.jpg",
+    "width": 2400,
+    "height": 1030,
+    "alt": "A bakery window display of scones, cookies and croissants with handwritten labels, seen from inside over someone's shoulder, with the street beyond the glass.",
+    "photographer": "James Collington",
+    "photographerUrl": "https://www.pexels.com/@james-collington-2147687246",
+    "pexelsUrl": "https://www.pexels.com/photo/bakery-display-with-fresh-pastries-30667454/",
+    "alternates": [
+      "https://www.pexels.com/photo/books-and-vintage-items-inside-a-store-5673822/",
+      "https://www.pexels.com/photo/vintage-kitchenware-display-in-rustic-store-35285900/"
+    ]
+  },
+  {
+    "slot": "demand",
+    "src": "/images/home/demand.jpg",
+    "width": 1600,
+    "height": 1200,
+    "alt": "A customer looking through a rail of clothes in a small, bright clothing boutique.",
+    "photographer": "Ron Lach",
+    "photographerUrl": "https://www.pexels.com/@ron-lach",
+    "pexelsUrl": "https://www.pexels.com/photo/a-woman-doing-shopping-8311891/",
+    "alternates": [
+      "https://www.pexels.com/photo/man-and-woman-looking-at-the-black-hat-5699089/",
+      "https://www.pexels.com/photo/young-man-selecting-books-at-a-modern-bookstore-40107746/"
+    ]
+  },
+  {
+    "slot": "build",
+    "src": "/images/home/build.jpg",
+    "width": 1600,
+    "height": 1200,
+    "alt": "Someone typing on a laptop at a café counter, with shelves of coffee bags and pour-over gear on the wall behind.",
+    "photographer": "Kampus Production",
+    "photographerUrl": "https://www.pexels.com/@kampus",
+    "pexelsUrl": "https://www.pexels.com/photo/woman-in-beige-long-sleeves-using-a-laptop-6684766/",
+    "alternates": [
+      "https://www.pexels.com/photo/pensive-woman-near-flowers-in-wrapper-5410081/",
+      "https://www.pexels.com/photo/black-and-silver-hand-tool-on-brown-wooden-table-4491908/"
+    ]
+  },
+  {
+    "slot": "followup",
+    "src": "/images/home/followup.jpg",
+    "width": 1600,
+    "height": 1200,
+    "alt": "Hands stamping a thank you tag next to an ink pad and a stack of plain gift boxes on a wooden table.",
+    "photographer": "RDNE Stock project",
+    "photographerUrl": "https://www.pexels.com/@rdne",
+    "pexelsUrl": "https://www.pexels.com/photo/person-holding-a-thank-you-card-7310209/",
+    "alternates": [
+      "https://www.pexels.com/photo/close-up-of-person-packing-an-order-into-a-cardboard-box-7857523/",
+      "https://www.pexels.com/photo/crop-unrecognizable-woman-sealing-carton-parcel-with-tape-6348095/"
+    ]
+  }
+]

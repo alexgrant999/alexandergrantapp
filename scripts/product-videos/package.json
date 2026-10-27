@@ -1,0 +1,31 @@
+{
+  "name": "alexandergrant-product-videos",
+  "private": true,
+  "version": "1.0.0",
+  "type": "module",
+  "scripts": {
+    "studio": "remotion studio src/index.ts --public-dir=footage",
+    "render": "tsx render.ts",
+    "render:all": "tsx render.ts --all",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@remotion/bundler": "4.0.533",
+    "@remotion/cli": "4.0.533",
+    "@remotion/google-fonts": "4.0.533",
+    "@remotion/media": "4.0.533",
+    "@remotion/renderer": "4.0.533",
+    "ffmpeg-static": "5.2.0",
+    "mediabunny": "1.56.1",
+    "react": "19.1.0",
+    "react-dom": "19.1.0",
+    "remotion": "4.0.533",
+    "zod": "4.5.4"
+  },
+  "devDependencies": {
+    "@types/node": "25.5.0",
+    "@types/react": "19.1.8",
+    "tsx": "4.23.1",
+    "typescript": "5.9.2"
+  }
+}

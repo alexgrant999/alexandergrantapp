@@ -1,0 +1,33 @@
+{
+  "slug": "playday",
+  "name": "Playday",
+  "url": "playday.com/tribeca",
+  "frame": "browser",
+  "shots": [
+    {
+      "file": "01.mp4",
+      "seconds": 6.3,
+      "label": "Choose a studio"
+    },
+    {
+      "file": "02.mp4",
+      "seconds": 5.5,
+      "label": "Studio schedule"
+    },
+    {
+      "file": "03.mp4",
+      "seconds": 6.3,
+      "label": "Times and open spots"
+    },
+    {
+      "file": "04.mp4",
+      "seconds": 4.5,
+      "label": "Pick a session"
+    },
+    {
+      "file": "05.mp4",
+      "seconds": 5.4,
+      "label": "What's on"
+    }
+  ]
+}

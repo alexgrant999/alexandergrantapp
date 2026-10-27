@@ -1,0 +1,28 @@
+{
+  "slug": "balispirit",
+  "name": "Bali Spirit Festival",
+  "url": "schedule.balispiritfestival.com",
+  "frame": "browser",
+  "shots": [
+    {
+      "file": "01.mp4",
+      "seconds": 7.1,
+      "label": "Switch days"
+    },
+    {
+      "file": "02.mp4",
+      "seconds": 7.1,
+      "label": "Card view"
+    },
+    {
+      "file": "03.mp4",
+      "seconds": 7.1,
+      "label": "Open a session"
+    },
+    {
+      "file": "04.mp4",
+      "seconds": 6.4,
+      "label": "Meet the teachers"
+    }
+  ]
+}

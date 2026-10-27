@@ -1,0 +1,33 @@
+{
+  "slug": "findyoga",
+  "name": "Find Yoga Australia",
+  "url": "findyoga.com.au",
+  "frame": "browser",
+  "shots": [
+    {
+      "file": "01.mp4",
+      "seconds": 5.3,
+      "label": "Search by place"
+    },
+    {
+      "file": "02.mp4",
+      "seconds": 5.2,
+      "label": "Browse the map"
+    },
+    {
+      "file": "03.mp4",
+      "seconds": 6.4,
+      "label": "Studio results"
+    },
+    {
+      "file": "04.mp4",
+      "seconds": 6,
+      "label": "Open a studio"
+    },
+    {
+      "file": "05.mp4",
+      "seconds": 5.8,
+      "label": "Classes and events"
+    }
+  ]
+}

@@ -1,0 +1,28 @@
+{
+  "slug": "teddy",
+  "name": "Teddy",
+  "url": "teddycalls.com",
+  "frame": "browser",
+  "shots": [
+    {
+      "file": "01.mp4",
+      "seconds": 7.07,
+      "label": "Daily check-in calls"
+    },
+    {
+      "file": "02.mp4",
+      "seconds": 6.77,
+      "label": "What clients get"
+    },
+    {
+      "file": "03.mp4",
+      "seconds": 7.1,
+      "label": "Who needs you"
+    },
+    {
+      "file": "04.mp4",
+      "seconds": 5.87,
+      "label": "For studios and teams"
+    }
+  ]
+}

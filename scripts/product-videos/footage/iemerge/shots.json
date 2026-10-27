@@ -1,0 +1,23 @@
+{
+  "slug": "iemerge",
+  "name": "iEmerge",
+  "url": "apps.apple.com/app/iemerge-app",
+  "frame": "card",
+  "shots": [
+    {
+      "file": "01.png",
+      "seconds": 8,
+      "still": true
+    },
+    {
+      "file": "02.png",
+      "seconds": 8,
+      "still": true
+    },
+    {
+      "file": "03.png",
+      "seconds": 8,
+      "still": true
+    }
+  ]
+}
