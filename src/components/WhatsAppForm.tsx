@@ -14,27 +14,29 @@ export function WhatsAppForm() {
   }
 
   return (
-    <div className="wa-form">
+    <form className="wa-form" onSubmit={e => { e.preventDefault(); sendWhatsApp() }}>
+      <label className="wa-label" htmlFor="wa-name">Your name (optional)</label>
       <input
+        id="wa-name"
         type="text"
-        placeholder="Your name"
+        autoComplete="name"
         value={name}
         onChange={e => setName(e.target.value)}
         className="wa-input"
       />
+      <label className="wa-label" htmlFor="wa-message">Your message</label>
       <textarea
+        id="wa-message"
         rows={4}
-        placeholder="Your message..."
+        required
+        placeholder="What do you sell, and where does it feel stuck?"
         value={msg}
         onChange={e => setMsg(e.target.value)}
         className="wa-input"
       />
-      <button
-        onClick={sendWhatsApp}
-        className="wa-button"
-      >
-        Send via WhatsApp ↗
+      <button type="submit" className="wa-button">
+        Send via WhatsApp<span aria-hidden="true"> ↗</span><span className="sr-only"> (opens WhatsApp in a new tab)</span>
       </button>
-    </div>
+    </form>
   )
 }
