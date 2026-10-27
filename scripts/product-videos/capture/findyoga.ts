@@ -47,20 +47,37 @@ async function settle(page: Page) {
 type Shot = { file: string; label: string; run: (page: Page, mark: () => void) => Promise<void> };
 
 // findyoga.com.au rate limits (429), so every navigation is paced and retried with backoff.
-async function open(page: Page, url: string, mark: () => void) {
+// It also has broken images (a removed fallback photo, some logos). Every shot loads its page,
+// forces lazy images eager, walks the whole range the clip will scroll through plus one viewport,
+// and throws if any image in that range is broken. The shot is then retried.
+async function open(page: Page, url: string, mark: () => void, maxY: number) {
+  let res = null;
   for (let attempt = 0; attempt < 4; attempt++) {
-    const res = await page.goto(url, { waitUntil: "load" });
+    res = await page.goto(url, { waitUntil: "load" });
     if (res && res.status() === 429) {
       console.log(`429 on ${url}, backing off`);
       await page.waitForTimeout(20000 * (attempt + 1));
       continue;
     }
-    if (!res || res.status() >= 400) throw new Error(`${url} answered ${res?.status()}`);
-    await settle(page);
-    mark();
-    return;
+    break;
   }
-  throw new Error(`${url} kept answering 429`);
+  if (!res || res.status() >= 400) throw new Error(`${url} answered ${res?.status()}`);
+  await settle(page);
+  const reach = maxY + 800;
+  await page.evaluate(`document.querySelectorAll("img").forEach((i) => { i.loading = "eager"; })`);
+  for (let y = 0; y <= reach; y += 300) {
+    await page.evaluate(`window.scrollTo(0, ${y})`);
+    await page.waitForTimeout(600);
+  }
+  await page.waitForTimeout(1500);
+  await page.evaluate(`Promise.all([...document.images].filter((i) => i.naturalWidth > 0).map((i) => i.decode().catch(() => {})))`);
+  const broken = await page.evaluate(
+    `[...document.images].filter((i) => { const r = i.getBoundingClientRect(); return r.width > 0 && r.top + scrollY < ${reach} && i.complete && i.naturalWidth === 0; }).map((i) => i.currentSrc || i.src)`,
+  );
+  if (broken.length) throw new Error(`broken images in range for ${url}: ${JSON.stringify(broken)}`);
+  await page.evaluate("window.scrollTo(0, 0)");
+  await page.waitForTimeout(800);
+  mark();
 }
 
 const SHOTS: Shot[] = [
@@ -68,11 +85,11 @@ const SHOTS: Shot[] = [
     file: "01.mp4",
     label: "Search by place",
     run: async (page, mark) => {
-      await open(page, "https://www.findyoga.com.au/", mark);
+      await open(page, "https://www.findyoga.com.au/", mark, 0);
       await page.waitForTimeout(1500);
       const box = page.getByPlaceholder("Search places, studios, teachers, events...");
       await box.click();
-      await box.pressSequentially("Sydney", { delay: 220 });
+      await box.pressSequentially("Melbourne", { delay: 200 });
       await page.waitForTimeout(2800);
     },
   },
@@ -80,7 +97,7 @@ const SHOTS: Shot[] = [
     file: "02.mp4",
     label: "Browse the map",
     run: async (page, mark) => {
-      await open(page, "https://www.findyoga.com.au/in/sydney", mark);
+      await open(page, "https://www.findyoga.com.au/in/melbourne", mark, 300);
       await page.waitForTimeout(1800);
       await ease(page, 300, 2600);
       await page.waitForTimeout(1500);
@@ -90,7 +107,7 @@ const SHOTS: Shot[] = [
     file: "03.mp4",
     label: "Studio results",
     run: async (page, mark) => {
-      await open(page, "https://www.findyoga.com.au/in/sydney", mark);
+      await open(page, "https://www.findyoga.com.au/in/melbourne", mark, 1600);
       await page.evaluate("window.scrollTo(0, 780)");
       await page.waitForTimeout(1500);
       await ease(page, 800, 4200);
@@ -101,7 +118,7 @@ const SHOTS: Shot[] = [
     file: "04.mp4",
     label: "Open a studio",
     run: async (page, mark) => {
-      await open(page, "https://www.findyoga.com.au/studio/central-yoga-school-sydney", mark);
+      await open(page, "https://www.findyoga.com.au/studio/estuary-yoga-space-melbourne", mark, 600);
       await page.waitForTimeout(1800);
       await ease(page, 520, 3200);
       await page.waitForTimeout(1500);
@@ -111,30 +128,9 @@ const SHOTS: Shot[] = [
     file: "05.mp4",
     label: "Classes and events",
     run: async (page, mark) => {
-      await page.goto("https://www.findyoga.com.au/events/in/melbourne", { waitUntil: "load" });
-      await settle(page);
-      // Lazy images only load near the viewport: force eager, walk the whole range once, then return to the top.
-      await page.evaluate(`document.querySelectorAll("img").forEach((i) => { i.loading = "eager"; })`);
-      for (let y = 0; y <= 1800; y += 300) {
-        await page.evaluate(`window.scrollTo(0, ${y})`);
-        await page.waitForTimeout(600);
-      }
-      await page.waitForFunction(
-        `[...document.images].filter((i) => { const r = i.getBoundingClientRect(); return r.bottom > 0 && r.top < 2600 && r.width > 0; }).every((i) => i.complete && i.naturalWidth > 0)`,
-        null,
-        { timeout: 20000 },
-      ).catch(() => {});
-      await page.evaluate(`Promise.all([...document.images].filter((i) => i.naturalWidth > 0).map((i) => i.decode().catch(() => {})))`);
-      const broken = await page.evaluate(
-        `[...document.images].filter((i) => { const r = i.getBoundingClientRect(); return r.width > 60 && r.top < 1500 && i.complete && i.naturalWidth === 0; }).map((i) => i.currentSrc || i.src)`,
-      );
-      console.log("broken images:", JSON.stringify(broken));
-      if (broken.length) throw new Error("broken images on the page, pick another page");
-      await page.evaluate("window.scrollTo(0, 0)");
-      await page.waitForTimeout(800);
-      mark();
+      await open(page, "https://www.findyoga.com.au/events/in/melbourne", mark, 1500);
       await page.waitForTimeout(1500);
-      await ease(page, 600, 3600);
+      await ease(page, 1200, 5000);
       await page.waitForTimeout(1200);
     },
   },
@@ -170,9 +166,18 @@ async function main() {
       `new MutationObserver(()=>{if(!document.getElementById("__h")&&document.head){const s=document.createElement("style");s.id="__h";s.textContent=${JSON.stringify(HIDE_CSS)};document.head.appendChild(s)}}).observe(document,{childList:true,subtree:true})`,
     );
     let readyAt = 0;
-    await shot.run(page, () => {
-      if (!readyAt) readyAt = Date.now();
-    });
+    for (let attempt = 1; ; attempt++) {
+      try {
+        await shot.run(page, () => {
+          readyAt = Date.now();
+        });
+        break;
+      } catch (e) {
+        console.log(`${shot.file} attempt ${attempt} failed: ${String(e).slice(0, 300)}`);
+        if (attempt >= 3) throw e;
+        await page.waitForTimeout(15000);
+      }
+    }
     const endAt = Date.now();
     await page.close();
     await ctx.close();

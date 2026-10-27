@@ -6,9 +6,9 @@ import photos from '../../public/images/home/images.json'
 const photo = (slot: string) => photos.find(p => p.slot === slot)
 
 const offers = [
-  ['Find the demand.', 'Google and Meta ads, SEO, and email measured against real revenue, not a dashboard full of convenient numbers.', 'demand'],
-  ['Build what is missing.', 'Bookings, ecommerce, and customer portals designed around how your staff and customers already behave.', 'build'],
-  ['Make follow-up automatic.', 'Welcome series, reviews, abandoned carts, and SMS. Useful contact that keeps working after everyone goes home.', 'followup'],
+  ['Ads and search', 'Google and Meta ads, SEO and email. I judge them by what shows up in your sales each month.', 'demand'],
+  ['Booking and store software', 'When off-the-shelf tools don’t fit, I build bookings, online stores and customer portals around the way your staff and customers already work.', 'build'],
+  ['Email and text follow-up', 'Welcome emails, review requests, cart reminders and text messages that go out on their own, including after you close for the day.', 'followup'],
 ]
 
 const work = [
@@ -79,7 +79,7 @@ export default function HomePage() {
         .hero-inner { position:relative; min-height:100svh; display:flex; flex-direction:column; padding-top:88px; padding-bottom:clamp(18px,3.2vw,52px); }
         .hero-box { margin-top:auto; width:min(600px,100%); padding:clamp(26px,3vw,44px); background:var(--paper); }
         .hero-tag { margin:0 0 18px; font-weight:600; color:var(--green); }
-        h1 { font-weight:700; font-size:clamp(3rem,5.2vw,5.2rem); line-height:1; letter-spacing:-.015em; }
+        h1 { font-weight:700; font-size:clamp(2.6rem,4vw,3.75rem); line-height:1.02; letter-spacing:-.01em; }
         .hero-copy { margin:22px 0 0; font-size:clamp(1.125rem,1.3vw,1.1875rem); line-height:1.5; max-width:46ch; }
         .button { display:inline-flex; align-items:center; min-height:52px; margin-top:26px; padding:14px 24px; background:var(--green); color:var(--paper); border-radius:2px; font-weight:600; text-decoration:none; transition:background .2s; }
         .button:hover { background:var(--ink); }
@@ -169,7 +169,7 @@ export default function HomePage() {
       <header className="site-header page">
         <nav className="nav" aria-label="Main navigation">
           <div className="wordmark">Alexander Grant</div>
-          <div className="nav-mid">Growth and systems for independent business</div>
+          <div className="nav-mid">New York, working internationally</div>
           <a href="#contact">Let’s talk</a>
         </nav>
       </header>
@@ -180,42 +180,42 @@ export default function HomePage() {
         <div className="hero-shade" aria-hidden="true" />
         <div className="page hero-inner">
           <div className="hero-box">
-            <p className="hero-tag">Independent growth partner</p>
-            <h1>More sales.<br />Less theatre.</h1>
-            <p className="hero-copy">I help independent shops grow with sharper advertising, useful automation, and software built around the way the business actually works.</p>
-            <a className="button" href="#contact">Start a conversation</a>
-            <Ledger caption="The numbers should move. Everything else is commentary." rows={[['Adventureline, July sales', '+69%'], ['Playday, opening weekend', '35 families'], ['Reporting', 'Monthly']]} />
+            <p className="hero-tag">Marketing and software for independent businesses</p>
+            <h1>I help independent shops sell more.</h1>
+            <p className="hero-copy">I run your ads, search and email, and build the booking or store software when off-the-shelf tools get in the way. Every month you get a plain report on what it did to your sales.</p>
+            <a className="button" href="#contact">Tell me about your business</a>
+            <Ledger caption="From recent client reports" rows={[['Adventureline, July sales', '+69%'], ['Playday, opening weekend', '35 families'], ['Reporting', 'Monthly']]} />
           </div>
         </div>
       </section>
 
       <div className="page">
         <section className="section" id="results">
-          <header className="section-head"><p className="kicker">The evidence</p><h2>Work that shows up in the till.</h2></header>
+          <header className="section-head"><p className="kicker">Results</p><h2>What changed for two recent clients.</h2></header>
           <article className="case">
             <div className="case-title"><span className="case-no">Case one</span><h3>Adventureline</h3><p>Outdoor apparel, Australia</p><ProductVideo slug="adventureline" label="Adventureline" className="shot case-shot" /><blockquote className="quote">“Numbers are moving in the right direction which is great. Thanks again for steering us in the right direction!”<cite>Matt Browne, Owner</cite></blockquote></div>
-            <div className="case-body"><p>I run Google and Meta advertising, SEO, and email as an ongoing partner. June became the biggest month in the brand’s history. Then, when the owners asked to lower costs, I cut ad spend by 29% and improved the return on every dollar.</p><Ledger rows={adventureline} large /></div>
+            <div className="case-body"><p>I run their Google and Meta ads, SEO and email. June was the biggest month in the brand’s history. When the owners asked to spend less, I cut ad spend by 29% and each dollar of ads brought in more sales than before.</p><Ledger rows={adventureline} large /></div>
           </article>
           <article className="case">
             <div className="case-title"><span className="case-no">Case two</span><h3>Playday</h3><p>Children’s art studios, New York</p><blockquote className="quote">“Thanks so much for the incredible work you are putting into this.”<cite>Megan Smith, Director of Family Relations</cite></blockquote></div>
-            <div className="case-body"><p>I replaced Wix with a booking platform built from scratch. Classes, payments, family messages, and marketing now live in one place. Their new Tribeca studio launched on it and filled its opening weekend.</p><Ledger rows={playday} large /></div>
+            <div className="case-body"><p>I replaced their Wix site with a booking system I built for them. Classes, payments, messages to families and marketing all run through it. Their new Tribeca studio opened on it and was full for its first weekend.</p><Ledger rows={playday} large /></div>
           </article>
         </section>
 
         {band && <Image className="photo band" src={band.src} width={band.width} height={band.height} alt={band.alt} sizes="(min-width: 1440px) 1350px, 100vw" />}
 
         <section className="section">
-          <header className="section-head"><p className="kicker">The work</p><h2>One pair of hands across growth and technology.</h2></header>
+          <header className="section-head"><p className="kicker">Services</p><h2>One person for the marketing and the software.</h2></header>
           <div className="offers">{offers.map(([title,body,slot])=>{const img=photo(slot); return <article className="offer" key={slot}><h3>{title}</h3><p>{body}</p>{img && <Image className="photo" src={img.src} width={img.width} height={img.height} alt={img.alt} sizes="(max-width: 800px) 100vw, (min-width: 1440px) 400px, 28vw" />}</article>})}</div>
         </section>
 
         <section className="section">
-          <header className="section-head"><p className="kicker">Selected builds</p><h2>The site is part of the sales team.</h2></header>
+          <header className="section-head"><p className="kicker">Builds</p><h2>Sites and apps I’ve built.</h2></header>
           <div className="work-list">{work.map(([name,desc,href,slug,site])=><div className="project" key={name}><span className="project-text"><h3 className="project-name"><a className="project-link" href={href} target="_blank" rel="noopener noreferrer">{name}<span className="sr-only"> (opens in a new tab)</span></a></h3><span className="project-desc">{desc}</span><span className="project-site" aria-hidden="true">{site}</span></span><ProductVideo slug={slug} label={name} className="shot" /></div>)}</div>
         </section>
       </div>
 
-      <section className="contact" id="contact"><div className="contact-inner"><div><p className="kicker">Your turn</p><h2>Could it be doing better?</h2><p className="contact-copy">Tell me what you sell and where it feels stuck. I’ll take a look and give you a straight answer.</p><a className="email" href="mailto:alexandergrantapp@gmail.com">alexandergrantapp@gmail.com</a></div><div className="form-wrap"><WhatsAppForm /></div></div></section>
+      <section className="contact" id="contact"><div className="contact-inner"><div><p className="kicker">Contact</p><h2>Tell me about your business.</h2><p className="contact-copy">Send me a message about what you sell and what isn’t working. I’ll take a look and tell you honestly whether I can help.</p><a className="email" href="mailto:alexandergrantapp@gmail.com">alexandergrantapp@gmail.com</a></div><div className="form-wrap"><WhatsAppForm /></div></div></section>
       </main>
       <footer><div className="footer"><span>Alexander Grant</span><span>New York, working internationally</span><a href="https://www.pexels.com" target="_blank" rel="noopener noreferrer">Photography from Pexels<span className="sr-only"> (opens in a new tab)</span></a><span>© 2026</span></div></footer>
     </>

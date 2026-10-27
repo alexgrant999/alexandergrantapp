@@ -6,17 +6,17 @@
   "shots": [
     {
       "file": "01.mp4",
-      "seconds": 5.3,
+      "seconds": 5.7,
       "label": "Search by place"
     },
     {
       "file": "02.mp4",
-      "seconds": 5.2,
+      "seconds": 5.4,
       "label": "Browse the map"
     },
     {
       "file": "03.mp4",
-      "seconds": 6.4,
+      "seconds": 6.2,
       "label": "Studio results"
     },
     {
@@ -26,7 +26,7 @@
     },
     {
       "file": "05.mp4",
-      "seconds": 5.8,
+      "seconds": 7.2,
       "label": "Classes and events"
     }
   ]
