@@ -13,9 +13,15 @@ if (!KEY) throw new Error('PEXELS_API_KEY is not set')
 // zoom: share of the largest possible crop to keep (1 = no zoom).
 const SLOTS = [
   {
-    slot: 'hero', id: 5894064, width: 1600, height: 2000, anchor: { x: 0.5, y: 0.35 }, zoom: 1,
-    alt: 'A florist in a grey apron wrapping a bouquet at the counter of a small flower shop, under paper lamps and string lights.',
-    alternates: [9736864, 34599616],
+    slot: 'hero', id: 5413720, width: 2560, height: 1600, anchor: { x: 0.5, y: 0.5 }, zoom: 1, maxBytes: 900 * 1024,
+    alt: 'A florist in a green apron opening the glass door of a flower shop, next to a "Come in, we\'re open" sign and pots of plants.',
+    alternates: [5409760, 5414064],
+  },
+  // The same photo cropped for phones, where the full-screen hero is portrait.
+  {
+    slot: 'hero-mobile', id: 5413720, width: 1600, height: 2400, anchor: { x: 0.68, y: 0.5 }, zoom: 1, maxBytes: 700 * 1024,
+    alt: 'A florist in a green apron opening the glass door of a flower shop, next to a "Come in, we\'re open" sign and pots of plants.',
+    alternates: [],
   },
   {
     slot: 'band', id: 30667454, width: 2400, height: 1030, anchor: { x: 0.5, y: 0.5 }, zoom: 1,
@@ -75,7 +81,7 @@ async function original(p) {
 function cropBox(w, h, s) {
   const ratio = s.width / s.height
   const cw = Math.round(Math.min(w, h * ratio) * s.zoom)
-  const ch = Math.round(cw / ratio)
+  const ch = Math.min(h, Math.round(cw / ratio))
   return { left: Math.round((w - cw) * s.anchor.x), top: Math.round((h - ch) * s.anchor.y), width: cw, height: ch }
 }
 
@@ -87,10 +93,10 @@ function grade(img) {
     .linear(0.94, 9)
 }
 
-async function encode(img) {
+async function encode(img, maxBytes) {
   for (let quality = 82; quality >= 70; quality -= 3) {
     const buf = await img.clone().jpeg({ quality, progressive: true, mozjpeg: true }).toBuffer()
-    if (buf.length <= MAX_BYTES) return { buf, quality }
+    if (buf.length <= maxBytes) return { buf, quality }
   }
   throw new Error('Could not get under the size limit')
 }
@@ -106,7 +112,7 @@ for (const s of SLOTS) {
   const turned = (meta.orientation ?? 1) >= 5
   const box = cropBox(turned ? meta.height : meta.width, turned ? meta.width : meta.height, s)
   const img = grade(sharp(src).rotate().extract(box).resize(s.width, s.height, { kernel: 'lanczos3' }))
-  const { buf, quality } = await encode(img)
+  const { buf, quality } = await encode(img, s.maxBytes ?? MAX_BYTES)
   await writeFile(path.join(OUT_DIR, `${s.slot}.jpg`), buf)
 
   const alternates = []

@@ -9,9 +9,10 @@ if (!KEY) throw new Error('PEXELS_API_KEY is not set')
 
 // Each slot has search rounds. A later round skips photos an earlier round already returned.
 const QUERIES = {
-  hero: { tag: 'h', orientation: 'portrait', rounds: [
-    ['shop owner arranging shelves', 'ceramicist working in studio', 'florist working in flower shop', 'bookshop owner', 'tailor working in workshop', 'woman working in boutique', 'small business owner at work', 'craftsman workshop'],
-    ['potter', 'woman arranging flowers in shop', 'shopkeeper', 'baker at work', 'leather craftsman', 'dressmaker studio', 'shop assistant folding clothes', 'framing workshop'],
+  // Full-screen hero: wide shots with room on the left for the info box.
+  hero: { tag: 'h', orientation: 'landscape', rounds: [
+    ['florist working in flower shop', 'small shop owner behind counter', 'ceramic studio interior', 'bakery owner at counter', 'boutique owner arranging clothes', 'bookshop owner', 'woman working in flower shop', 'shopkeeper in store'],
+    ['coffee roaster shop owner', 'tailor workshop', 'potter at wheel studio', 'baker shop morning', 'leather workshop craftsman', 'plant shop owner', 'small business owner at work', 'record store owner'],
   ] },
   band: { tag: 'b', orientation: 'landscape', rounds: [
     ['street of small shops', 'storefront street', 'shop counter', 'general store interior', 'boutique interior wooden', 'shop window', 'old shopfronts'],

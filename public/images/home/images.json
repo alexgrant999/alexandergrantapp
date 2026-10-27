@@ -2,16 +2,27 @@
   {
     "slot": "hero",
     "src": "/images/home/hero.jpg",
-    "width": 1600,
-    "height": 2000,
-    "alt": "A florist in a grey apron wrapping a bouquet at the counter of a small flower shop, under paper lamps and string lights.",
-    "photographer": "Anna Shvets",
-    "photographerUrl": "https://www.pexels.com/@shvetsa",
-    "pexelsUrl": "https://www.pexels.com/photo/a-florist-arranging-flowers-5894064/",
+    "width": 2560,
+    "height": 1600,
+    "alt": "A florist in a green apron opening the glass door of a flower shop, next to a \"Come in, we're open\" sign and pots of plants.",
+    "photographer": "Amina Filkins",
+    "photographerUrl": "https://www.pexels.com/@amina-filkins",
+    "pexelsUrl": "https://www.pexels.com/photo/calm-woman-standing-in-doorway-of-store-5413720/",
     "alternates": [
-      "https://www.pexels.com/photo/couple-art-creative-working-9736864/",
-      "https://www.pexels.com/photo/skilled-artisan-crafting-leather-belts-in-workshop-34599616/"
+      "https://www.pexels.com/photo/happy-woman-with-flowers-during-work-5409760/",
+      "https://www.pexels.com/photo/smiling-asian-florist-arranging-bouquet-for-female-client-5414064/"
     ]
+  },
+  {
+    "slot": "hero-mobile",
+    "src": "/images/home/hero-mobile.jpg",
+    "width": 1600,
+    "height": 2400,
+    "alt": "A florist in a green apron opening the glass door of a flower shop, next to a \"Come in, we're open\" sign and pots of plants.",
+    "photographer": "Amina Filkins",
+    "photographerUrl": "https://www.pexels.com/@amina-filkins",
+    "pexelsUrl": "https://www.pexels.com/photo/calm-woman-standing-in-doorway-of-store-5413720/",
+    "alternates": []
   },
   {
     "slot": "band",
