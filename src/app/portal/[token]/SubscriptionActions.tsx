@@ -33,7 +33,9 @@ export function SubscriptionActions({
 
   async function getActivationLink() {
     setLoadingCheckout(true)
-    const res = await fetch(`/api/subscriptions/${subscriptionId}/checkout-url`)
+    const res = await fetch(`/api/subscriptions/${subscriptionId}/checkout-url`, {
+      headers: { 'x-portal-token': token },
+    })
     if (res.ok) {
       const { url } = await res.json()
       window.location.href = url

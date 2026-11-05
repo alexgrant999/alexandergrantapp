@@ -1,8 +1,10 @@
 import { NextResponse } from 'next/server'
 import { getAllResources, createResource } from '@/lib/services/resources'
 import { createResourceSchema } from '@/lib/validators/resource'
+import { hasSession } from '@/lib/auth/session'
 
 export async function GET() {
+  if (!(await hasSession())) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
   const resources = await getAllResources()
   return NextResponse.json(resources)
 }

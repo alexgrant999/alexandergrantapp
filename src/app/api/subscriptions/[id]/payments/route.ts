@@ -1,10 +1,12 @@
 import { NextResponse } from 'next/server'
 import { getSubscription } from '@/lib/services/subscriptions'
 import Stripe from 'stripe'
+import { hasSession } from '@/lib/auth/session'
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!)
 
 export async function GET(_req: Request, { params }: { params: Promise<{ id: string }> }) {
+  if (!(await hasSession())) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
   const { id } = await params
   const sub = await getSubscription(id)
   if (!sub) return NextResponse.json({ error: 'Not found' }, { status: 404 })

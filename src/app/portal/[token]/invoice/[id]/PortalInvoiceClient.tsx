@@ -27,13 +27,16 @@ export function PortalInvoiceClient({ token, id }: { token: string; id: string }
   const justPaid = searchParams.get('paid') === 'true'
 
   useEffect(() => {
-    fetch(`/api/invoices/${id}`).then(r => r.json()).then(setInvoice)
-  }, [id])
+    fetch(`/api/invoices/${id}`, { headers: { 'x-portal-token': token } }).then(r => r.json()).then(setInvoice)
+  }, [id, token])
 
   async function handlePay() {
     if (!invoice) return
     setPaying(true)
-    const res = await fetch(`/api/invoices/${id}/checkout`, { method: 'POST' })
+    const res = await fetch(`/api/invoices/${id}/checkout`, {
+      method: 'POST',
+      headers: { 'x-portal-token': token },
+    })
     const { url } = await res.json()
     window.location.href = url
   }

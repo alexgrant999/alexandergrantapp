@@ -1,14 +1,28 @@
 import { NextResponse } from 'next/server'
+import { createHash, timingSafeEqual } from 'node:crypto'
 import Stripe from 'stripe'
 import { getSubscription, refreshCheckoutUrl } from '@/lib/services/subscriptions'
+import { hasSession } from '@/lib/auth/session'
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!)
 
-export async function GET(_req: Request, { params }: { params: Promise<{ id: string }> }) {
+export async function GET(req: Request, { params }: { params: Promise<{ id: string }> }) {
   try {
     const { id } = await params
     const sub = await getSubscription(id)
     if (!sub) return NextResponse.json({ error: 'Not found' }, { status: 404 })
+
+    const portalToken = req.headers.get('x-portal-token')
+    const portalTokenMatches =
+      !!portalToken &&
+      timingSafeEqual(
+        createHash('sha256').update(portalToken).digest(),
+        createHash('sha256').update(sub.client.portalToken).digest(),
+      )
+    if (!portalTokenMatches && !(await hasSession())) {
+      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+    }
+
     if (sub.status !== 'PENDING') return NextResponse.json({ error: 'Not pending' }, { status: 400 })
 
     // If we have the URL stored and a session ID, verify it's still open
@@ -33,6 +47,7 @@ export async function GET(_req: Request, { params }: { params: Promise<{ id: str
 }
 
 export async function POST(_req: Request, { params }: { params: Promise<{ id: string }> }) {
+  if (!(await hasSession())) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
   try {
     const { id } = await params
     const url = await refreshCheckoutUrl(id)
