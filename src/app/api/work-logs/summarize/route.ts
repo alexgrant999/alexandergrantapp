@@ -2,6 +2,7 @@ import { NextResponse } from 'next/server'
 import { prisma } from '@/lib/db/prisma'
 import Anthropic from '@anthropic-ai/sdk'
 import postgres from 'postgres'
+import { hasSession } from '@/lib/auth/session'
 
 const anthropic = new Anthropic()
 
@@ -39,6 +40,7 @@ async function getProjectContext(projectName: string) {
 }
 
 export async function GET(req: Request) {
+  if (!(await hasSession())) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
   try {
     const { searchParams } = new URL(req.url)
     const projectId = searchParams.get('projectId')

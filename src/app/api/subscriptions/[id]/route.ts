@@ -4,6 +4,7 @@ import { prisma } from '@/lib/db/prisma'
 import { z } from 'zod'
 import { BillingInterval } from '@prisma/client'
 import { Decimal } from '@prisma/client/runtime/library'
+import { hasSession } from '@/lib/auth/session'
 
 const updateSchema = z.object({
   name: z.string().min(1).optional(),
@@ -13,6 +14,7 @@ const updateSchema = z.object({
 })
 
 export async function GET(_req: Request, { params }: { params: Promise<{ id: string }> }) {
+  if (!(await hasSession())) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
   const { id } = await params
   const sub = await getSubscription(id)
   if (!sub) return NextResponse.json({ error: 'Not found' }, { status: 404 })
@@ -20,6 +22,7 @@ export async function GET(_req: Request, { params }: { params: Promise<{ id: str
 }
 
 export async function PUT(req: Request, { params }: { params: Promise<{ id: string }> }) {
+  if (!(await hasSession())) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
   const { id } = await params
   const body = await req.json()
   const parsed = updateSchema.safeParse(body)

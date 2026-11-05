@@ -1,8 +1,10 @@
 import { NextResponse } from 'next/server'
 import { getClient, updateClient, deleteClient } from '@/lib/services/clients'
 import { clientSchema } from '@/lib/validators/client'
+import { hasSession } from '@/lib/auth/session'
 
 export async function GET(_req: Request, { params }: { params: Promise<{ id: string }> }) {
+  if (!(await hasSession())) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
   const { id } = await params
   const client = await getClient(id)
   if (!client) return NextResponse.json({ error: 'Not found' }, { status: 404 })
@@ -10,6 +12,7 @@ export async function GET(_req: Request, { params }: { params: Promise<{ id: str
 }
 
 export async function PUT(req: Request, { params }: { params: Promise<{ id: string }> }) {
+  if (!(await hasSession())) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
   const { id } = await params
   const body = await req.json()
   const parsed = clientSchema.safeParse(body)
@@ -19,6 +22,7 @@ export async function PUT(req: Request, { params }: { params: Promise<{ id: stri
 }
 
 export async function DELETE(_req: Request, { params }: { params: Promise<{ id: string }> }) {
+  if (!(await hasSession())) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
   const { id } = await params
   await deleteClient(id)
   return NextResponse.json({ ok: true })

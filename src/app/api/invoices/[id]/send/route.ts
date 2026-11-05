@@ -1,10 +1,12 @@
 import { NextResponse } from 'next/server'
 import { getInvoice, updateInvoiceStatus } from '@/lib/services/invoices'
 import { Resend } from 'resend'
+import { hasSession } from '@/lib/auth/session'
 
 const resend = new Resend(process.env.RESEND_API_KEY)
 
 export async function GET(req: Request, { params }: { params: Promise<{ id: string }> }) {
+  if (!(await hasSession())) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
   const { id } = await params
   const invoice = await getInvoice(id)
   if (!invoice) return NextResponse.json({ error: 'Not found' }, { status: 404 })
@@ -17,6 +19,7 @@ export async function GET(req: Request, { params }: { params: Promise<{ id: stri
 }
 
 export async function POST(req: Request, { params }: { params: Promise<{ id: string }> }) {
+  if (!(await hasSession())) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
   const { id } = await params
   const invoice = await getInvoice(id)
   if (!invoice) return NextResponse.json({ error: 'Not found' }, { status: 404 })

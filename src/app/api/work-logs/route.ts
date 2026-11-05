@@ -1,7 +1,10 @@
 import { NextResponse } from 'next/server'
+import { createHash, timingSafeEqual } from 'node:crypto'
 import { prisma } from '@/lib/db/prisma'
+import { hasSession } from '@/lib/auth/session'
 
 export async function GET(req: Request) {
+  if (!(await hasSession())) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
   const { searchParams } = new URL(req.url)
   const projectId = searchParams.get('projectId')
   const unbilledOnly = searchParams.get('unbilled') === 'true'
@@ -19,10 +22,14 @@ export async function GET(req: Request) {
 }
 
 export async function POST(req: Request) {
-  const authHeader = req.headers.get('authorization')
-  if (authHeader !== `Bearer ${process.env.WORK_LOG_API_KEY}`) {
-    return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
-  }
+  const apiKey = process.env.WORK_LOG_API_KEY
+  const authorized =
+    !!apiKey &&
+    timingSafeEqual(
+      createHash('sha256').update(req.headers.get('authorization') ?? '').digest(),
+      createHash('sha256').update(`Bearer ${apiKey}`).digest(),
+    )
+  if (!authorized) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
 
   const body = await req.json()
   const { repoName, commits } = body as {
