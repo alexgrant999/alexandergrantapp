@@ -3,7 +3,7 @@ import Image from 'next/image'
 import { useEffect, useState, type KeyboardEvent } from 'react'
 import { Ledger } from '@/components/Ledger'
 
-export type ClientTab = { id: string; name: string; image: string; alt: string; improved: string; rows: string[][] }
+export type ClientTab = { id: string; url: string; site: string; name: string; image: string; alt: string; improved: string; rows: string[][] }
 
 const INTERVAL_MS = 7000
 
@@ -49,7 +49,7 @@ export function HeroLedger({ tabs }: { tabs: ClientTab[] }) {
       <div key={tab.id} role="tabpanel" id={`hl-panel-${tab.id}`} aria-labelledby={`hl-tab-${tab.id}`} className="hl-panel">
         <Image className="hl-image" src={tab.image} width={1280} height={800} alt={tab.alt} sizes="(max-width: 560px) 100vw, 220px" priority={index === 0} />
         <div>
-          <p className="hl-improved">{tab.improved}</p>
+          <p className="hl-improved">{tab.improved} <a className="site-link" href={tab.url} target="_blank" rel="noopener noreferrer">{tab.site}<span className="sr-only"> (opens in a new tab)</span></a></p>
           <Ledger rows={tab.rows} plain />
         </div>
       </div>

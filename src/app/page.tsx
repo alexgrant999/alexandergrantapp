@@ -5,6 +5,7 @@ import { ProductVideo } from '@/components/ProductVideo'
 import { TourRail } from '@/components/TourRail'
 import { Ledger } from '@/components/Ledger'
 import { HeroLedger, type ClientTab } from '@/components/HeroLedger'
+import { HeroVideo } from '@/components/HeroVideo'
 import photos from '../../public/images/home/images.json'
 
 const photo = (slot: string) => photos.find(p => p.slot === slot)
@@ -20,7 +21,7 @@ const chapters = [
 
 const services = [
   ['Ads and search', 'Google and Meta ads, SEO and email. I judge them by what shows up in your sales each month, and you get the same report I read.', 'demand'],
-  ['Booking and store software', 'When off-the-shelf tools don’t fit, I build bookings, online stores, invoicing and customer portals around the way your staff and customers already work.', 'build'],
+  ['Software made to measure', 'You already have a way of working. It just lives in a Wix or Squarespace site, Google Docs, Mailchimp and a few spreadsheets. I replace them with one system built around it from the ground up: bookings, store, invoicing and customer portal. Your staff keep working the way they do, without the copying between tabs.', 'build'],
   ['Email and text follow-up', 'Welcome emails, review requests, cart reminders and text messages that go out on their own, including after you close for the day.', 'followup'],
 ]
 
@@ -35,11 +36,11 @@ const work = [
 
 // One tab per client in the hero. Client-approved figures only; the label says what the number is.
 const heroTabs: ClientTab[] = [
-  { id: 'adventureline', name: 'Adventureline', image: '/videos/adventureline.jpg', alt: 'The Adventureline online store', improved: 'Took over Google and Meta ads, SEO and email for an outdoor apparel store on Shopify. Rewrote 22 collections and 57 products for search.', rows: [['July sales, year on year', '+69%'], ['July orders, year on year', '+84%'], ['Search position, July, year on year', '31 to 17']] },
-  { id: 'playday', name: 'Playday', image: '/videos/playday.jpg', alt: 'The Playday booking site', improved: 'Replaced a Wix site with a booking platform for a chain of children’s art studios: bookings, Square payments, invoicing and automated follow-up.', rows: [['Studios live on it, two more in November', '5'], ['People using it since the August launch', '26,235'], ['Children added by their families', '760']] },
-  { id: 'findyoga', name: 'Find Yoga', image: '/videos/findyoga.jpg', alt: 'The Find Yoga Australia directory', improved: 'Rebuilt Australia’s yoga directory from a legacy site into a fast, searchable one, with every studio, class and event in one place.', rows: [['Listings', '6,478'], ['Events published', '15,727'], ['Google impressions, August to October', '400,000']] },
-  { id: 'balispirit', name: 'Bali Spirit', image: '/videos/balispirit.jpg', alt: 'The Bali Spirit Festival schedule app', improved: 'A festival schedule that works offline on the field, replacing scheduling software that cost the festival more than $7,000 a year.', rows: [['People using it during festival week', '4,941'], ['Sessions scheduled', '450+'], ['Average time in the app per visit', '8 min']] },
-  { id: 'trnzk', name: 'TRNZK', image: '/videos/sewing-class.jpg', alt: 'The TRNZK sewing class booking site', improved: 'Term bookings with deposits, payment plans and class caps for a sewing school in Lennox Head. The owner now changes dates each term and little else.', rows: [['Terms booked through it', '3'], ['Weekly class slots', '7'], ['Pay by', 'Deposit and balance']] },
+  { id: 'adventureline', url: 'https://adventureline.com.au', site: 'adventureline.com.au', name: 'Adventureline', image: '/videos/adventureline.jpg', alt: 'The Adventureline online store', improved: 'Took over Google and Meta ads, SEO and email for an outdoor apparel store on Shopify. Rewrote 22 collections and 57 products for search.', rows: [['July sales, year on year', '+69%'], ['July orders, year on year', '+84%'], ['Search position, July, year on year', '31 to 17']] },
+  { id: 'playday', url: 'https://www.playday.com', site: 'playday.com', name: 'Playday', image: '/videos/playday.jpg', alt: 'The Playday booking site', improved: 'Replaced a Wix site with a booking platform for a chain of children’s art studios: bookings, Square payments, invoicing and automated follow-up.', rows: [['Studios live on it, two more in November', '5'], ['People using it since the August launch', '26,235'], ['Children added by their families', '760']] },
+  { id: 'findyoga', url: 'https://www.findyoga.com.au', site: 'findyoga.com.au', name: 'Find Yoga', image: '/videos/findyoga.jpg', alt: 'The Find Yoga Australia directory', improved: 'Rebuilt Australia’s yoga directory from a legacy site into a fast, searchable one, with every studio, class and event in one place.', rows: [['Listings', '6,478'], ['Events published', '15,727'], ['Google impressions, August to October', '400,000']] },
+  { id: 'balispirit', url: 'https://schedule.balispiritfestival.com', site: 'balispiritfestival.com', name: 'Bali Spirit', image: '/videos/balispirit.jpg', alt: 'The Bali Spirit Festival schedule app', improved: 'A festival schedule that works offline on the field, replacing scheduling software that cost the festival more than $7,000 a year.', rows: [['People using it during festival week', '4,941'], ['Sessions scheduled', '450+'], ['Average time in the app per visit', '8 min']] },
+  { id: 'trnzk', url: 'https://sewing-class.vercel.app', site: 'Booking site', name: 'TRNZK', image: '/videos/sewing-class.jpg', alt: 'The TRNZK sewing class booking site', improved: 'Term bookings with deposits, payment plans and class caps for a sewing school in Lennox Head. The owner now changes dates each term and little else.', rows: [['Terms booked through it', '3'], ['Weekly class slots', '7'], ['Pay by', 'Deposit and balance']] },
 ]
 
 const adventureline = [['July sales, year on year', '+69%'], ['July orders, year on year', '+84%'], ['Winter season sales', '+34%']]
@@ -55,10 +56,13 @@ function heroImage() {
   // On phones the photo fills 78svh, so the tall crop renders a little wider than the viewport.
   const { props } = getImageProps({ ...common, src: tall.src, width: tall.width, height: tall.height, sizes: '115vw' })
   return (
-    <picture>
-      <source media="(min-width: 801px)" srcSet={wideSet} sizes="100vw" />
-      <img {...props} className="hero-img" />
-    </picture>
+    <>
+      <picture>
+        <source media="(min-width: 801px)" srcSet={wideSet} sizes="100vw" />
+        <img {...props} className="hero-img" />
+      </picture>
+      <HeroVideo />
+    </>
   )
 }
 
@@ -110,7 +114,8 @@ export default function HomePage() {
         .nav a { justify-self:end; padding:12px 0; font-weight:600; text-underline-offset:6px; }
 
         .hero { position:relative; background:var(--ink); }
-        .hero-img { position:absolute; inset:0; width:100%; height:100%; object-fit:cover; object-position:58% 50%; filter:sepia(.08) saturate(.94); }
+        .hero-img { position:absolute; inset:0; width:100%; height:100%; object-fit:cover; object-position:0% 20%; filter:sepia(.08) saturate(.94); }
+        .hero-toggle { right:var(--gutter); bottom:var(--gutter); z-index:2; }
         .hero-shade { position:absolute; inset:0; background:linear-gradient(oklch(23% .02 155 / .8), oklch(23% .02 155 / 0) 32%), linear-gradient(to top, oklch(23% .02 155 / .35), oklch(23% .02 155 / 0) 35%); }
         .hero-inner { position:relative; min-height:100svh; display:flex; flex-direction:column; padding-top:88px; padding-bottom:var(--gutter); }
         .hero-box { margin-top:auto; width:min(700px,100%); padding:clamp(26px,3vw,44px); background:var(--paper); }
@@ -122,7 +127,7 @@ export default function HomePage() {
         .textlink { padding:12px 0; font-weight:600; text-underline-offset:5px; }
 
         /* The hero ledger: one client at a time, turning every few seconds, with the active tab's red rule filling as it waits. */
-        .hl { margin-top:30px; }
+        .hl { margin-top:18px; }
         .hl-caption { margin:0 0 6px; font:italic 400 1.0625rem/1.4 'Besley',serif; }
         .hl-tabs { display:flex; flex-wrap:wrap; gap:0 18px; border-bottom:1px solid var(--line); }
         .hl-tab { position:relative; margin:0; padding:9px 0; background:none; border:0; font:600 .875rem/1.2 'Libre Franklin',sans-serif; color:var(--muted); cursor:pointer; transition:color .2s; }
@@ -181,7 +186,9 @@ export default function HomePage() {
         .case-grid { display:grid; grid-template-columns:1fr 1fr; gap:clamp(30px,5vw,80px); margin-top:clamp(20px,3vw,36px); }
         .case-media { position:sticky; top:0; align-self:start; height:100svh; display:flex; flex-direction:column; justify-content:center; padding:24px 0; }
         .case-media h2 { font-size:clamp(2.2rem,3.6vw,3.4rem); line-height:1.02; margin-bottom:6px; }
-        .case-media > p { color:var(--muted); margin:0 0 26px; }
+        .case-media > p { color:var(--muted); margin:0 0 18px; }
+        .site-link { font-size:.9375rem; font-weight:600; color:var(--green); text-underline-offset:5px; text-decoration-thickness:1px; white-space:nowrap; }
+        .case-media .site-link { display:block; width:fit-content; padding:10px 0; }
         /* The video is sized from the viewport height so the heading, video and quote all fit beside the steps. */
         .case-media .shot { width:min(100%,64svh); border:1px solid var(--line); }
         .quote { margin:28px 0 0; font:italic 400 1.3125rem/1.4 'Besley',serif; max-width:420px; }
@@ -283,6 +290,7 @@ export default function HomePage() {
           .hero { background:var(--paper); }
           .hero-img, .hero-shade { bottom:auto; height:78svh; }
           .hero-img { object-position:50% 20%; }
+          .hero-toggle { top:100px; bottom:auto; }
           .hero-inner { min-height:0; }
           .hero-box { margin-top:52svh; }
           h1 { font-size:clamp(2.25rem,9.5vw,4rem); }
@@ -318,7 +326,7 @@ export default function HomePage() {
         <div className="page hero-inner">
           <div className="hero-box">
             <h1>I help independent shops sell more.</h1>
-            <p className="hero-copy">I run your ads, search and email, and build the booking or store software when off-the-shelf tools get in the way. Every month you get a plain report on what it did to your sales.</p>
+            <p className="hero-copy">I run your ads, search and email, and build software made to measure, fitted to the way your business already runs. Every month you get a plain report on what it did to your sales.</p>
             <div className="hero-actions"><a className="button" href="#contact">Tell me about your business</a><a className="textlink" href="#about">Or take the tour</a></div>
             <HeroLedger tabs={heroTabs} />
           </div>
@@ -333,6 +341,7 @@ export default function HomePage() {
               <h2>One person for the marketing and the software.</h2>
               <p className="about-copy" style={{ marginTop: 22 }}>I’m Alex. I work from New York with a small number of independent businesses at a time: shops, studios and services that are too big for off-the-shelf tools and too small for an agency.</p>
               <p className="about-copy">I run the ads, search and email that bring customers in, and I build the booking, store and back-office software that keeps them. Both halves report to the same number: your sales.</p>
+              <p className="about-copy">The software is made to measure. I start from how your staff and customers already do things and build to fit that, so nobody has to relearn their job.</p>
             </div>
             <div>
               {build && <Image className="photo" src={build.src} width={build.width} height={build.height} alt={build.alt} sizes="(max-width: 800px) 100vw, (min-width: 1440px) 560px, 40vw" />}
@@ -347,7 +356,7 @@ export default function HomePage() {
           <div className="case-grid">
             <div className="case-media">
               <h2>Adventureline</h2>
-              <p>Outdoor apparel on Shopify, Australia</p>
+              <p>Outdoor apparel on Shopify, Australia<a className="site-link" href="https://adventureline.com.au" target="_blank" rel="noopener noreferrer">adventureline.com.au<span className="sr-only"> (opens in a new tab)</span></a></p>
               <ProductVideo slug="adventureline" label="Adventureline" className="shot" />
               <blockquote className="quote">“Numbers are moving in the right direction which is great. Thanks again for steering us in the right direction!”<cite>Matt Browne, Owner</cite></blockquote>
             </div>
@@ -371,7 +380,7 @@ export default function HomePage() {
           <div className="case-grid">
             <div className="case-media">
               <h2>Playday</h2>
-              <p>Children’s art studios, New York and Hoboken</p>
+              <p>Children’s art studios, New York and Hoboken<a className="site-link" href="https://www.playday.com" target="_blank" rel="noopener noreferrer">playday.com<span className="sr-only"> (opens in a new tab)</span></a></p>
               <ProductVideo slug="playday" label="Playday" className="shot" />
               <blockquote className="quote">“Thanks so much for the incredible work you are putting into this.”<cite>Megan Smith, Director of Family Relations</cite></blockquote>
             </div>
