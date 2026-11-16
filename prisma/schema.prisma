@@ -245,3 +245,57 @@ model VoiceCall {
   @@index([createdAt])
   @@index([callerNumber])
 }
+
+enum CallBookingStatus {
+  BOOKED
+  CANCELLED
+  COMPLETED
+  NO_SHOW
+}
+
+/// Alex's weekly hours for intro calls. startTime and endTime are "HH:mm" wall
+/// clock in `timezone`, so a window keeps its local time through clock changes.
+model AvailabilityRule {
+  id        String   @id @default(cuid())
+  dayOfWeek Int
+  startTime String
+  endTime   String
+  timezone  String
+  createdAt DateTime @default(now())
+}
+
+model TimeOff {
+  id        String   @id @default(cuid())
+  startsAt  DateTime @db.Timestamptz(3)
+  endsAt    DateTime @db.Timestamptz(3)
+  note      String?
+  createdAt DateTime @default(now())
+}
+
+/// A 15 minute intro call booked from /book. Not linked to Client: a visitor is
+/// not a client until Alex makes them one. A reschedule cancels this row and
+/// creates a new one whose rescheduledFromId points back here; the unique
+/// constraint means two racing reschedules of one booking cannot both land.
+model CallBooking {
+  id                String            @id @default(cuid())
+  startsAt          DateTime          @db.Timestamptz(3)
+  endsAt            DateTime          @db.Timestamptz(3)
+  status            CallBookingStatus @default(BOOKED)
+  name              String
+  email             String
+  business          String
+  need              String
+  timezone          String
+  meetingUrl        String?
+  source            String?
+  /// Ad click ids and UTM tags from the booking form (gclid, utm_source, ...); null when there were none.
+  attribution       Json?
+  ipHash            String?
+  rescheduledFromId String?           @unique
+  cancelledAt       DateTime?
+  /// Set by the Google Calendar sync once it lands; null until then.
+  googleEventId     String?
+  createdAt         DateTime          @default(now())
+
+  @@index([status, startsAt])
+}
