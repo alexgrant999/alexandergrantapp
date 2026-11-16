@@ -2,26 +2,26 @@
   {
     "slot": "hero",
     "src": "/images/home/hero.jpg",
-    "width": 2560,
-    "height": 1600,
-    "alt": "A florist in a green apron opening the glass door of a flower shop, next to a \"Come in, we're open\" sign and pots of plants.",
-    "photographer": "Amina Filkins",
-    "photographerUrl": "https://www.pexels.com/@amina-filkins",
-    "pexelsUrl": "https://www.pexels.com/photo/calm-woman-standing-in-doorway-of-store-5413720/",
+    "width": 1920,
+    "height": 1080,
+    "alt": "A shop owner in a linen shirt checking a tablet behind a counter of cakes and cut flowers, in a bright room with sunlight across the wall.",
+    "photographer": "Hanna Pad",
+    "photographerUrl": "https://www.pexels.com/@anna-nekrashevich",
+    "pexelsUrl": "https://www.pexels.com/video/business-woman-using-tablet-while-doing-inventory-7550993/",
     "alternates": [
-      "https://www.pexels.com/photo/happy-woman-with-flowers-during-work-5409760/",
-      "https://www.pexels.com/photo/smiling-asian-florist-arranging-bouquet-for-female-client-5414064/"
+      "https://www.pexels.com/video/dressmaker-tracing-pattern-on-fabric-6460176/",
+      "https://www.pexels.com/video/an-elderly-man-cutting-a-black-fabric-6765471/"
     ]
   },
   {
     "slot": "hero-mobile",
     "src": "/images/home/hero-mobile.jpg",
-    "width": 1600,
-    "height": 2400,
-    "alt": "A florist in a green apron opening the glass door of a flower shop, next to a \"Come in, we're open\" sign and pots of plants.",
-    "photographer": "Amina Filkins",
-    "photographerUrl": "https://www.pexels.com/@amina-filkins",
-    "pexelsUrl": "https://www.pexels.com/photo/calm-woman-standing-in-doorway-of-store-5413720/",
+    "width": 720,
+    "height": 1200,
+    "alt": "A shop owner in a linen shirt checking a tablet behind a counter of cakes and cut flowers, in a bright room with sunlight across the wall.",
+    "photographer": "Hanna Pad",
+    "photographerUrl": "https://www.pexels.com/@anna-nekrashevich",
+    "pexelsUrl": "https://www.pexels.com/video/business-woman-using-tablet-while-doing-inventory-7550993/",
     "alternates": []
   },
   {
