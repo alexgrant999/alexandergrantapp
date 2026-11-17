@@ -32,11 +32,14 @@ export async function BookingFlow({
   basePath = '/book',
   headingLevel = 2,
   standalone = false,
+  anchor = '',
 }: {
   searchParams: Query | Promise<Query>
   basePath?: string
   headingLevel?: 2 | 3
   standalone?: boolean
+  /** Hash added to every step link, so a page that holds the flow lower down returns to it. */
+  anchor?: string
 }) {
   const query = await searchParams
   const tzParam = firstParam(query.tz)
@@ -59,7 +62,7 @@ export async function BookingFlow({
     if (step.day) search.set('day', step.day)
     if (step.startsAt) search.set('startsAt', step.startsAt)
     const qs = search.toString()
-    return qs ? `${basePath}?${qs}` : basePath
+    return (qs ? `${basePath}?${qs}` : basePath) + anchor
   }
 
   const slots = await getAvailableSlots()
