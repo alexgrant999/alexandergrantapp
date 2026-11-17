@@ -37,14 +37,14 @@ const work = [
 // One tab per client in the hero. Client-approved figures only; the label says what the number is.
 const heroTabs: ClientTab[] = [
   { id: 'adventureline', url: 'https://adventureline.com.au', site: 'adventureline.com.au', name: 'Adventureline', image: '/videos/adventureline.jpg', alt: 'The Adventureline online store', improved: 'Took over Google and Meta ads, SEO and email for an outdoor apparel store on Shopify. Rewrote 22 collections and 57 products for search.', rows: [['July sales, year on year', '+69%'], ['July orders, year on year', '+84%'], ['Search position, July, year on year', '31 to 17']] },
-  { id: 'playday', url: 'https://www.playday.com', site: 'playday.com', name: 'Playday', image: '/videos/playday.jpg', alt: 'The Playday booking site', improved: 'Replaced a Wix site with a booking platform for a chain of children’s art studios: bookings, Square payments, invoicing and automated follow-up.', rows: [['Studios live on it, two more in November', '5'], ['People using it since the August launch', '26,235'], ['Children added by their families', '760']] },
+  { id: 'playday', url: 'https://www.playday.com', site: 'playday.com', name: 'Playday', image: '/videos/playday.jpg', alt: 'The Playday booking site', improved: 'Replaced a Wix site with a booking platform for a chain of children’s art studios: bookings, Square payments, invoicing and automated follow-up.', rows: [['Studios live on it', '8'], ['People using it since the August launch', '30,844'], ['Children added by their families', '2,277']] },
   { id: 'findyoga', url: 'https://www.findyoga.com.au', site: 'findyoga.com.au', name: 'Find Yoga', image: '/videos/findyoga.jpg', alt: 'The Find Yoga Australia directory', improved: 'Rebuilt Australia’s yoga directory from a legacy site into a fast, searchable one, with every studio, class and event in one place.', rows: [['Listings', '6,478'], ['Events published', '15,727'], ['Google impressions, August to October', '400,000']] },
   { id: 'balispirit', url: 'https://schedule.balispiritfestival.com', site: 'balispiritfestival.com', name: 'Bali Spirit', image: '/videos/balispirit.jpg', alt: 'The Bali Spirit Festival schedule app', improved: 'A festival schedule that works offline on the field, replacing scheduling software that cost the festival more than $7,000 a year.', rows: [['People using it during festival week', '4,941'], ['Sessions scheduled', '450+'], ['Average time in the app per visit', '8 min']] },
   { id: 'trnzk', url: 'https://sewing-class.vercel.app', site: 'Booking site', name: 'TRNZK', image: '/videos/sewing-class.jpg', alt: 'The TRNZK sewing class booking site', improved: 'Term bookings with deposits, payment plans and class caps for a sewing school in Lennox Head. The owner now changes dates each term and little else.', rows: [['Terms booked through it', '3'], ['Weekly class slots', '7'], ['Pay by', 'Deposit and balance']] },
 ]
 
 const adventureline = [['July sales, year on year', '+69%'], ['July orders, year on year', '+84%'], ['Winter season sales', '+34%']]
-const playday = [['Studios live on it, two more in November', '5'], ['People using it since the August launch', '26,235'], ['Families booked, Tribeca opening weekend', '35']]
+const playday = [['Studios live on it', '8'], ['People using it since the August launch', '30,844'], ['Families booked, Tribeca opening weekend', '35']]
 
 // Art direction: a wide crop for desktop and a tall crop of the same photo for phones.
 function heroImage() {
@@ -239,6 +239,8 @@ export default function HomePage() {
         .contact-inner { width:min(1440px,100%); margin:auto; padding:clamp(60px,8vw,110px) var(--gutter) clamp(75px,10vw,140px); }
         .contact-grid { display:grid; grid-template-columns:1.2fr .8fr; gap:clamp(40px,8vw,130px); margin-top:clamp(40px,6vw,80px); }
         .contact h2 { font-size:clamp(3rem,6.4vw,6rem); line-height:1; max-width:14ch; }
+        .contact-book { margin:0 0 30px; }
+        .contact .button, .contact .button:hover { background:var(--paper); color:var(--green-deep); }
         .contact-copy { font-size:1.1875rem; line-height:1.55; max-width:44ch; margin:30px 0; }
         .email { display:inline-block; padding:12px 0; font-weight:600; text-underline-offset:5px; }
         .form-wrap { align-self:end; }
@@ -315,7 +317,7 @@ export default function HomePage() {
         <nav className="nav" aria-label="Main navigation">
           <div className="wordmark">Alexander Grant</div>
           <div className="nav-mid">Marketing and software for independent shops</div>
-          <a href="#contact">Let’s talk</a>
+          <a href="/book">Book a call</a>
         </nav>
       </header>
 
@@ -327,7 +329,7 @@ export default function HomePage() {
           <div className="hero-box">
             <h1>I help independent shops sell more.</h1>
             <p className="hero-copy">I run your ads, search and email, and build software made to measure, fitted to the way your business already runs. Every month you get a plain report on what it did to your sales.</p>
-            <div className="hero-actions"><a className="button" href="#contact">Tell me about your business</a><a className="textlink" href="#about">Or take the tour</a></div>
+            <div className="hero-actions"><a className="button" href="/book">Book a 15 minute call</a><a className="textlink" href="#contact">Or send me a message</a></div>
             <HeroLedger tabs={heroTabs} />
           </div>
         </div>
@@ -435,7 +437,7 @@ export default function HomePage() {
         </section>
       </div>
 
-      <section className="contact" id="contact"><div className="contact-inner"><Folio name="Talk to me" no="6" /><div className="contact-grid"><div><h2>Tell me about your business.</h2><p className="contact-copy">Send me a message about what you sell and what isn’t working. I’ll take a look and tell you honestly whether I can help.</p><a className="email" href="mailto:alexandergrantapp@gmail.com">alexandergrantapp@gmail.com</a></div><div className="form-wrap"><WhatsAppForm /></div></div></div></section>
+      <section className="contact" id="contact"><div className="contact-inner"><Folio name="Talk to me" no="6" /><div className="contact-grid"><div><h2>Tell me about your business.</h2><p className="contact-copy">Book a free 15 minute call, or send me a message about what you sell and what isn’t working. I’ll tell you honestly whether I can help.</p><p className="contact-book"><a className="button" href="/book">Book a 15 minute call</a></p><a className="email" href="mailto:alexandergrantapp@gmail.com">alexandergrantapp@gmail.com</a></div><div className="form-wrap"><WhatsAppForm /></div></div></div></section>
       </main>
       <footer><div className="footer"><span>Alexander Grant</span><span>New York, working internationally</span><a href="https://www.pexels.com" target="_blank" rel="noopener noreferrer">Photography from Pexels<span className="sr-only"> (opens in a new tab)</span></a><span>© 2026</span></div></footer>
     </>
