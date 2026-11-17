@@ -3,13 +3,12 @@ import Link from 'next/link'
 import { CALL_MINUTES, getAvailableSlots, getBookingByToken } from '@/lib/services/booking'
 import { BookingShell } from '@/components/booking/BookingShell'
 import { BookingSummary } from '@/components/booking/BookingSummary'
-import { DayPicker } from '@/components/booking/DayPicker'
-import { SlotPicker } from '@/components/booking/SlotPicker'
+import { CalendarPicker } from '@/components/booking/CalendarPicker'
 import { TimezonePicker } from '@/components/booking/TimezonePicker'
 import { CancelCall, MoveCall } from '@/components/booking/ManageActions'
 import { WhatsAppLink } from '@/components/booking/ContactLinks'
 import { StatusNote } from '@/components/booking/StatusNote'
-import { addDays, firstParam, formatDayLong, formatTime, formatWeekday, groupByPartOfDay, isIanaZone, resolveSteps, zoneCity, zoneDate } from '@/components/booking/format'
+import { firstParam, formatDayLong, formatTime, formatWeekday, isIanaZone, resolveSteps, zoneCity, zoneDate } from '@/components/booking/format'
 
 export const metadata: Metadata = {
   title: 'Your call | Alexander Grant',
@@ -127,46 +126,27 @@ export default async function ManageBookingPage({ params, searchParams }: { para
       )
     }
 
-    if (!day) {
-      const today = zoneDate(new Date(), zone)
-      const tomorrow = addDays(today, 1)
-      return (
-        <BookingShell folio="Your call" step="Move, step 1 of 3" back={{ href: withTz({}), label: 'Back to your call' }} intro={intro}>
-          <h2 className="bk-h2">Pick a new day</h2>
-          {zoneLine}
-          <DayPicker
-            days={days.map(d => ({
-              href: withTz({ change: '1', day: d.date }),
-              tag: d.date === today ? 'Today' : d.date === tomorrow ? 'Tomorrow' : undefined,
-              label: formatDayLong(d.slots[0].startsAt, zone),
-              count: d.slots.length,
-            }))}
-          />
-        </BookingShell>
-      )
-    }
-
-    const first = day.slots[0].startsAt
     if (!selected) {
-      const isToday = day.date === zoneDate(new Date(), zone)
+      const shown = day ?? days[0]
       return (
-        <BookingShell folio="Your call" step="Move, step 2 of 3" back={{ href: withTz({ change: '1' }), label: 'Back to days' }} intro={intro}>
-          <h2 className="bk-h2">{isToday ? 'Pick a new time today' : `Pick a new time on ${formatWeekday(first, zone)}`}</h2>
+        <BookingShell folio="Your call" step="Move, step 1 of 2" back={{ href: withTz({}), label: 'Back to your call' }} intro={intro}>
+          <h2 className="bk-h2">Pick a new day and time</h2>
           {zoneLine}
-          <SlotPicker
-            groups={groupByPartOfDay(day.slots, zone).map(g => ({
-              label: g.label,
-              slots: g.slots.map(s => ({ href: withTz({ change: '1', day: day.date, startsAt: s.startsAt }), label: formatTime(s.startsAt, zone) })),
-            }))}
+          <CalendarPicker
+            days={days.map(d => ({ date: d.date, href: withTz({ change: '1', day: d.date }), label: formatDayLong(d.slots[0].startsAt, zone), count: d.slots.length }))}
+            selected={shown.date}
+            today={zoneDate(new Date(), zone)}
+            dayLabel={formatDayLong(shown.slots[0].startsAt, zone)}
+            slots={shown.slots.map(s => ({ href: withTz({ change: '1', day: shown.date, startsAt: s.startsAt }), label: formatTime(s.startsAt, zone) }))}
           />
         </BookingShell>
       )
     }
 
     const time = formatTime(selected.startsAt, zone)
-    const chooseTimeHref = withTz({ change: '1', day: day.date })
+    const chooseTimeHref = withTz({ change: '1', day: zoneDate(selected.startsAt, zone) })
     return (
-      <BookingShell folio="Your call" step="Move, step 3 of 3" back={{ href: chooseTimeHref, label: 'Back to times' }} intro={intro}>
+      <BookingShell folio="Your call" step="Move, step 2 of 2" back={{ href: chooseTimeHref, label: 'Back to times' }} intro={intro}>
         <h2 className="bk-h2">Move it to this time?</h2>
         {zoneLine}
         <BookingSummary rows={[{ label: 'New day', value: formatDayLong(selected.startsAt, zone) }, { label: 'New time', value: time }]} />
