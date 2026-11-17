@@ -8,7 +8,7 @@ export const PLAYDAY: Proof = {
   image: '/videos/playday.jpg',
   alt: 'The Playday booking site',
   summary: 'Replaced a Wix site with a booking platform for a chain of children’s art studios: bookings, Square payments, invoicing and automated follow-up.',
-  rows: [['Studios live on it, two more in November', '5'], ['People using it since the August launch', '26,235'], ['Children added by their families', '760']],
+  rows: [['Studios live on it', '8'], ['People using it since the August launch', '30,844'], ['Children added by their families', '2,277']],
 }
 
 export const TRNZK: Proof = {

@@ -76,7 +76,7 @@ Primary organic keyword: alternative to Wix Bookings (estimate, check volume in 
 Secondary: outgrown Wix website; Wix Bookings limitations; move off Wix without losing SEO; Squarespace booking alternative; replace Wix with custom website.
 
 Title tag (58 characters): Outgrown Wix Bookings? A Custom Booking Site | Alex Grant
-Meta description (about 150): When Wix or Squarespace can no longer handle your bookings, I build a system around how you already work. Built for Playday, 5 studios live. Book a 15 minute call.
+Meta description (about 150): When Wix or Squarespace can no longer handle your bookings, I build a system around how you already work. Built for Playday, 8 studios live. Book a 15 minute call.
 H1: When your Wix site can no longer run your bookings
 
 Outline, section by section:
@@ -84,7 +84,7 @@ Outline, section by section:
 1. Hero. Job: confirm the problem in the visitor's words, show the two actions. One sentence on what changes (one system, built around how you already run classes, staff do not relearn their job). Buttons: "Book a 15 minute call" and "Message me on WhatsApp".
 2. Signs you have outgrown it. Job: self-qualify, and match long tail queries. Five to six plain bullets (bookings and payments live in different places, staff retype data, parents cannot manage their own bookings, you pay for apps to patch gaps). Do not claim Wix limits that are not true; check each against current Wix documentation before publishing.
 3. What I replace it with. Job: explain "made to measure" concretely: bookings, payments, invoicing, automated follow-up, in one system, built from your current process.
-4. Proof, Playday. Job: the credibility block. Figures allowed: replaced a Wix site with a booking platform for a chain of children's art studios; bookings, Square payments, invoicing, automated follow-up; 5 studios live; 26,235 users since the August launch. Link to playday.com (new tab, noopener). Do not add the 760 children or the 35 families figures unless Alex re-confirms them for this page (they are on the homepage).
+4. Proof, Playday. Job: the credibility block. Figures allowed: replaced a Wix site with a booking platform for a chain of children's art studios; bookings, Square payments, invoicing, automated follow-up; 8 studios live; 30,844 users since the August launch. Link to playday.com (new tab, noopener). Do not add the 760 children or the 35 families figures unless Alex re-confirms them for this page (they are on the homepage).
 5. What about my Google rankings? Job: remove the biggest fear of leaving Wix. Redirects mapped page for page before launch. Only say Alex did this for Playday after he confirms it (the playday SEO notes show old Wix domains redirect page for page, but that is not on the client approved list).
 6. How it works. Job: three steps (call, I look at how you work now, I build and you go live studio by studio). No prices unless Alex gives a range.
 7. Closing call to action. Same two buttons, one line of reassurance (honest answer if I am not the right fit, which the homepage already promises).
@@ -108,7 +108,7 @@ Primary organic keyword: custom booking software for studios (estimate, low volu
 Secondary: class booking system custom built; camp registration system for activity business; party booking system with deposits; membership booking software alternative.
 
 Title tag (60): Custom Booking Software for Studios and Classes | Alex Grant
-Meta description: Class, camp, party and membership booking built around how your studio already runs. Live at Playday (5 studios) and TRNZK sewing school. Book a 15 minute call.
+Meta description: Class, camp, party and membership booking built around how your studio already runs. Live at Playday (8 studios) and TRNZK sewing school. Book a 15 minute call.
 H1: Booking software built around how your studio already runs
 
 Outline:
@@ -116,7 +116,7 @@ Outline:
 1. Hero. Job: say plainly who it is for (studios, camps, party venues, class businesses) and what is different (built to measure, not another subscription to learn). Two buttons.
 2. Off the shelf versus made to measure. Job: honest comparison for someone choosing. When a ready-made product is the right answer (small studio, simple classes) and when it is not (your process does not fit, you pay per feature, you want parents to book their own dates). This honesty is what makes it rankable and trustworthy. Name no competitor features here without checking them on the competitor's own site.
 3. What a studio system can include. Job: classes and terms, camps, parties, memberships, payments, deposits, invoicing, automated follow-up. Only list what Alex has built (Playday: bookings, Square payments, invoicing, automated follow-up; TRNZK: term bookings with deposits and payment plans and class caps).
-4. Proof, Playday and TRNZK, side by side. Playday figures: 5 studios live, 26,235 users since the August launch. TRNZK: term bookings with deposits and payment plans for a sewing school (the homepage says three terms booked, seven weekly slots; these are on the homepage but not on the brief list, confirm they are client approved before reuse). The owner changes dates each term and little else.
+4. Proof, Playday and TRNZK, side by side. Playday figures: 8 studios live, 30,844 users since the August launch. TRNZK: term bookings with deposits and payment plans for a sewing school (the homepage says three terms booked, seven weekly slots; these are on the homepage but not on the brief list, confirm they are client approved before reuse). The owner changes dates each term and little else.
 5. How it works and what you get. Job: three steps, plus what the client owns (confirm ownership and hosting terms with Alex before writing).
 6. Closing call to action.
 
@@ -174,7 +174,7 @@ Outline:
 1. Hero. Job: name the patchwork the visitor recognises and promise the alternative. Two buttons.
 2. The patchwork problem. Job: describe the cost of Wix or Squarespace plus Docs plus Mailchimp plus spreadsheets in plain terms (double entry, nothing talks to anything, one person holds the knowledge). Do not invent statistics.
 3. What "made to measure" means. Job: the positioning in three steps: I watch how you work now, I build to match so staff do not relearn their job, I stay on to change it. Contrast with configuring someone else's software.
-4. Proof, two examples. Playday (5 studios live, 26,235 users since the August launch). Bali Spirit Festival schedule app (replaced scheduling software that cost the festival over 7,000 dollars a year; the homepage also states 4,941 people during festival week, 450+ sessions and 8 minutes per visit, confirm approval before reuse).
+4. Proof, two examples. Playday (8 studios live, 30,844 users since the August launch). Bali Spirit Festival schedule app (replaced scheduling software that cost the festival over 7,000 dollars a year; the homepage also states 4,941 people during festival week, 450+ sessions and 8 minutes per visit, confirm approval before reuse).
 5. What it does and does not suit. Job: honest limits (not a fit if an off-the-shelf tool already does the job; say so, the rankable and trustworthy angle). Link out to the T1 and T2 pages for the two commonest cases.
 6. How it works and what it costs. Cost range only if Alex supplies one, because "how much does custom software cost" is a real query this page can own with a true answer.
 7. Closing call to action.

@@ -5,7 +5,7 @@ const content: LandingContent = {
   path: '/wix-booking-alternative',
   crumb: 'Wix booking alternative',
   title: 'Outgrown Wix Bookings? A Custom Booking Site | Alex Grant',
-  description: 'When Wix or Squarespace can no longer handle your bookings, I build a system around how you already work. Built for Playday, 5 studios live. Book a 15 minute call.',
+  description: 'When Wix or Squarespace can no longer handle your bookings, I build a system around how you already work. Built for Playday, 8 studios live. Book a 15 minute call.',
   h1: 'When your Wix site can no longer run your bookings',
   lead: 'I replace it with one booking system built around how you already run your classes, so your staff keep working the way they do and stop copying between tabs.',
   before: [

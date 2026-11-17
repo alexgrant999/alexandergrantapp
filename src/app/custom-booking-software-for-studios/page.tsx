@@ -5,7 +5,7 @@ const content: LandingContent = {
   path: '/custom-booking-software-for-studios',
   crumb: 'Booking software for studios',
   title: 'Custom Booking Software for Studios and Classes | Alex Grant',
-  description: 'Class and term booking built around how your studio already runs. Live at Playday (5 studios) and TRNZK sewing school. Book a 15 minute call.',
+  description: 'Class and term booking built around how your studio already runs. Live at Playday (8 studios) and TRNZK sewing school. Book a 15 minute call.',
   h1: 'Booking software built around how your studio already runs',
   lead: 'For studios, schools and class businesses whose way of working doesn’t fit a ready-made booking product. I build the system to fit you, so it isn’t another subscription your staff have to learn.',
   before: [

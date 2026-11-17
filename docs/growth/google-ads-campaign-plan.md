@@ -189,7 +189,7 @@ Note: "grant" also covers searches for Alex's own name, so brand searches stay o
 
 Two per ad group. Ad A pins one keyword headline to position 1. Ad B is unpinned, with shorter headlines in sentence case. Counts were computed by script, and every line is within 30 characters (headlines), 90 (descriptions) and 15 (paths). The checker also rejects em or en dashes, exclamation marks and superlatives.
 
-Figures used, and where they come from (src/app/page.tsx heroTabs and case chapters): Playday replaced a Wix site with bookings, Square payments, invoicing and automated follow-up, 5 studios live, 26,235 people since the August launch. Adventureline: Google and Meta ads, SEO and email taken over, July sales up 69 percent and July orders up 84 percent year on year. Bali Spirit: replaced scheduling software that cost more than $7,000 a year. TRNZK: term bookings with deposits, payment plans and class caps. Features named (waitlists, QR check-in, reminders, one admin for every studio) are from the Playday case chapter. Ad strings keep "$" and "%" as on the site, because they are customer-facing copy.
+Figures used, and where they come from (src/app/page.tsx heroTabs and case chapters): Playday replaced a Wix site with bookings, Square payments, invoicing and automated follow-up, 8 studios live, 30,844 people since the August launch. Adventureline: Google and Meta ads, SEO and email taken over, July sales up 69 percent and July orders up 84 percent year on year. Bali Spirit: replaced scheduling software that cost more than $7,000 a year. TRNZK: term bookings with deposits, payment plans and class caps. Features named (waitlists, QR check-in, reminders, one admin for every studio) are from the Playday case chapter. Ad strings keep "$" and "%" as on the site, because they are customer-facing copy.
 
 The call is free (confirmed 2026-11-16), so ad A in each group and callout C4 say so. "free" stays a negative keyword: that blocks searches for free software, not the ad text.
 
@@ -217,7 +217,7 @@ H13 | Based in New York | 17
 H14 | Book a free 15 minute call | 26
 D1 | I build one system around how your business already runs, so nobody relearns their job. | 87
 D2 | Bookings, payments, invoices and follow-up in one place, instead of Wix and spreadsheets. | 89
-D3 | I replaced Playday's Wix site with a booking system 26,235 people have used since August. | 89
+D3 | I replaced Playday's Wix site with a booking system 30,844 people have used since August. | 89
 D4 | Book a 15 minute call. I will tell you plainly whether custom software is worth it. | 83
 Path | custom-software / small-business | 15, 14
 
@@ -249,7 +249,7 @@ H2 | Classes, camps and parties | 26
 H3 | Memberships and class packs | 27
 H4 | Payments, waitlists, reminders | 30
 H5 | 5 studios on one system | 23
-H6 | 26,235 users since August | 25
+H6 | 30,844 users since August | 25
 H7 | Replaced a Wix site | 19
 H8 | Built around your studio | 24
 H9 | One admin for every studio | 26
@@ -258,7 +258,7 @@ H11 | Custom booking system | 21
 H12 | Book a free 15 minute call | 26
 D1 | Families book and pay online. Staff run every studio from one admin. | 68
 D2 | Classes, camps, parties, class packs and memberships, with waitlists when a class fills. | 88
-D3 | I built Playday's booking platform. 5 studios run on it, 26,235 people since August. | 84
+D3 | I built Playday's booking platform. 8 studios run on it, 30,844 people since August. | 84
 D4 | For studios that have outgrown a booking app. Book a 15 minute call with me. | 76
 Path | booking-system / studios | 14, 7
 
@@ -271,7 +271,7 @@ H5 | Waitlists when a class fills | 28
 H6 | Text and email reminders | 24
 H7 | QR check-in at the door | 23
 H8 | 5 studios, one system | 21
-H9 | 26,235 users since August | 25
+H9 | 30,844 users since August | 25
 H10 | Term bookings with deposits | 27
 H11 | Made for your studio | 20
 H12 | Book a 15 minute call | 21
