@@ -82,6 +82,8 @@ const PARTS = `
   .bk-input { width:100%; min-height:48px; margin-top:2px; padding:10px 0 12px; background:transparent; color:var(--ink); border:0; border-bottom:1px solid var(--ink); border-radius:0; font:400 1.0625rem/1.5 'Libre Franklin',sans-serif; }
   textarea.bk-input { min-height:140px; resize:vertical; }
   .bk-input[aria-invalid="true"] { border-bottom:3px double var(--ink); }
+  .bk-check { display:flex; align-items:center; gap:12px; min-height:44px; font-weight:600; cursor:pointer; }
+  .bk-check input { width:22px; height:22px; margin:0; accent-color:var(--green); flex:none; }
   .bk-count { margin:6px 0 0; color:var(--muted); text-align:right; font-variant-numeric:lining-nums tabular-nums; }
   .bk-error { margin:8px 0 0; font-weight:600; }
   .bk-error:empty { margin:0; }

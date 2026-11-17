@@ -22,6 +22,7 @@ export type BookingEmailData = {
   timezone: string
   meetingUrl: string | null
   source: string | null
+  phone?: string | null
 }
 
 export function appUrl(): string {
@@ -118,27 +119,31 @@ function zoneLabel(timezone: string): string {
   return `${zoneCity(timezone)} time`
 }
 
-type Message = { to: string; subject: string; html: string; text: string; replyTo: string; ics?: string }
+type Message = { to: string; subject: string; html: string; text: string; replyTo: string; ics?: string; scheduledAt?: Date }
 
-async function send(message: Message, label: string): Promise<void> {
+/** Resolves to Resend's id for the email, or null when it was not sent. */
+async function send(message: Message, label: string): Promise<string | null> {
   const apiKey = process.env.RESEND_API_KEY
   if (!apiKey) {
     console.warn(`[booking-email] RESEND_API_KEY not set, ${label} not sent`)
-    return
+    return null
   }
   try {
-    const { error } = await new Resend(apiKey).emails.send({
+    const { data, error } = await new Resend(apiKey).emails.send({
       from: FROM,
       to: message.to,
       replyTo: message.replyTo,
       subject: message.subject,
       html: message.html,
       text: message.text,
+      ...(message.scheduledAt ? { scheduledAt: message.scheduledAt.toISOString() } : {}),
       ...(message.ics ? { attachments: [{ filename: 'intro-call.ics', content: Buffer.from(message.ics), contentType: 'text/calendar' }] } : {}),
     })
     if (error) console.warn(`[booking-email] ${label} failed`, error.message)
+    return data?.id ?? null
   } catch (err) {
     console.warn(`[booking-email] ${label} failed`, err)
+    return null
   }
 }
 
@@ -205,6 +210,49 @@ export async function sendVisitorConfirmation(booking: BookingEmailData, manageU
   )
 }
 
+/**
+ * Queues a reminder with Resend to go out at `sendAt`, and resolves to its id so it can be
+ * cancelled if the call moves. `kind` is how far ahead it lands: the day before, or the hour before.
+ */
+export async function scheduleVisitorReminder(booking: BookingEmailData, manageUrl: string, kind: 'day' | 'hour', sendAt: Date): Promise<string | null> {
+  const when = `${formatWhen(booking.startsAt, booking.timezone)} (${zoneLabel(booking.timezone)})`
+  const lead = kind === 'day' ? `A reminder that your 15 minute intro call with Alex is on ${when}.` : `Your 15 minute intro call with Alex starts in an hour, on ${when}.`
+  const changeText = manageUrl ? `Need to change or cancel it? Use this link: ${manageUrl}` : 'Need to change or cancel it? Just reply to this email.'
+  const changeHtml = manageUrl ? `Need to change or cancel it? ${link(manageUrl, 'Change or cancel your call')}.` : escapeHtml(changeText)
+  return send(
+    {
+      to: booking.email,
+      replyTo: REPLY_TO,
+      scheduledAt: sendAt,
+      subject: kind === 'day' ? 'Reminder: your call with Alex' : 'Your call with Alex starts in an hour',
+      text: [`Hi ${firstWord(booking.name)},`, lead, meetingLine(booking.meetingUrl), changeText, 'Alex'].join('\n\n'),
+      html: layout(
+        [
+          `Hi ${escapeHtml(firstWord(booking.name))},`,
+          escapeHtml(lead),
+          booking.meetingUrl ? `Join here: ${link(booking.meetingUrl)}` : escapeHtml(meetingLine(null)),
+          changeHtml,
+        ],
+        booking.meetingUrl ? { label: 'Join the call', url: booking.meetingUrl } : undefined,
+        'Alexander Grant · alexandergrant.app',
+      ),
+    },
+    `${kind} reminder for booking ${booking.id}`,
+  )
+}
+
+/** Calls back a reminder queued by scheduleVisitorReminder. Best effort: one already sent cannot be cancelled. */
+export async function cancelScheduledEmail(id: string): Promise<void> {
+  const apiKey = process.env.RESEND_API_KEY
+  if (!apiKey) return
+  try {
+    const { error } = await new Resend(apiKey).emails.cancel(id)
+    if (error) console.warn(`[booking-email] cancelling reminder ${id} failed`, error.message)
+  } catch (err) {
+    console.warn(`[booking-email] cancelling reminder ${id} failed`, err)
+  }
+}
+
 /** Tells the visitor their call is off, with a link to book again. `by` says who cancelled. */
 export async function sendVisitorCancellation(booking: BookingEmailData, by: 'visitor' | 'owner'): Promise<void> {
   const when = `${formatWhen(booking.startsAt, booking.timezone)} (${zoneLabel(booking.timezone)})`
@@ -251,6 +299,7 @@ export async function sendOwnerNotice(
     ...(event.kind === 'moved' ? [['Was', `${formatWhen(event.from, ownerTimezone)} ${zoneLabel(ownerTimezone)}`] as [string, string]] : []),
     ['Name', booking.name],
     ['Email', booking.email],
+    ...(booking.phone ? [['Mobile', booking.phone] as [string, string]] : []),
     ['Business', booking.business],
     ['Wants to talk about', booking.need || '(left blank)'],
     ...(booking.source ? [['Source', booking.source] as [string, string]] : []),

@@ -49,6 +49,16 @@ const attributionValue = z
 
 const attributionFields = Object.fromEntries(ATTRIBUTION_KEYS.map(key => [key, attributionValue])) as Record<AttributionKey, typeof attributionValue>
 
+/** "+12125550100". Ten digits with no country code are read as a US number. Null when it cannot be a phone number. */
+export function normalisePhone(raw: string): string | null {
+  const trimmed = raw.trim()
+  const digits = trimmed.replace(/\D/g, '')
+  if (trimmed.startsWith('+')) return /^\d{8,15}$/.test(digits) ? `+${digits}` : null
+  if (digits.length === 10) return `+1${digits}`
+  if (digits.length === 11 && digits.startsWith('1')) return `+${digits}`
+  return null
+}
+
 /**
  * A visitor booking an intro call. A zone the server cannot read becomes "",
  * which the service reads as Alex's zone: the visitor cannot fix their
@@ -56,7 +66,8 @@ const attributionFields = Object.fromEntries(ATTRIBUTION_KEYS.map(key => [key, a
  * the honeypot; the action acts on it before this schema runs, so a bot never
  * sees a field error for it. Unknown keys are dropped, as zod objects do by default.
  */
-export const bookCallSchema = z.object({
+export const bookCallSchema = z
+  .object({
   name: z.string().trim().min(1, 'Please tell me your name.').max(80, 'Please use a shorter name.'),
   email: z.string().trim().toLowerCase().max(200, 'Please check the email address.').pipe(z.email('Please check the email address.')),
   business: z.string().trim().min(1, 'Please tell me the name of your business.').max(120, 'Please use a shorter business name.'),
@@ -76,8 +87,15 @@ export const bookCallSchema = z.object({
     .transform(value => value || undefined),
   website: z.string().max(0).default(''),
   startedAt: z.coerce.number().int().nonnegative(),
+  /** Only used when smsConsent is ticked. */
+  phone: z.string().trim().max(30, 'Please check the mobile number.').default(''),
+  smsConsent: z.boolean().default(false),
   ...attributionFields,
 })
+  .refine(data => !data.smsConsent || normalisePhone(data.phone) !== null, {
+    path: ['phone'],
+    message: 'Please add a mobile number with its country code, like +1 212 555 0100.',
+  })
 
 export type BookCallInput = z.infer<typeof bookCallSchema>
 

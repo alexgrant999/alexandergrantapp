@@ -3,8 +3,9 @@ import type { CallBooking, Prisma } from '@prisma/client'
 import { prisma } from '@/lib/db/prisma'
 import { computeSlots, subtractSpan, type Span } from '@/lib/schedule-windows'
 import { localParts, shiftDate, zonedTimeToUtc } from '@/lib/time'
-import { ATTRIBUTION_KEYS, type BookCallInput, type TimeOffInput } from '@/lib/validators/booking'
+import { ATTRIBUTION_KEYS, normalisePhone, type BookCallInput, type TimeOffInput } from '@/lib/validators/booking'
 import { appUrl, sendOwnerNotice, sendVisitorCancellation, sendVisitorConfirmation } from '@/lib/services/booking-email'
+import { cancelReminders, scheduleReminders } from '@/lib/services/booking-reminders'
 import { calendarEventIdFor, createCalendarEvent, deleteCalendarEvent, getCalendarBusy } from '@/lib/services/google-calendar'
 
 /**
@@ -360,6 +361,8 @@ export async function bookCall(input: BookCallInput, meta: { ip: string | null; 
         source: input.source ?? null,
         attribution: attributionOf(input) ?? undefined,
         ipHash,
+        phone: input.smsConsent ? normalisePhone(input.phone) : null,
+        smsConsentAt: input.smsConsent ? now : null,
       },
     })
     return { ok: true, booking } as const
@@ -373,6 +376,7 @@ export async function bookCall(input: BookCallInput, meta: { ip: string | null; 
       sendVisitorConfirmation(booking, manageUrlFor(booking.id)),
       sendOwnerNotice(booking, { kind: 'booked' }, OWNER_TIMEZONE),
       addToCalendar(booking),
+      scheduleReminders(booking, manageUrlFor(booking.id)),
     ])
   }, meta.defer)
 
@@ -413,6 +417,7 @@ export async function cancelBooking(token: string, options?: { defer?: Defer }):
       sendVisitorCancellation(booking, 'visitor'),
       sendOwnerNotice(booking, { kind: 'cancelled' }, OWNER_TIMEZONE),
       removeFromCalendar(booking),
+      cancelReminders(booking.id),
     ])
   }, options?.defer)
 
@@ -471,6 +476,8 @@ export async function rescheduleBooking(
           source: current.source,
           attribution: readAttribution(current.attribution) ?? undefined,
           ipHash: current.ipHash,
+          phone: current.phone,
+          smsConsentAt: current.smsConsentAt,
           rescheduledFromId: current.id,
         },
       })
@@ -489,6 +496,8 @@ export async function rescheduleBooking(
       sendOwnerNotice(next, { kind: 'moved', from: current.startsAt }, OWNER_TIMEZONE),
       removeFromCalendar(current),
       addToCalendar(next),
+      cancelReminders(current.id),
+      scheduleReminders(next, manageUrlFor(next.id)),
     ])
   }, options?.defer)
 
@@ -549,7 +558,7 @@ export async function setBookingStatus(
   if (!booking) return
   const stillAhead = booking.startsAt > now
   await dispatch(async () => {
-    await Promise.all([removeFromCalendar(booking), ...(stillAhead ? [sendVisitorCancellation(booking, 'owner')] : [])])
+    await Promise.all([removeFromCalendar(booking), cancelReminders(booking.id), ...(stillAhead ? [sendVisitorCancellation(booking, 'owner')] : [])])
   }, options?.defer)
 }
 

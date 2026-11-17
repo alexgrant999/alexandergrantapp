@@ -47,6 +47,8 @@ export async function bookCallAction(_prev: BookFormState, formData: FormData): 
     source: field('source'),
     website: '',
     startedAt: field('startedAt'),
+    phone: field('phone'),
+    smsConsent: field('smsConsent') === 'on',
     ...Object.fromEntries(ATTRIBUTION_KEYS.map(key => [key, field(key)])),
   })
 

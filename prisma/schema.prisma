@@ -295,6 +295,12 @@ model CallBooking {
   cancelledAt       DateTime?
   /// Set by the Google Calendar sync once it lands; null until then.
   googleEventId     String?
+  /// E.164 mobile number, kept only when the visitor asked for a text reminder.
+  phone             String?
+  smsConsentAt      DateTime?
+  /// Ids of the reminders queued with Resend and Twilio, so a cancel or a move can call them back.
+  reminderEmailIds  String[]          @default([])
+  reminderSmsSid    String?
   createdAt         DateTime          @default(now())
 
   @@index([status, startsAt])

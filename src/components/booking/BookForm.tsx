@@ -6,7 +6,7 @@ import { bookCallAction, type BookFormState } from '@/app/book/actions'
 import { WhatsAppLink } from './ContactLinks'
 
 const NEED_MAX = 600
-const FIELDS = ['name', 'email', 'business', 'need'] as const
+const FIELDS = ['name', 'email', 'business', 'need', 'phone'] as const
 type Field = (typeof FIELDS)[number]
 
 function SubmitButton({ label }: { label: string }) {
@@ -31,6 +31,7 @@ export function BookForm({
   startedAt,
   submitLabel,
   chooseTimeHref,
+  smsEnabled = false,
 }: {
   startsAt: string
   timezone: string
@@ -42,18 +43,24 @@ export function BookForm({
   /** "Book Tuesday at 10:30 am" */
   submitLabel: string
   chooseTimeHref: string
+  /** Shows the optional text reminder. Off until texts are set up. */
+  smsEnabled?: boolean
 }) {
   const [state, formAction] = useActionState<BookFormState, FormData>(bookCallAction, {})
-  const [values, setValues] = useState<Record<Field, string>>({ name: '', email: '', business: '', need: '' })
+  const [values, setValues] = useState<Record<Field, string>>({ name: '', email: '', business: '', need: '', phone: '' })
+  const [smsConsent, setSmsConsent] = useState(false)
   // The first render's time, kept through a time zone change: that re-renders the step with a new
   // startedAt while the typed answers stay, and a quick submit after it would be dropped as a bot.
   const [firstStartedAt] = useState(startedAt)
   const formRef = useRef<HTMLFormElement>(null)
+  const consentRef = useRef<HTMLInputElement>(null)
   const errors = state.fieldErrors ?? {}
   const fieldErrorCount = FIELDS.filter(f => errors[f]).length
 
-  // After a failed submit, put the visitor on the first field that needs fixing.
+  // After a failed submit, put the visitor on the first field that needs fixing. React clears a checkbox when
+  // the action returns even though its state is unchanged, so the box is put back to match.
   useEffect(() => {
+    if (consentRef.current) consentRef.current.checked = smsConsent
     const first = FIELDS.find(f => state.fieldErrors?.[f])
     if (first) formRef.current?.querySelector<HTMLElement>(`[name="${first}"]`)?.focus()
   }, [state])
@@ -111,6 +118,25 @@ export function BookForm({
         <p className="bk-count" aria-hidden="true">{values.need.length} of {NEED_MAX}</p>
         <p id="bk-need-error" className="bk-error">{errors.need}</p>
       </div>
+
+      {smsEnabled && (
+        <div className="bk-field">
+          {smsConsent && <input type="hidden" name="smsConsent" value="on" />}
+          <label className="bk-check">
+            <input ref={consentRef} type="checkbox" checked={smsConsent} onChange={e => setSmsConsent(e.target.checked)} />
+            <span>Text me a reminder an hour before the call</span>
+          </label>
+          <p id="bk-phone-hint" className="bk-hint">Optional. One text per call, from Alex Grant. Message and data rates may apply. Reply STOP to opt out. You’ll get email reminders either way.</p>
+          {smsConsent && (
+            <>
+              <label className="bk-label" htmlFor="bk-phone" style={{ marginTop: 14 }}>Mobile number</label>
+              <input id="bk-phone" className="bk-input" name="phone" type="tel" inputMode="tel" autoComplete="tel" maxLength={30} placeholder="+1 212 555 0100"
+                value={values.phone} onChange={set('phone')} aria-invalid={invalid('phone')} aria-describedby={describedBy('phone', true)} />
+            </>
+          )}
+          <p id="bk-phone-error" className="bk-error">{errors.phone}</p>
+        </div>
+      )}
 
       <div className="bk-submit">
         <SubmitButton label={submitLabel} />
