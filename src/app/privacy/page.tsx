@@ -80,6 +80,13 @@ export default function PrivacyPage() {
           organiser&apos;s own number. Guests who submit that form are not added to the SMS program
           and receive no text messages.
         </p>
+        <p className="mt-3">
+          <strong>Call bookings:</strong> when you book a call at alexandergrant.app/book we collect
+          your name, email address, business name and anything you tell us about what you need. If
+          you tick the box asking for a text reminder, we also collect your mobile number and send
+          one text an hour before the call. The number is used for that reminder only, and you can
+          reply STOP to opt out.
+        </p>
       </section>
 
       <section className="mb-8">

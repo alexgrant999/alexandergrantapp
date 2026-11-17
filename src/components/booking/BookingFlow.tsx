@@ -1,6 +1,7 @@
 import Link from 'next/link'
 import type { ReactNode } from 'react'
 import { CALL_MINUTES, OWNER_TIMEZONE, getAvailableSlots } from '@/lib/services/booking'
+import { smsRemindersEnabled } from '@/lib/services/booking-reminders'
 import { ATTRIBUTION_KEYS } from '@/lib/validators/booking'
 import { BookingFlowStyles } from './BookingStyles'
 import { BookingSummary } from './BookingSummary'
@@ -135,6 +136,7 @@ export async function BookingFlow({
         startedAt={Date.now()}
         submitLabel={`Book ${formatWeekday(selected.startsAt, zone)} at ${time}`}
         chooseTimeHref={href({ day: zoneDate(selected.startsAt, zone) })}
+        smsEnabled={smsRemindersEnabled()}
       />
     </>,
   )
