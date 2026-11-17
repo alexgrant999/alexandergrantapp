@@ -40,24 +40,37 @@ const PARTS = `
   .bk-zone-pick { display:flex; flex-direction:column; gap:4px; margin-top:4px; }
   .bk-select { width:100%; max-width:420px; min-height:48px; padding:8px 0; background:transparent; color:var(--ink); border:0; border-bottom:1px solid var(--ink); border-radius:0; font:400 1.0625rem 'Libre Franklin',sans-serif; }
 
-  /* Days: an index, ruled like a ledger, one row per day. */
-  .bk-list { list-style:none; margin:20px 0 0; padding:0; border-top:1px solid var(--ink); border-bottom:3px double var(--ink); }
-  .bk-list li + li { border-top:1px solid var(--line); }
-  .bk-day { display:flex; align-items:center; justify-content:space-between; gap:16px; min-height:68px; padding:12px 6px 12px 0; text-decoration:none; transition:background .2s; }
-  .bk-day-when { display:flex; flex-direction:column; gap:2px; }
-  .bk-day-tag { font-size:1rem; font-weight:600; color:var(--muted); }
-  .bk-day-name { font:600 clamp(1.25rem,1.7vw,1.5rem)/1.2 'Besley',serif; }
-  .bk-day-count { flex:none; font-weight:600; color:var(--green); text-decoration:underline; text-underline-offset:5px; text-decoration-thickness:1px; font-variant-numeric:lining-nums tabular-nums; }
-  .bk-day:hover .bk-day-name { text-decoration:underline; text-decoration-thickness:2px; text-underline-offset:6px; }
-  .bk-pending { display:none; }
-  .bk-day:has(.bk-pending.is-on) { background:var(--line); }
+  /* Day and time together: a month with the open days marked, and the chosen day's times beside it. */
+  .bk-cal { display:grid; grid-template-columns:minmax(0,1fr) minmax(0,15rem); margin-top:20px; border-top:1px solid var(--ink); border-bottom:3px double var(--ink); }
+  .bk-cal-month { padding:18px clamp(20px,3vw,36px) 22px 0; }
+  .bk-cal-times { padding:18px 0 22px clamp(20px,3vw,36px); border-left:1px solid var(--line); }
+  .bk-cal-head { display:flex; align-items:center; justify-content:space-between; gap:12px; min-height:44px; }
+  .bk-cal-title { margin:0; font:600 1.375rem/1.2 'Besley',serif; letter-spacing:-.01em; }
+  .bk-cal-times .bk-cal-title { display:flex; align-items:center; min-height:44px; font-size:1.1875rem; }
+  .bk-cal-nav { display:flex; gap:4px; }
+  .bk-cal-arrow { display:inline-flex; align-items:center; justify-content:center; width:44px; height:44px; border-radius:2px; transition:background .2s, color .2s; }
+  a.bk-cal-arrow:hover { background:var(--ink); color:var(--paper); }
+  .bk-cal-arrow[aria-disabled="true"] { color:var(--line); }
+  .bk-cal-grid { width:calc(100% + 8px); margin:8px -4px 0; border-collapse:separate; border-spacing:4px; table-layout:fixed; font-variant-numeric:lining-nums tabular-nums; }
+  .bk-cal-grid th { padding:6px 0; font-weight:600; color:var(--muted); text-align:center; }
+  .bk-cal-grid td { padding:0; }
+  .bk-cal-day { position:relative; display:flex; align-items:center; justify-content:center; min-height:48px; border-radius:2px; color:var(--muted); text-decoration:none; transition:background .2s, color .2s; }
+  .bk-cal-day.is-out { opacity:.45; }
+  :is(.bk,.bk-flow) a.bk-cal-day { opacity:1; font-weight:700; color:var(--ink); background:color-mix(in oklch, var(--green) 13%, var(--paper)); }
+  :is(.bk,.bk-flow) a.bk-cal-day:hover, :is(.bk,.bk-flow) a.bk-cal-day:has(.bk-pending.is-on) { background:var(--ink); color:var(--paper); }
+  :is(.bk,.bk-flow) a.bk-cal-day[aria-current="date"] { background:var(--green); color:var(--paper); }
+  .bk-cal-day.is-today::after { content:''; position:absolute; bottom:6px; left:50%; width:5px; height:5px; margin-left:-2.5px; border-radius:50%; background:var(--red); }
+  a.bk-cal-day[aria-current="date"].is-today::after { background:var(--paper); }
+  .bk-cal-count { margin:0; color:var(--muted); font-variant-numeric:lining-nums tabular-nums; }
+  .bk-cal-slots { list-style:none; margin:14px 0 0; padding:0; display:grid; gap:8px; }
+  @media (max-width:620px) {
+    .bk-cal { grid-template-columns:minmax(0,1fr); }
+    .bk-cal-month { padding-right:0; }
+    .bk-cal-times { padding-left:0; border-left:0; border-top:1px solid var(--line); }
+    .bk-cal-slots { grid-template-columns:repeat(auto-fill,minmax(108px,1fr)); }
+  }
 
-  /* Times: a tight grid under ruled part-of-day heads. */
-  .bk-period { margin-top:26px; }
-  .bk-period-head { display:flex; align-items:baseline; justify-content:space-between; gap:16px; padding-bottom:8px; border-bottom:1px solid var(--ink); }
-  .bk-period-head :is(h3,h4) { margin:0; font:600 1.0625rem/1.3 'Libre Franklin',sans-serif; }
-  .bk-period-head p { margin:0; color:var(--muted); font-variant-numeric:lining-nums tabular-nums; }
-  .bk-slots { list-style:none; margin:12px 0 0; padding:0; display:grid; grid-template-columns:repeat(auto-fill,minmax(108px,1fr)); gap:8px; }
+  .bk-pending { display:none; }
   .bk-slot { display:flex; align-items:center; justify-content:center; min-height:52px; padding:10px 6px; border:1px solid var(--muted); border-radius:2px; font-weight:600; text-decoration:none; font-variant-numeric:lining-nums tabular-nums; transition:background .2s, color .2s, border-color .2s; }
   .bk-slot:hover, .bk-slot:has(.bk-pending.is-on) { background:var(--ink); border-color:var(--ink); color:var(--paper); }
 

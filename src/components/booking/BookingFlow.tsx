@@ -6,12 +6,11 @@ import { BookingFlowStyles } from './BookingStyles'
 import { BookingSummary } from './BookingSummary'
 import { BookForm } from './BookForm'
 import { WhatsAppLink } from './ContactLinks'
-import { DayPicker } from './DayPicker'
-import { SlotPicker } from './SlotPicker'
+import { CalendarPicker } from './CalendarPicker'
 import { StepHeading } from './StepHeading'
 import { TimezonePicker } from './TimezonePicker'
 import { VisitorTimezone } from './VisitorTimezone'
-import { addDays, firstParam, formatDayLong, formatTime, formatWeekday, groupByPartOfDay, isIanaZone, resolveSteps, zoneDate } from './format'
+import { firstParam, formatDayLong, formatTime, formatWeekday, isIanaZone, resolveSteps, zoneDate } from './format'
 
 type Query = Record<string, string | string[] | undefined>
 
@@ -67,10 +66,10 @@ export async function BookingFlow({
 
   const slots = await getAvailableSlots()
   const { days, day, selected } = resolveSteps(slots, zone, firstParam(query.day), firstParam(query.startsAt))
-  const step = selected ? 3 : day ? 2 : 1
-  const back = step === 3 && day ? { href: href({ day: day.date }), label: 'Back to times' } : step === 2 ? { href: href({}), label: 'Back to days' } : null
-  // The details step is keyed on the chosen time alone: a time zone change can move its date, and must not pull focus off the Change control.
-  const stepKey = selected ? `3:${selected.startsAt}` : `${step}:${day?.date ?? ''}`
+  const step = selected ? 2 : 1
+  const back = selected && day ? { href: href({ day: day.date }), label: 'Back to times' } : null
+  // Choosing another day keeps the heading where it is. The details step is keyed on the chosen time alone: a time zone change can move its date, and must not pull focus off the Change control.
+  const stepKey = selected ? `2:${selected.startsAt}` : '1'
 
   const frame = (children: ReactNode, nav = true) => (
     <div className="bk-flow">
@@ -78,7 +77,7 @@ export async function BookingFlow({
       <VisitorTimezone current={tz} />
       {nav && (
         <div className="bk-flow-nav">
-          <p className="bk-flow-step">Step {step} of 3</p>
+          <p className="bk-flow-step">Step {step} of 2</p>
           {back && <Link className="bk-textlink" href={back.href} prefetch={false} scroll={false}>{back.label}</Link>}
         </div>
       )}
@@ -100,47 +99,26 @@ export async function BookingFlow({
     )
   }
 
-  if (!day) {
-    const today = zoneDate(new Date(), zone)
-    const tomorrow = addDays(today, 1)
-    return frame(
-      <>
-        <StepHeading key={stepKey} level={headingLevel}>Pick a day</StepHeading>
-        <TimezonePicker current={zone} />
-        <DayPicker
-          keepScroll
-          days={days.map(d => ({
-            href: href({ day: d.date }),
-            tag: d.date === today ? 'Today' : d.date === tomorrow ? 'Tomorrow' : undefined,
-            label: formatDayLong(d.slots[0].startsAt, zone),
-            count: d.slots.length,
-          }))}
-        />
-      </>,
-    )
-  }
-
-  const dayLong = formatDayLong(day.slots[0].startsAt, zone)
-
   if (!selected) {
-    const isToday = day.date === zoneDate(new Date(), zone)
+    const shown = day ?? days[0]
     return frame(
       <>
-        <BookingSummary rows={[{ label: 'Day', value: dayLong }, { label: 'Length', value: `${CALL_MINUTES} minutes` }]} />
-        <StepHeading key={stepKey} level={headingLevel}>{isToday ? 'Pick a time today' : `Pick a time on ${formatWeekday(day.slots[0].startsAt, zone)}`}</StepHeading>
+        <StepHeading key={stepKey} level={headingLevel}>Pick a day and time</StepHeading>
         <TimezonePicker current={zone} />
-        <SlotPicker
+        <CalendarPicker
           keepScroll
           level={headingLevel}
-          groups={groupByPartOfDay(day.slots, zone).map(g => ({
-            label: g.label,
-            slots: g.slots.map(s => ({ href: href({ day: day.date, startsAt: s.startsAt }), label: formatTime(s.startsAt, zone) })),
-          }))}
+          days={days.map(d => ({ date: d.date, href: href({ day: d.date }), label: formatDayLong(d.slots[0].startsAt, zone), count: d.slots.length }))}
+          selected={shown.date}
+          today={zoneDate(new Date(), zone)}
+          dayLabel={formatDayLong(shown.slots[0].startsAt, zone)}
+          slots={shown.slots.map(s => ({ href: href({ day: shown.date, startsAt: s.startsAt }), label: formatTime(s.startsAt, zone) }))}
         />
       </>,
     )
   }
 
+  const dayLong = formatDayLong(selected.startsAt, zone)
   const time = formatTime(selected.startsAt, zone)
   return frame(
     <>
@@ -156,7 +134,7 @@ export async function BookingFlow({
         attribution={attribution}
         startedAt={Date.now()}
         submitLabel={`Book ${formatWeekday(selected.startsAt, zone)} at ${time}`}
-        chooseTimeHref={href({ day: day.date })}
+        chooseTimeHref={href({ day: zoneDate(selected.startsAt, zone) })}
       />
     </>,
   )
