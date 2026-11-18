@@ -5,7 +5,7 @@ import { computeSlots, subtractSpan, type Span } from '@/lib/schedule-windows'
 import { localParts, shiftDate, zonedTimeToUtc } from '@/lib/time'
 import { ATTRIBUTION_KEYS, normalisePhone, type BookCallInput, type TimeOffInput } from '@/lib/validators/booking'
 import { appUrl, sendOwnerNotice, sendVisitorCancellation, sendVisitorConfirmation } from '@/lib/services/booking-email'
-import { cancelReminders, scheduleReminders } from '@/lib/services/booking-reminders'
+import { cancelReminders, scheduleReminders, sendOwnerSms } from '@/lib/services/booking-reminders'
 import { calendarEventIdFor, createCalendarEvent, deleteCalendarEvent, getCalendarBusy } from '@/lib/services/google-calendar'
 
 /**
@@ -375,6 +375,7 @@ export async function bookCall(input: BookCallInput, meta: { ip: string | null; 
     await Promise.all([
       sendVisitorConfirmation(booking, manageUrlFor(booking.id)),
       sendOwnerNotice(booking, { kind: 'booked' }, OWNER_TIMEZONE),
+      sendOwnerSms(booking, 'booked', OWNER_TIMEZONE),
       addToCalendar(booking),
       scheduleReminders(booking, manageUrlFor(booking.id)),
     ])
@@ -416,6 +417,7 @@ export async function cancelBooking(token: string, options?: { defer?: Defer }):
     await Promise.all([
       sendVisitorCancellation(booking, 'visitor'),
       sendOwnerNotice(booking, { kind: 'cancelled' }, OWNER_TIMEZONE),
+      sendOwnerSms(booking, 'cancelled', OWNER_TIMEZONE),
       removeFromCalendar(booking),
       cancelReminders(booking.id),
     ])
@@ -494,6 +496,7 @@ export async function rescheduleBooking(
     await Promise.all([
       sendVisitorConfirmation(next, manageUrlFor(next.id), true),
       sendOwnerNotice(next, { kind: 'moved', from: current.startsAt }, OWNER_TIMEZONE),
+      sendOwnerSms(next, 'moved', OWNER_TIMEZONE),
       removeFromCalendar(current),
       addToCalendar(next),
       cancelReminders(current.id),

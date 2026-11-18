@@ -1,6 +1,7 @@
 import type { CallBooking } from '@prisma/client'
 import { prisma } from '@/lib/db/prisma'
 import { formatWhen, zoneCity } from '@/lib/time'
+import { normalisePhone } from '@/lib/validators/booking'
 import { cancelScheduledEmail, scheduleVisitorReminder } from '@/lib/services/booking-email'
 
 /**
@@ -80,6 +81,29 @@ async function cancelSms(sid: string): Promise<void> {
     const result = await twilio(cfg, `Messages/${sid}.json`, { Status: 'canceled' })
     if (result.ok) return
     console.warn(`[booking-reminders] cancelling text ${sid} failed`, result.message?.replace(/AC[0-9a-f]{32}/g, 'AC...'))
+  }
+}
+
+/**
+ * Texts Alex when a call is booked, moved or cancelled by the visitor. Sent straight away
+ * through the same messaging service as the reminders. Skipped when BOOKING_NOTIFY_PHONE is unset.
+ */
+export async function sendOwnerSms(
+  booking: Pick<CallBooking, 'id' | 'startsAt' | 'name' | 'business'>,
+  kind: 'booked' | 'moved' | 'cancelled',
+  ownerTimezone: string,
+): Promise<void> {
+  try {
+    const cfg = smsConfig()
+    const to = normalisePhone(process.env.BOOKING_NOTIFY_PHONE ?? '')
+    if (!cfg || !to) return
+    const who = `${booking.name} (${booking.business})`.replace(/\s+/g, ' ').slice(0, 90)
+    const when = `${formatWhen(booking.startsAt, ownerTimezone)} ${zoneCity(ownerTimezone)} time`
+    const body = kind === 'moved' ? `Intro call moved: ${who}, now ${when}.` : `Intro call ${kind}: ${who}, ${when}.`
+    const result = await twilio(cfg, 'Messages.json', { MessagingServiceSid: cfg.serviceSid, To: to, Body: body })
+    if (!result.ok) console.warn(`[booking-reminders] owner text (${kind}) for booking ${booking.id} not sent`, result.message)
+  } catch (err) {
+    console.warn(`[booking-reminders] owner text (${kind}) for booking ${booking.id} failed`, err)
   }
 }
 
