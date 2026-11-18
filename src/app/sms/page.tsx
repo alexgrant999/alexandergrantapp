@@ -3,7 +3,7 @@ import { OptInForm, EmailForm } from './OptInForm'
 import { PORTFOLIO } from '@/lib/voice/portfolio'
 
 export const metadata: Metadata = {
-  title: 'See examples of my work — Alexander Grant',
+  title: 'See examples of my work | Alexander Grant',
   description:
     'Links to examples of previous software development work by Alexander Grant. On the page, by email, or by text message if you would like one.',
 }

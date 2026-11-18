@@ -1,6 +1,6 @@
 /**
  * What the agent texts a caller when they ask to see examples.
- * Edit this list freely — `npm run voice:sync` does not need to be re-run for it,
+ * Edit this list freely. `npm run voice:sync` does not need to be re-run for it,
  * the SMS is built at request time.
  */
 
@@ -15,7 +15,7 @@ export const PORTFOLIO: PortfolioItem[] = [
   {
     label: 'Playday',
     url: 'https://playday.com',
-    blurb: 'Multi-location kids activity booking platform — payments, memberships, check-in, loyalty.',
+    blurb: 'Multi-location kids activity booking platform: payments, memberships, check-in, loyalty.',
   },
   {
     label: 'FindYoga',

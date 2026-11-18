@@ -20,9 +20,9 @@ const chapters = [
 ]
 
 const services = [
-  ['Ads and search', 'Google and Meta ads, SEO and email. I judge them by what shows up in your sales each month, and you get the same report I read.', 'demand'],
-  ['Software made to measure', 'You already have a way of working. It just lives in a Wix or Squarespace site, Google Docs, Mailchimp and a few spreadsheets. I replace them with one system built around it from the ground up: bookings, store, invoicing and customer portal. Your staff keep working the way they do, without the copying between tabs.', 'build'],
-  ['Email and text follow-up', 'Welcome emails, review requests, cart reminders and text messages that go out on their own, including after you close for the day.', 'followup'],
+  ['Ads and search', 'Google and Meta ads, SEO and email. I judge them by what shows up in your sales each month, and you get the same report I read.'],
+  ['Software made to measure', 'You already have a way of working. It just lives in a Wix or Squarespace site, Google Docs, Mailchimp and a few spreadsheets. I replace them with one system built around it from the ground up: bookings, store, invoicing and customer portal. Your staff keep working the way they do, without the copying between tabs.'],
+  ['Email and text follow-up', 'Welcome emails, review requests, cart reminders and text messages that go out on their own, including after you close for the day.'],
 ]
 
 const work = [
@@ -53,8 +53,7 @@ function heroImage() {
   if (!wide || !tall) return null
   const common = { alt: wide.alt, loading: 'eager', fetchPriority: 'high' } as const
   const { props: { srcSet: wideSet } } = getImageProps({ ...common, src: wide.src, width: wide.width, height: wide.height, sizes: '100vw' })
-  // On phones the photo fills 78svh, so the tall crop renders a little wider than the viewport.
-  const { props } = getImageProps({ ...common, src: tall.src, width: tall.width, height: tall.height, sizes: '115vw' })
+  const { props } = getImageProps({ ...common, src: tall.src, width: tall.width, height: tall.height, sizes: '100vw' })
   return (
     <>
       <picture>
@@ -66,9 +65,9 @@ function heroImage() {
   )
 }
 
-// A chapter heading set like the head of a ledger page: the account name on the left, its folio on the right.
-function Folio({ name, no }: { name: string; no: string }) {
-  return <p className="folio"><span>{name}</span><span>No. {no}</span></p>
+// A chapter heading set like the head of a ledger page: the account name on the left, what it covers on the right.
+function Folio({ name, note }: { name: string; note: string }) {
+  return <p className="folio"><span>{name}</span><span>{note}</span></p>
 }
 
 // One step of a chapter. On desktop the chapter's media stays pinned while these scroll past.
@@ -86,7 +85,8 @@ function Step({ kicker, title, children }: { kicker: string; title: string; chil
 
 export default function HomePage() {
   const band = photo('band')
-  const build = photo('build')
+  const alex = photo('alex')
+  const seated = photo('alex-seated')
   return (
     <>
       <style>{`
@@ -101,7 +101,8 @@ export default function HomePage() {
         .site-header :focus-visible, .contact :focus-visible, footer :focus-visible { outline-color:var(--paper); }
         .sr-only, .count-static { position:absolute; width:1px; height:1px; padding:0; margin:-1px; overflow:hidden; clip:rect(0,0,0,0); white-space:nowrap; border:0; }
         .count-static { position:static; width:auto; height:auto; margin:0; overflow:visible; clip:auto; }
-        h1, h2, h3 { font-family:'Besley',serif; font-weight:600; margin:0; letter-spacing:-.01em; }
+        h1, h2, h3 { font-family:'Besley',serif; font-weight:600; margin:0; letter-spacing:-.01em; text-wrap:balance; }
+        p { text-wrap:pretty; }
         .page { width:min(1440px,100%); margin:auto; padding:0 var(--gutter); }
 
         /* A thin ink line across the top of the screen fills as the reader moves through the page. */
@@ -130,12 +131,14 @@ export default function HomePage() {
         .hl { margin-top:18px; }
         .hl-caption { margin:0 0 6px; font:italic 400 1.0625rem/1.4 'Besley',serif; }
         .hl-tabs { display:flex; flex-wrap:wrap; gap:0 18px; border-bottom:1px solid var(--line); }
-        .hl-tab { position:relative; margin:0; padding:9px 0; background:none; border:0; font:600 .875rem/1.2 'Libre Franklin',sans-serif; color:var(--muted); cursor:pointer; transition:color .2s; }
+        .hl-tab { position:relative; margin:0; padding:14px 0; background:none; border:0; font:600 .875rem/1.2 'Libre Franklin',sans-serif; color:var(--muted); cursor:pointer; transition:color .2s; }
         .hl-tab:hover { color:var(--ink); }
         .hl-tab[aria-selected="true"] { color:var(--ink); }
-        .hl-tab[aria-selected="true"]::after { content:''; position:absolute; left:0; right:0; bottom:-1px; height:2px; background:var(--red); transform-origin:left; animation:fill 7s linear both; }
+        .hl-tab[aria-selected="true"]::after { content:''; position:absolute; left:0; right:0; bottom:-1px; height:2px; background:var(--ink); transform-origin:left; animation:fill 7s linear both; }
         .hl-paused .hl-tab::after { animation-play-state:paused; }
-        .hl-panel { display:grid; grid-template-columns:220px minmax(0,1fr); gap:0 22px; align-items:start; padding-top:16px; animation:settle .35s ease both; }
+        .hl-panels { display:grid; }
+        .hl-panel { grid-area:1 / 1; display:grid; grid-template-columns:220px minmax(0,1fr); gap:0 22px; align-items:start; padding-top:16px; visibility:hidden; }
+        .hl-panel[data-active] { visibility:visible; animation:settle .35s ease both; }
         .hl-image { display:block; width:100%; height:auto; border:1px solid var(--line); background:var(--line); }
         .hl-improved { margin:0; color:var(--muted); font-size:.9375rem; line-height:1.5; max-width:46ch; }
         .hl .ledger { margin-top:12px; }
@@ -169,9 +172,10 @@ export default function HomePage() {
         .rail-no { font-variant-numeric:lining-nums tabular-nums; }
         .rail-name { opacity:0; transform:translateX(-4px); transition:opacity .2s, transform .2s; }
         .rail:hover .rail-name, .rail:focus-within .rail-name { opacity:1; transform:none; }
-        .rail a[aria-current] { color:var(--ink); border-color:var(--red); font-weight:600; }
+        .rail a[aria-current] { color:var(--ink); border-color:var(--ink); font-weight:600; }
+        .rail-dark a { color:#f3f0e8b3; }
+        .rail-dark a[aria-current] { color:var(--paper); border-color:var(--paper); }
         @media (max-width:1180px) { .rail { display:none; } }
-        @media (min-width:1181px) and (max-width:1560px) { .page, .contact-inner, .footer { padding-left:calc(var(--gutter) + 34px); } }
 
         /* Chapter one: a short introduction over a photo band. */
         .about { padding:clamp(56px,7vw,96px) 0 0; }
@@ -179,10 +183,9 @@ export default function HomePage() {
         .about h2 { font-size:clamp(2.2rem,4vw,3.6rem); line-height:1.04; max-width:16ch; }
         .about-copy { font-size:clamp(1.0625rem,1.4vw,1.25rem); line-height:1.6; max-width:48ch; margin:0; }
         .about-copy + .about-copy { margin-top:1em; }
-        .about .ledger { margin-top:30px; }
 
         /* Case chapters: media pinned on one side, steps scroll past on the other. */
-        .case { padding-top:clamp(56px,7vw,96px); }
+        .case { padding-top:clamp(80px,10vw,140px); }
         .case-grid { display:grid; grid-template-columns:1fr 1fr; gap:clamp(30px,5vw,80px); margin-top:clamp(20px,3vw,36px); }
         .case-media { position:sticky; top:0; align-self:start; height:100svh; display:flex; flex-direction:column; justify-content:center; padding:24px 0; }
         .case-media h2 { font-size:clamp(2.2rem,3.6vw,3.4rem); line-height:1.02; margin-bottom:6px; }
@@ -209,21 +212,18 @@ export default function HomePage() {
         .case + .case { margin-top:0; }
         .case-end { border-bottom:3px double var(--ink); }
 
-        /* Chapter four: the words stay put while the three photographs scroll by. */
-        .services { padding:clamp(56px,7vw,96px) 0; border-bottom:1px solid var(--ink); }
-        .services-grid { display:grid; grid-template-columns:.9fr 1.1fr; gap:clamp(30px,5vw,80px); margin-top:clamp(20px,3vw,36px); }
-        .services-text { position:sticky; top:0; align-self:start; height:100svh; display:flex; flex-direction:column; justify-content:center; }
+        /* Chapter four: a short ruled list of what is on offer. */
+        .services { padding:clamp(48px,6vw,80px) 0; border-bottom:1px solid var(--ink); }
+        .services-grid { display:grid; grid-template-columns:.8fr 1.2fr; gap:clamp(30px,5vw,80px); align-items:start; margin-top:clamp(28px,4vw,48px); }
         .services h2 { font-size:clamp(2.2rem,3.6vw,3.4rem); line-height:1.04; max-width:14ch; }
         .services-text > p { font-size:clamp(1.0625rem,1.4vw,1.25rem); line-height:1.6; max-width:40ch; margin:22px 0 0; }
-        .offer { display:grid; grid-template-columns:3.5rem 1fr; gap:0 16px; padding:clamp(40px,6vw,80px) 0; border-bottom:1px solid var(--line); }
-        .offer:first-child { padding-top:0; }
-        .offer-no { grid-row:1 / span 3; padding-top:.35rem; font:600 .9375rem/1 'Libre Franklin',sans-serif; color:var(--muted); font-variant-numeric:lining-nums tabular-nums; }
-        .offer .photo { margin-bottom:22px; }
-        .offer h3 { font-size:clamp(1.6rem,2.4vw,2.2rem); line-height:1.1; }
-        .offer p { margin:10px 0 0; max-width:48ch; color:var(--muted); font-size:1.125rem; line-height:1.55; }
+        .offers { margin:0; padding:0; list-style:none; border-top:1px solid var(--ink); }
+        .offer { display:grid; grid-template-columns:minmax(0,.5fr) minmax(0,1fr); gap:8px clamp(20px,3vw,40px); padding:22px 0; border-bottom:1px solid var(--line); }
+        .offer h3 { font-size:clamp(1.35rem,1.9vw,1.75rem); line-height:1.15; }
+        .offer p { margin:0; max-width:52ch; font-size:1.0625rem; line-height:1.55; }
 
         /* Chapter five: a dense index. */
-        .builds { padding:clamp(56px,7vw,96px) 0; border-bottom:1px solid var(--ink); }
+        .builds { padding:clamp(40px,5vw,64px) 0 clamp(56px,7vw,96px); border-bottom:1px solid var(--ink); }
         .builds h2 { font-size:clamp(1.9rem,3vw,2.8rem); line-height:1.08; max-width:16ch; margin:clamp(28px,4vw,48px) 0 clamp(26px,3vw,40px); }
         .work-list { border-top:1px solid var(--ink); }
         .project { position:relative; display:grid; grid-template-columns:minmax(0,.65fr) minmax(0,1.35fr) 280px; gap:clamp(20px,3vw,48px); align-items:center; padding:18px 0; border-bottom:1px solid var(--line); }
@@ -239,6 +239,8 @@ export default function HomePage() {
         .contact-inner { width:min(1440px,100%); margin:auto; padding:clamp(60px,8vw,110px) var(--gutter) clamp(75px,10vw,140px); }
         .contact-grid { display:grid; grid-template-columns:1.2fr .8fr; gap:clamp(40px,8vw,130px); margin-top:clamp(40px,6vw,80px); }
         .contact h2 { font-size:clamp(3rem,6.4vw,6rem); line-height:1; max-width:14ch; }
+        .contact-me { display:grid; grid-template-columns:clamp(150px,15vw,220px) minmax(0,1fr); gap:clamp(20px,3vw,40px); align-items:start; margin-top:30px; }
+        .contact-me .contact-copy { margin-top:0; }
         .contact-book { margin:0 0 30px; }
         .contact .button, .contact .button:hover { background:var(--paper); color:var(--green-deep); }
         .contact-copy { font-size:1.1875rem; line-height:1.55; max-width:44ch; margin:30px 0; }
@@ -253,7 +255,8 @@ export default function HomePage() {
 
         footer { background:var(--ink); color:var(--paper); }
         .footer { width:min(1440px,100%); margin:auto; padding:28px var(--gutter); display:flex; justify-content:space-between; gap:20px; font-size:.9375rem; }
-        .footer a { align-self:flex-start; padding:12px 0; margin:-12px 0; text-underline-offset:5px; }
+        /* Room for the chapter rail. Sits after the padding shorthands above so it wins. */
+        @media (min-width:1181px) and (max-width:1560px) { .page, .contact-inner, .footer { padding-left:calc(var(--gutter) + 34px); } }
 
         /* Scroll-linked motion. Tied to the reader's own scrolling, never to a clock, and only where the browser supports it natively. */
         @property --n { syntax:'<integer>'; inherits:false; initial-value:0; }
@@ -275,12 +278,11 @@ export default function HomePage() {
         /* Tablets and small laptops: the chapters stack, media first, and the steps read as plain sections. */
         @media (max-width:1023px) {
           .case-grid, .services-grid { grid-template-columns:1fr; gap:0; }
-          .case-media, .services-text { position:static; height:auto; padding:0 0 10px; }
+          .case-media { position:static; height:auto; padding:0 0 10px; }
           .case-media .shot { width:min(100%,720px); }
           .services-text > p { margin-bottom:30px; }
           .step, .step:last-child { min-height:0; align-items:flex-start; padding:28px 0; }
           .steps { padding-bottom:20px; }
-          .offer { padding:36px 0; }
         }
         @media (max-width:980px) {
           .project { grid-template-columns:minmax(0,1fr) 220px; }
@@ -290,17 +292,20 @@ export default function HomePage() {
         @media (max-width:800px) {
           .nav { grid-template-columns:1fr auto; } .nav-mid { display:none; }
           .hero { background:var(--paper); }
-          .hero-img, .hero-shade { bottom:auto; height:78svh; }
+          .hero-img, .hero-shade { bottom:auto; height:48svh; }
           .hero-img { object-position:50% 20%; }
           .hero-toggle { top:100px; bottom:auto; }
           .hero-inner { min-height:0; }
-          .hero-box { margin-top:52svh; }
+          .hero-box { margin-top:24svh; }
           h1 { font-size:clamp(2.25rem,9.5vw,4rem); }
           .about-grid, .contact-grid { grid-template-columns:1fr; }
           .step li { grid-template-columns:1fr; gap:2px; }
+          .offer { grid-template-columns:1fr; }
           .project { grid-template-columns:1fr; gap:14px; padding:22px 0 26px; }
           .project .shot { grid-column:1; grid-row:auto; }
           .contact-grid { gap:60px; }
+          .contact-me { grid-template-columns:1fr; }
+          .contact-me .photo { width:160px; }
           .footer { flex-direction:column; }
         }
         @media (max-width:520px) {
@@ -337,24 +342,23 @@ export default function HomePage() {
 
       <div className="page">
         <section className="about" id="about">
-          <Folio name="Who I am" no="1" />
+          <Folio name="Who I am" note="New York" />
           <div className="about-grid">
             <div>
               <h2>One person for the marketing and the software.</h2>
               <p className="about-copy" style={{ marginTop: 22 }}>I’m Alex. I work from New York with a small number of independent businesses at a time: shops, studios and services that are too big for off-the-shelf tools and too small for an agency.</p>
-              <p className="about-copy">I run the ads, search and email that bring customers in, and I build the booking, store and back-office software that keeps them. Both halves report to the same number: your sales.</p>
+              <p className="about-copy">I run the ads, search and email that bring customers in, and I build the booking, store and back-office software that keeps them. You get one report a month that covers both.</p>
               <p className="about-copy">The software is made to measure. I start from how your staff and customers already do things and build to fit that, so nobody has to relearn their job.</p>
             </div>
             <div>
-              {build && <Image className="photo" src={build.src} width={build.width} height={build.height} alt={build.alt} sizes="(max-width: 800px) 100vw, (min-width: 1440px) 560px, 40vw" />}
-              <Ledger rows={[['Based in', 'New York'], ['Working with', 'Retail, studios, services'], ['Reports to clients', 'Monthly']]} />
+              {alex && <Image className="photo" src={alex.src} width={alex.width} height={alex.height} alt={alex.alt} sizes="(max-width: 800px) 100vw, (min-width: 1440px) 560px, 40vw" />}
             </div>
           </div>
           {band && <Image className="photo" src={band.src} width={band.width} height={band.height} alt={band.alt} sizes="(min-width: 1440px) 1350px, 100vw" />}
         </section>
 
         <section className="case" id="adventureline">
-          <Folio name="Case one, Adventureline" no="2" />
+          <Folio name="Client work" note="Marketing: ads, search and email" />
           <div className="case-grid">
             <div className="case-media">
               <h2>Adventureline</h2>
@@ -378,7 +382,7 @@ export default function HomePage() {
         </section>
 
         <section className="case case-end" id="playday">
-          <Folio name="Case two, Playday" no="3" />
+          <Folio name="Client work" note="Software: bookings and payments" />
           <div className="case-grid">
             <div className="case-media">
               <h2>Playday</h2>
@@ -399,8 +403,8 @@ export default function HomePage() {
                   <li><b>Scheduling</b><span>One calendar across every studio, with teachers, capacity and check-in per session</span></li>
                 </ul>
               </Step>
-              <Step kicker="What runs on its own" title="The follow-up happens after the studio closes.">
-                <p>Confirmation emails go out with a QR code for check-in. Text reminders go the day before, inside quiet hours. Review requests follow a first visit. Staff get an alert when a party enquiry or a waitlist spot needs a human. None of it waits for someone to remember.</p>
+              <Step kicker="What runs on its own" title="Confirmations, reminders and review requests.">
+                <p>Confirmation emails go out with a QR code for check-in. Text reminders go the day before, inside quiet hours. Review requests follow a first visit. Staff get an alert when a party enquiry or a waitlist spot needs a human.</p>
               </Step>
               <Step kicker="What changed" title="The new Tribeca studio opened on it and was full for its first weekend.">
                 <p>Studios have moved onto it one by one since August, each one bringing its families across. Managers see takings per studio, bookings per class and who is coming tomorrow. Parents see their bookings, credits and receipts in one place.</p>
@@ -411,35 +415,33 @@ export default function HomePage() {
         </section>
 
         <section className="services" id="services">
-          <Folio name="How I work" no="4" />
+          <Folio name="How I work" note="Marketing and software" />
           <div className="services-grid">
             <div className="services-text">
-              <h2>Three things, judged by one number.</h2>
+              <h2>What you can hire me for.</h2>
               <p>Everything I do for a client is measured in what shows up in the till. If a service doesn’t move that number, I’ll tell you, and we stop doing it.</p>
             </div>
-            <ol className="offers" style={{ margin: 0, padding: 0, listStyle: 'none' }}>
-              {services.map(([title, body, slot], i) => { const img = photo(slot); return (
-                <li className="offer" key={slot}>
-                  <span className="offer-no" aria-hidden="true">{String(i + 1).padStart(2, '0')}</span>
-                  {img && <Image className="photo" src={img.src} width={img.width} height={img.height} alt={img.alt} sizes="(max-width: 800px) 100vw, (min-width: 1440px) 700px, 50vw" />}
+            <ul className="offers">
+              {services.map(([title, body]) => (
+                <li className="offer" key={title}>
                   <h3>{title}</h3>
                   <p>{body}</p>
                 </li>
-              )})}
-            </ol>
+              ))}
+            </ul>
           </div>
         </section>
 
         <section className="builds" id="builds">
-          <Folio name="More builds" no="5" />
+          <Folio name="More builds" note={`${work.length} sites and apps`} />
           <h2>Other sites and apps I’ve built.</h2>
           <div className="work-list">{work.map(([name,desc,href,slug,site])=><div className="project" key={name}><h3 className="project-name"><a className="project-link" href={href} target="_blank" rel="noopener noreferrer">{name}<span className="sr-only"> (opens in a new tab)</span></a></h3><span><span className="project-desc">{desc}</span><span className="project-site" aria-hidden="true">{site}</span></span><ProductVideo slug={slug} label={name} className="shot" /></div>)}</div>
         </section>
       </div>
 
-      <section className="contact" id="contact"><div className="contact-inner"><Folio name="Talk to me" no="6" /><div className="contact-grid"><div><h2>Tell me about your business.</h2><p className="contact-copy">Book a free 15 minute call, or send me a message about what you sell and what isn’t working. I’ll tell you honestly whether I can help.</p><p className="contact-book"><a className="button" href="/book">Book a 15 minute call</a></p><a className="email" href="mailto:alexandergrantapp@gmail.com">alexandergrantapp@gmail.com</a></div><div className="form-wrap"><WhatsAppForm /></div></div></div></section>
+      <section className="contact" id="contact"><div className="contact-inner"><Folio name="Talk to me" note="Call, email or WhatsApp" /><div className="contact-grid"><div><h2>Tell me about your business.</h2><div className="contact-me">{seated && <Image className="photo" src={seated.src} width={seated.width} height={seated.height} alt={seated.alt} sizes="(max-width: 560px) 160px, 220px" />}<div><p className="contact-copy">Book a free 15 minute call, or send me a message about what you sell and what isn’t working. I’ll tell you honestly whether I can help.</p><p className="contact-book"><a className="button" href="/book">Book a 15 minute call</a></p><a className="email" href="mailto:alexandergrantapp@gmail.com">alexandergrantapp@gmail.com</a></div></div></div><div className="form-wrap"><WhatsAppForm /></div></div></div></section>
       </main>
-      <footer><div className="footer"><span>Alexander Grant</span><span>New York, working internationally</span><a href="https://www.pexels.com" target="_blank" rel="noopener noreferrer">Photography from Pexels<span className="sr-only"> (opens in a new tab)</span></a><span>© 2026</span></div></footer>
+      <footer><div className="footer"><span>Alexander Grant</span><span>New York, working internationally</span><span>© 2026</span></div></footer>
     </>
   )
 }

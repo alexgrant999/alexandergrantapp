@@ -18,7 +18,7 @@ export function TourRail({ chapters }: { chapters: Chapter[] }) {
   }, [chapters])
 
   return (
-    <nav className={active ? 'rail rail-on' : 'rail'} aria-label="Chapters">
+    <nav className={`rail${active ? ' rail-on' : ''}${active === 'contact' ? ' rail-dark' : ''}`} aria-label="Chapters">
       <ol>
         {chapters.map(c => (
           <li key={c.id}>

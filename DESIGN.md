@@ -63,10 +63,10 @@ Headings: line-height 1.0 to 1.1, letter-spacing -.01em. Figures: `font-variant-
 ## Components
 
 - **Button**: green fill, paper text, 52px minimum height, 14px 24px padding, 2px radius. Hover goes to ink. There is one per section at most, and one call to action on the page.
-- **Ledger**: a table. Label left in muted sans, figure right in Besley 600 with the red double rule. Opens with an ink rule, closes with a double rule. Caption in italic Besley above. Large variant for the money row.
-- **Section label**: a ruled row with the section name on the left and its folio on the right, like a page heading in an account book. Not a coloured eyebrow above the headline.
+- **Ledger**: a table, for figures only. Facts that are not numbers (a city, a list of industries) go in prose. Label left in muted sans, figure right in Besley 600 with the red double rule. Opens with an ink rule, closes with a double rule. Caption in italic Besley above. Large variant for the money row.
+- **Section label**: a ruled row with the section name on the left and a plain fact about it on the right (a place, what the work covered, a count), like a page heading in an account book. Never a number for its own sake: "No. 4" tells a shop owner nothing. Not a coloured eyebrow above the headline.
 - **Inputs**: transparent, underlined only, inherit the section's text colour. No boxes.
-- **Photos**: `filter: sepia(.08) saturate(.94)`, `background: var(--line)` while loading. Real shops and real hands. No stock handshakes, no laptops on white desks.
+- **Photos**: `filter: sepia(.08) saturate(.94)`, `background: var(--line)` while loading. Never the same photo twice on a page, and no stock credit in the footer. Real shops and real hands. No stock handshakes, no laptops on white desks.
 - **Product videos**: 16 by 10, muted, loop, with a 44px play toggle in the corner.
 
 ## What is allowed to be loud
@@ -75,15 +75,15 @@ Figures. A client's number can be the biggest thing in its section. Headlines ar
 
 ## Rhythm
 
-Consecutive sections must differ in at least two of: density, column count, background, headline size. Results is airy and two-column. Services is a tight numbered list. Builds is a dense index. Contact is dark and large.
+Consecutive sections must differ in at least two of: density, column count, background, headline size. Results is airy and two-column. Services is a tight ruled list. Builds is a dense index. Contact is dark and large.
 
 ## The tour
 
-The homepage reads as six numbered chapters: Who I am, Adventureline, Playday, How I work, More builds, Talk to me. A case chapter pins its video, headline and quote on one side while three or four steps scroll past on the other, each step with a ruled kicker (Where they started, What I built, What runs on its own, What changed) and the ledger arriving last. From 1024px up the media is pinned; below that the chapter stacks, media first. A chapter rail with the folio numbers sits down the left edge from 1181px, and a thin green progress line runs across the top at every width.
+The homepage reads as six chapters: Who I am, Adventureline, Playday, How I work, More builds, Talk to me. A case chapter pins its video, headline and quote on one side while three or four steps scroll past on the other, each step with a ruled kicker (Where they started, What I built, What runs on its own, What changed) and the ledger arriving last. From 1024px up the media is pinned; below that the chapter stacks, media first. Services is not pinned and carries no photographs: it is a ruled list, name left, description right. A chapter rail sits down the left edge from 1181px, the only place chapters are numbered, and a thin green progress line runs across the top at every width.
 
 ## Motion
 
-Scroll-linked only. Steps rise into place, ledger rows settle, whole-number figures count up, and the progress line fills, all driven by the reader's scroll position through native `animation-timeline`, behind `@supports` and `prefers-reduced-motion: no-preference`. Browsers without support get the finished state. Hover and focus transitions at .2s. Nothing runs on a clock, with one exception: the hero ledger turns to the next client every seven seconds, the red rule under the active tab filling as it waits. It pauses while the pointer or focus is on it, the tabs work with arrow keys, and under reduced motion it stays on the first client until clicked. No fade-up on load, no autoplaying reveals, no parallax.
+Scroll-linked only. Steps rise into place, ledger rows settle, whole-number figures count up, and the progress line fills, all driven by the reader's scroll position through native `animation-timeline`, behind `@supports` and `prefers-reduced-motion: no-preference`. Browsers without support get the finished state. Hover and focus transitions at .2s. Nothing runs on a clock, with one exception: the hero ledger turns to the next client every seven seconds, the ink rule under the active tab filling as it waits. It pauses while the pointer or focus is on it, stops for good once the reader clicks or touches it, every panel shares one grid cell so the box never changes height, the tabs work with arrow keys, and under reduced motion it stays on the first client until clicked. No fade-up on load, no autoplaying reveals, no parallax.
 
 ## Banned
 
