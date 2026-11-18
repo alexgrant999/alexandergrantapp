@@ -53,18 +53,15 @@
     ]
   },
   {
-    "slot": "build",
-    "src": "/images/home/build.jpg",
+    "slot": "alex",
+    "src": "/images/home/alex.jpg",
     "width": 1600,
-    "height": 1200,
-    "alt": "Someone typing on a laptop at a café counter, with shelves of coffee bags and pour-over gear on the wall behind.",
-    "photographer": "Kampus Production",
-    "photographerUrl": "https://www.pexels.com/@kampus",
-    "pexelsUrl": "https://www.pexels.com/photo/woman-in-beige-long-sleeves-using-a-laptop-6684766/",
-    "alternates": [
-      "https://www.pexels.com/photo/pensive-woman-near-flowers-in-wrapper-5410081/",
-      "https://www.pexels.com/photo/black-and-silver-hand-tool-on-brown-wooden-table-4491908/"
-    ]
+    "height": 1066,
+    "alt": "Alex Grant, smiling, in a blue shirt against a grey studio wall.",
+    "photographer": "",
+    "photographerUrl": "",
+    "pexelsUrl": "",
+    "alternates": []
   },
   {
     "slot": "followup",
@@ -79,5 +76,16 @@
       "https://www.pexels.com/photo/close-up-of-person-packing-an-order-into-a-cardboard-box-7857523/",
       "https://www.pexels.com/photo/crop-unrecognizable-woman-sealing-carton-parcel-with-tape-6348095/"
     ]
+  },
+  {
+    "slot": "alex-seated",
+    "src": "/images/home/alex-seated.jpg",
+    "width": 900,
+    "height": 1125,
+    "alt": "Alex Grant seated on a stool in a navy blazer and blue shirt, smiling.",
+    "photographer": "",
+    "photographerUrl": "",
+    "pexelsUrl": "",
+    "alternates": []
   }
 ]

@@ -1,7 +1,7 @@
 import type { Metadata } from 'next'
 
 export const metadata: Metadata = {
-  title: 'Terms of Service — Alexander Grant',
+  title: 'Terms of Service | Alexander Grant',
 }
 
 export default function TermsPage() {

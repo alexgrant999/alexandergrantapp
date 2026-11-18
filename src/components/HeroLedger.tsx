@@ -7,7 +7,7 @@ export type ClientTab = { id: string; url: string; site: string; name: string; i
 
 const INTERVAL_MS = 7000
 
-// The hero ledger turns through one client at a time. It pauses while the reader is on it and stops entirely under reduced motion.
+// The hero ledger turns through one client at a time. It pauses while the reader is on it, and stops for good once they touch it or under reduced motion.
 export function HeroLedger({ tabs }: { tabs: ClientTab[] }) {
   const [index, setIndex] = useState(0)
   const [paused, setPaused] = useState(false)
@@ -35,9 +35,8 @@ export function HeroLedger({ tabs }: { tabs: ClientTab[] }) {
     document.getElementById(`hl-tab-${tabs[next].id}`)?.focus()
   }
 
-  const tab = tabs[index]
   return (
-    <div className={paused || still ? 'hl hl-paused' : 'hl'} onMouseEnter={() => setPaused(true)} onMouseLeave={() => setPaused(false)} onFocus={() => setPaused(true)} onBlur={() => setPaused(false)}>
+    <div className={paused || still ? 'hl hl-paused' : 'hl'} onMouseEnter={() => setPaused(true)} onMouseLeave={() => setPaused(false)} onFocus={() => setPaused(true)} onBlur={() => setPaused(false)} onPointerDown={() => setStill(true)}>
       <p className="hl-caption">From recent client reports</p>
       <div role="tablist" aria-label="Clients" className="hl-tabs" onKeyDown={onKey}>
         {tabs.map((t, n) => (
@@ -46,12 +45,16 @@ export function HeroLedger({ tabs }: { tabs: ClientTab[] }) {
           </button>
         ))}
       </div>
-      <div key={tab.id} role="tabpanel" id={`hl-panel-${tab.id}`} aria-labelledby={`hl-tab-${tab.id}`} className="hl-panel">
-        <Image className="hl-image" src={tab.image} width={1280} height={800} alt={tab.alt} sizes="(max-width: 560px) 100vw, 220px" priority={index === 0} />
-        <div>
-          <p className="hl-improved">{tab.improved} <a className="site-link" href={tab.url} target="_blank" rel="noopener noreferrer">{tab.site}<span className="sr-only"> (opens in a new tab)</span></a></p>
-          <Ledger rows={tab.rows} plain />
-        </div>
+      <div className="hl-panels">
+        {tabs.map((t, n) => (
+          <div key={t.id} role="tabpanel" id={`hl-panel-${t.id}`} aria-labelledby={`hl-tab-${t.id}`} className="hl-panel" data-active={n === index ? '' : undefined}>
+            <Image className="hl-image" src={t.image} width={1280} height={800} alt={t.alt} sizes="(max-width: 560px) 100vw, 220px" priority={n === 0} />
+            <div>
+              <p className="hl-improved">{t.improved} <a className="site-link" href={t.url} target="_blank" rel="noopener noreferrer">{t.site}<span className="sr-only"> (opens in a new tab)</span></a></p>
+              <Ledger rows={t.rows} plain />
+            </div>
+          </div>
+        ))}
       </div>
     </div>
   )

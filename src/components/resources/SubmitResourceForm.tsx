@@ -3,17 +3,6 @@
 import { useState, useRef } from 'react'
 import { useRouter } from 'next/navigation'
 
-const inputStyle = {
-  width: '100%',
-  background: '#0a0a0f',
-  border: '1px solid #1e1e2e',
-  borderRadius: '8px',
-  padding: '10px 14px',
-  color: '#e8e8f0',
-  fontSize: '.9rem',
-  outline: 'none',
-} as const
-
 export function SubmitResourceForm() {
   const router = useRouter()
   const [open, setOpen] = useState(false)
@@ -131,161 +120,53 @@ export function SubmitResourceForm() {
 
   if (!open) {
     return (
-      <div style={{ marginBottom: '32px', textAlign: 'center' }}>
-        <button
-          onClick={() => setOpen(true)}
-          style={{
-            background: '#6c63ff',
-            color: '#fff',
-            border: 'none',
-            padding: '10px 24px',
-            borderRadius: '10px',
-            fontSize: '.9rem',
-            fontWeight: 600,
-            cursor: 'pointer',
-            transition: 'background .15s',
-          }}
-          onMouseOver={(e) => (e.currentTarget.style.background = '#5a52e0')}
-          onMouseOut={(e) => (e.currentTarget.style.background = '#6c63ff')}
-        >
-          + Share a Resource
-        </button>
-      </div>
+      <p className="rs-share">
+        <button type="button" className="rs-button" onClick={() => setOpen(true)}>Share a link</button>
+      </p>
     )
   }
 
   return (
-    <div style={{
-      background: '#16161f',
-      border: '1px solid #1e1e2e',
-      borderRadius: '16px',
-      padding: '28px',
-      marginBottom: '32px',
-    }}>
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px' }}>
-        <h3 style={{ fontSize: '1.1rem', fontWeight: 700 }}>Share a Resource</h3>
-        <button
-          onClick={() => setOpen(false)}
-          style={{ background: 'none', border: 'none', color: '#6b6b8a', cursor: 'pointer', fontSize: '1.2rem' }}
-        >
-          x
-        </button>
+    <form className="rs-form" onSubmit={handleSubmit}>
+      <div className="rs-form-head">
+        <h2>Share a link</h2>
+        <button type="button" className="rs-linkbutton" onClick={() => setOpen(false)}>Close</button>
       </div>
 
-      {success && (
-        <div style={{ background: 'rgba(34,197,94,.12)', color: '#4ade80', padding: '10px 16px', borderRadius: '8px', marginBottom: '16px', fontSize: '.85rem' }}>
-          Resource added!
-        </div>
-      )}
+      {success && <p className="rs-status" role="status">Added. Thank you.</p>}
+      {error && <p className="rs-status" role="alert">{error}</p>}
 
-      {error && (
-        <div style={{ background: 'rgba(239,68,68,.12)', color: '#f87171', padding: '10px 16px', borderRadius: '8px', marginBottom: '16px', fontSize: '.85rem' }}>
-          {error}
-        </div>
-      )}
+      <div className="rs-field">
+        <label htmlFor="rs-url">Paste a link. The title, description and tags are filled in for you.</label>
+        <input id="rs-url" className="rs-input" type="url" required placeholder="https://example.com" value={url} onChange={(e) => setUrl(e.target.value)} onBlur={handleUrlAnalyze} onKeyDown={handleUrlKeyDown} />
+      </div>
+      {analyzing && <p className="rs-note" role="status">Reading the page...</p>}
 
-      <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '14px' }}>
-        <div>
-          <label style={{ fontSize: '.8rem', color: '#6b6b8a', display: 'block', marginBottom: '4px' }}>
-            Paste a URL — AI fills in the rest
-          </label>
-          <div style={{ position: 'relative' }}>
-            <input
-              type="url"
-              required
-              placeholder="https://example.com"
-              value={url}
-              onChange={(e) => setUrl(e.target.value)}
-              onBlur={handleUrlAnalyze}
-              onKeyDown={handleUrlKeyDown}
-              style={inputStyle}
-            />
-            {analyzing && (
-              <div style={{
-                position: 'absolute',
-                right: '12px',
-                top: '50%',
-                transform: 'translateY(-50%)',
-                display: 'flex',
-                alignItems: 'center',
-                gap: '6px',
-                color: '#6c63ff',
-                fontSize: '.78rem',
-                fontWeight: 500,
-              }}>
-                <span style={{ display: 'inline-block', animation: 'spin 1s linear infinite', width: '14px', height: '14px', border: '2px solid #6c63ff', borderTopColor: 'transparent', borderRadius: '50%' }} />
-                Analyzing...
-              </div>
-            )}
+      {(analyzed || analyzing) && (
+        <>
+          <div className="rs-field">
+            <label htmlFor="rs-title">Title</label>
+            <input id="rs-title" className="rs-input" required value={title} onChange={(e) => setTitle(e.target.value)} disabled={analyzing} />
           </div>
-          <style>{`@keyframes spin { to { transform: rotate(360deg) } }`}</style>
-        </div>
-
-        {(analyzed || analyzing) && (
-          <>
-            <div>
-              <label style={{ fontSize: '.8rem', color: '#6b6b8a', display: 'block', marginBottom: '4px' }}>Title</label>
-              <input
-                required
-                placeholder={analyzing ? 'Generating...' : 'Resource name'}
-                value={title}
-                onChange={(e) => setTitle(e.target.value)}
-                disabled={analyzing}
-                style={{ ...inputStyle, opacity: analyzing ? 0.5 : 1 }}
-              />
+          <div className="rs-field">
+            <label htmlFor="rs-description">Description</label>
+            <textarea id="rs-description" className="rs-input" value={description} onChange={(e) => setDescription(e.target.value)} disabled={analyzing} rows={2} />
+          </div>
+          <div className="rs-pair">
+            <div className="rs-field">
+              <label htmlFor="rs-tags">Tags, separated by commas</label>
+              <input id="rs-tags" className="rs-input" value={tags} onChange={(e) => setTags(e.target.value)} disabled={analyzing} />
             </div>
-            <div>
-              <label style={{ fontSize: '.8rem', color: '#6b6b8a', display: 'block', marginBottom: '4px' }}>Description</label>
-              <textarea
-                placeholder={analyzing ? 'Generating...' : 'Brief description'}
-                value={description}
-                onChange={(e) => setDescription(e.target.value)}
-                disabled={analyzing}
-                rows={2}
-                style={{ ...inputStyle, resize: 'vertical', fontFamily: 'inherit', opacity: analyzing ? 0.5 : 1 }}
-              />
+            <div className="rs-field">
+              <label htmlFor="rs-name">Your name (optional)</label>
+              <input id="rs-name" className="rs-input" value={submittedBy} onChange={(e) => setSubmittedBy(e.target.value)} />
             </div>
-            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '14px' }}>
-              <div>
-                <label style={{ fontSize: '.8rem', color: '#6b6b8a', display: 'block', marginBottom: '4px' }}>Tags</label>
-                <input
-                  placeholder={analyzing ? 'Generating...' : 'ai, skills, tools'}
-                  value={tags}
-                  onChange={(e) => setTags(e.target.value)}
-                  disabled={analyzing}
-                  style={{ ...inputStyle, opacity: analyzing ? 0.5 : 1 }}
-                />
-              </div>
-              <div>
-                <label style={{ fontSize: '.8rem', color: '#6b6b8a', display: 'block', marginBottom: '4px' }}>Your Name</label>
-                <input
-                  placeholder="Optional"
-                  value={submittedBy}
-                  onChange={(e) => setSubmittedBy(e.target.value)}
-                  style={inputStyle}
-                />
-              </div>
-            </div>
-            <button
-              type="submit"
-              disabled={submitting || analyzing}
-              style={{
-                background: submitting || analyzing ? '#3a3a55' : '#6c63ff',
-                color: '#fff',
-                border: 'none',
-                padding: '10px 24px',
-                borderRadius: '8px',
-                fontSize: '.9rem',
-                fontWeight: 600,
-                cursor: submitting || analyzing ? 'not-allowed' : 'pointer',
-                alignSelf: 'flex-start',
-              }}
-            >
-              {submitting ? 'Submitting...' : 'Submit Resource'}
-            </button>
-          </>
-        )}
-      </form>
-    </div>
+          </div>
+          <button type="submit" className="rs-button" disabled={submitting || analyzing}>
+            {submitting ? 'Sending...' : 'Add it to the list'}
+          </button>
+        </>
+      )}
+    </form>
   )
 }
