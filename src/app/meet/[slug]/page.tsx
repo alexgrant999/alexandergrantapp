@@ -4,7 +4,8 @@ import { notFound } from 'next/navigation'
 import { BookingShell } from '@/components/booking/BookingShell'
 import { TimezonePicker } from '@/components/booking/TimezonePicker'
 import { VisitorTimezone } from '@/components/booking/VisitorTimezone'
-import { firstParam, formatDayLong, formatTime, isIanaZone, zoneDate } from '@/components/booking/format'
+import { alsoIn, firstParam, formatDayLong, formatTime, isIanaZone, zoneDate } from '@/components/booking/format'
+import { MEETUP_ZONES } from '@/components/booking/zones'
 import { googleCalendarTemplateUrl } from '@/lib/services/booking-email'
 import { findOwnResponse, getPublicPoll } from '@/lib/services/group-poll'
 import { POLL_COOKIE_PREFIX } from '@/lib/validators/group-poll'
@@ -60,6 +61,7 @@ export default async function MeetPage({ params, searchParams }: Props) {
     day.rows.push({
       id: option.id,
       time: `${formatTime(option.startsAt, zone)} to ${formatTime(option.endsAt, zone)}`,
+      also: alsoIn(option.startsAt, zone, MEETUP_ZONES),
       past: option.past,
       chosen: option.id === poll.chosenOptionId,
       best: option.id === poll.bestOptionId,
@@ -95,6 +97,7 @@ export default async function MeetPage({ params, searchParams }: Props) {
                   <tr className="bk-figure"><th scope="row">Coming</th><td>{chosen.tally.yes.length + chosen.tally.maybe.length}</td></tr>
                 </tbody>
               </table>
+              <p className="gp-also-lead">{alsoIn(chosen.startsAt, zone, MEETUP_ZONES)}</p>
               <div className="bk-actions">
                 <a className="bk-button" href={`/meet/${poll.slug}/ics`}>Add to my calendar</a>
                 <a
@@ -125,6 +128,7 @@ export default async function MeetPage({ params, searchParams }: Props) {
               </tbody>
             </table>
           ) : null}
+          {!chosen && best && <p className="gp-also-lead">{alsoIn(best.startsAt, zone, MEETUP_ZONES)}</p>}
 
           <TimezonePicker current={zone} />
         </>

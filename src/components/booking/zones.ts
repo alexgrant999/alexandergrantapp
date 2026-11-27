@@ -78,3 +78,7 @@ const LABELS = new Map(ZONE_REGIONS.flatMap(r => r.places.map(p => [p.zone, p.la
 export function placeLabel(zone: string): string {
   return LABELS.get(zone) ?? (zone.split('/').pop() ?? zone).replaceAll('_', ' ')
 }
+
+// The meetup group is in Sydney and Brisbane. Brisbane keeps no daylight saving, so in summer the two are an hour apart.
+// Every group poll time is shown in both, whatever zone the visitor is in.
+export const MEETUP_ZONES = ['Australia/Sydney', 'Australia/Brisbane']

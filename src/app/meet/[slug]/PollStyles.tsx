@@ -10,6 +10,8 @@ const CSS = `
   .gp-row.is-past { opacity:.55; }
   .gp-when { display:flex; flex-direction:column; align-items:flex-start; gap:4px; }
   .gp-time { font-weight:600; font-variant-numeric:lining-nums tabular-nums; }
+  .gp-also { color:var(--muted); font-variant-numeric:lining-nums tabular-nums; }
+  .gp-also-lead { margin:10px 0 0; color:var(--muted); font-variant-numeric:lining-nums tabular-nums; }
   .gp-tag { font:italic 400 1rem/1.2 'Besley',serif; color:var(--green); }
   .gp-tag.is-quiet { color:var(--muted); }
   .gp-row.is-chosen .gp-time, .gp-row.is-best .gp-time { padding-left:10px; border-left:3px double var(--red); }

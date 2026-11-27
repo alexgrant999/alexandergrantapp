@@ -1,6 +1,6 @@
 export const dynamic = 'force-dynamic'
 import Link from 'next/link'
-import { OWNER_TIMEZONE } from '@/lib/services/booking'
+import { MEETUP_ZONES } from '@/components/booking/zones'
 import { listGroupPolls, ownerWhen } from '@/lib/services/group-poll'
 import { NewPollForm } from '@/components/dashboard/meetups/NewPollForm'
 import { PANEL, SECTION_LABEL } from '@/components/dashboard/bookings/styles'
@@ -52,7 +52,7 @@ export default async function MeetupsPage() {
       <section aria-labelledby="new-heading">
         <h2 id="new-heading" className={`${SECTION_LABEL} mb-4`}>New poll</h2>
         <div className={`${PANEL} p-6`}>
-          <NewPollForm defaultZone={OWNER_TIMEZONE} />
+          <NewPollForm defaultZone={MEETUP_ZONES[0]} />
         </div>
       </section>
     </div>

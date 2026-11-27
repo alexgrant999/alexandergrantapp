@@ -112,3 +112,19 @@ export function groupByPartOfDay(slots: Slot[], timeZone: string): SlotGroup[] {
   }
   return groups
 }
+
+/**
+ * The same instant in other zones, as "Sydney 7:00 pm, Brisbane 6:00 pm". `shownZone` is the
+ * zone the main time is already in: it is left out, and a zone whose date differs from it gets
+ * its weekday ("Brisbane 11:00 pm Fri").
+ */
+export function alsoIn(at: When, shownZone: string, zones: string[]): string {
+  const shownDate = zoneDate(at, shownZone)
+  return zones
+    .filter(zone => zone !== shownZone)
+    .map(zone => {
+      const day = zoneDate(at, zone) === shownDate ? '' : ` ${new Intl.DateTimeFormat('en-US', { timeZone: zone, weekday: 'short' }).format(new Date(at))}`
+      return `${zoneCity(zone)} ${formatTime(at, zone)}${day}`
+    })
+    .join(', ')
+}
