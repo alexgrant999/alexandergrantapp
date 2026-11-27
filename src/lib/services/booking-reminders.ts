@@ -85,26 +85,31 @@ async function cancelSms(sid: string): Promise<void> {
 }
 
 /**
- * Texts Alex when a call is booked, moved or cancelled by the visitor. Sent straight away
- * through the same messaging service as the reminders. Skipped when BOOKING_NOTIFY_PHONE is unset.
+ * Texts Alex a one line notice, straight away, through the same messaging service as the
+ * reminders. Skipped when BOOKING_NOTIFY_PHONE is unset. Never throws.
  */
+export async function sendOwnerText(body: string, label: string): Promise<void> {
+  try {
+    const cfg = smsConfig()
+    const to = normalisePhone(process.env.BOOKING_NOTIFY_PHONE ?? '')
+    if (!cfg || !to) return
+    const result = await twilio(cfg, 'Messages.json', { MessagingServiceSid: cfg.serviceSid, To: to, Body: body })
+    if (!result.ok) console.warn(`[booking-reminders] owner text (${label}) not sent`, result.message)
+  } catch (err) {
+    console.warn(`[booking-reminders] owner text (${label}) failed`, err)
+  }
+}
+
+/** Texts Alex when a call is booked, moved or cancelled by the visitor. */
 export async function sendOwnerSms(
   booking: Pick<CallBooking, 'id' | 'startsAt' | 'name' | 'business'>,
   kind: 'booked' | 'moved' | 'cancelled',
   ownerTimezone: string,
 ): Promise<void> {
-  try {
-    const cfg = smsConfig()
-    const to = normalisePhone(process.env.BOOKING_NOTIFY_PHONE ?? '')
-    if (!cfg || !to) return
-    const who = `${booking.name} (${booking.business})`.replace(/\s+/g, ' ').slice(0, 90)
-    const when = `${formatWhen(booking.startsAt, ownerTimezone)} ${zoneCity(ownerTimezone)} time`
-    const body = kind === 'moved' ? `Intro call moved: ${who}, now ${when}.` : `Intro call ${kind}: ${who}, ${when}.`
-    const result = await twilio(cfg, 'Messages.json', { MessagingServiceSid: cfg.serviceSid, To: to, Body: body })
-    if (!result.ok) console.warn(`[booking-reminders] owner text (${kind}) for booking ${booking.id} not sent`, result.message)
-  } catch (err) {
-    console.warn(`[booking-reminders] owner text (${kind}) for booking ${booking.id} failed`, err)
-  }
+  const who = `${booking.name} (${booking.business})`.replace(/\s+/g, ' ').slice(0, 90)
+  const when = `${formatWhen(booking.startsAt, ownerTimezone)} ${zoneCity(ownerTimezone)} time`
+  const body = kind === 'moved' ? `Intro call moved: ${who}, now ${when}.` : `Intro call ${kind}: ${who}, ${when}.`
+  await sendOwnerText(body, `${kind} ${booking.id}`)
 }
 
 async function callBack(emailIds: string[], smsSid: string | null): Promise<void> {

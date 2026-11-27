@@ -39,7 +39,7 @@ function firstWord(name: string): string {
   return name.trim().split(/\s+/)[0] ?? ''
 }
 
-function utcStamp(date: Date): string {
+export function utcStamp(date: Date): string {
   return `${date.toISOString().replace(/[-:]/g, '').split('.')[0]}Z`
 }
 
@@ -55,7 +55,7 @@ export function googleCalendarTemplateUrl(params: { title: string; start: Date; 
 }
 
 /** RFC 5545 folds content lines at 75 octets, continuing with a leading space. */
-function foldLine(line: string): string {
+export function foldLine(line: string): string {
   const out: string[] = []
   let current = ''
   let bytes = 0
@@ -74,7 +74,7 @@ function foldLine(line: string): string {
   return out.join('\r\n ')
 }
 
-function icsText(text: string): string {
+export function icsText(text: string): string {
   return text
     .replace(/\r\n?/g, '\n')
     .replace(/\\/g, '\\\\')

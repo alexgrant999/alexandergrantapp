@@ -1,7 +1,7 @@
 'use client'
 import Link from 'next/link'
 import { usePathname, useRouter } from 'next/navigation'
-import { LayoutDashboard, Users, FolderOpen, FileText, Clock, Receipt, BarChart3, LogOut, RefreshCw, PartyPopper, PhoneIncoming, CalendarCheck } from 'lucide-react'
+import { LayoutDashboard, Users, FolderOpen, FileText, Clock, Receipt, BarChart3, LogOut, RefreshCw, PartyPopper, PhoneIncoming, CalendarCheck, UsersRound } from 'lucide-react'
 import { cn } from '@/lib/utils'
 
 const nav = [
@@ -14,6 +14,7 @@ const nav = [
   { href: '/dashboard/subscriptions', label: 'Subscriptions', icon: RefreshCw },
   { href: '/dashboard/reports', label: 'Reports', icon: BarChart3 },
   { href: '/dashboard/bookings', label: 'Bookings', icon: CalendarCheck },
+  { href: '/dashboard/meetups', label: 'Meetups', icon: UsersRound },
   { href: '/dashboard/calls', label: 'Calls', icon: PhoneIncoming },
   { href: '/dashboard/rsvps', label: 'RSVPs', icon: PartyPopper },
 ]
