@@ -305,3 +305,56 @@ model CallBooking {
 
   @@index([status, startsAt])
 }
+
+/// A "find a time that works" poll for a group (the Claude meetup and the like).
+/// Alex offers candidate times from the dashboard and shares /meet/<slug>; anyone
+/// with the link marks the times they can make. Times are instants, so every
+/// visitor sees them on their own clock. `timezone` is only the zone Alex set
+/// them in, used to show them back to him.
+model GroupPoll {
+  id              String    @id @default(cuid())
+  slug            String    @unique
+  title           String
+  note            String?
+  durationMinutes Int       @default(60)
+  timezone        String
+  meetingUrl      String?
+  /// The option Alex settled on. Set means the poll is decided and the page shows the time.
+  chosenOptionId  String?
+  closedAt        DateTime?
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+
+  options   GroupPollOption[]
+  responses GroupPollResponse[]
+}
+
+model GroupPollOption {
+  id       String    @id @default(cuid())
+  pollId   String
+  startsAt DateTime  @db.Timestamptz(3)
+  endsAt   DateTime  @db.Timestamptz(3)
+
+  poll GroupPoll @relation(fields: [pollId], references: [id], onDelete: Cascade)
+
+  @@unique([pollId, startsAt])
+}
+
+/// One person's answers. `yes` and `maybe` hold option ids; any option in neither is a no.
+/// No sign in: the browser keeps `editToken` in a cookie so the same person can come back and change them.
+model GroupPollResponse {
+  id        String   @id @default(cuid())
+  pollId    String
+  name      String
+  timezone  String?
+  yes       String[] @default([])
+  maybe     String[] @default([])
+  editToken String   @unique
+  ipHash    String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  poll GroupPoll @relation(fields: [pollId], references: [id], onDelete: Cascade)
+
+  @@index([pollId])
+}
