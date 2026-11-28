@@ -192,7 +192,7 @@ export function PollManager({ poll }: { poll: PollView }) {
               )}
               {experienceCounts.length > 0 && (
                 <div>
-                  <h3 className="mb-2 font-medium text-[#e8e8f0]">How they use Claude</h3>
+                  <h3 className="mb-2 font-medium text-[#e8e8f0]">How they use AI</h3>
                   <ul className="flex flex-col gap-1 text-[#c8c8d8]">
                     {experienceCounts.map(e => (
                       <li key={e.key} className="flex justify-between gap-4"><span>{e.label}</span><span className="tabular-nums text-[#e8e8f0]">{e.count}</span></li>
@@ -208,7 +208,7 @@ export function PollManager({ poll }: { poll: PollView }) {
                 <tr className="border-b border-[#1e1e2e] text-left text-xs font-medium uppercase tracking-wider text-[#c8c8d8]">
                   <th scope="col" className="px-4 py-3">Name</th>
                   <th scope="col" className="px-4 py-3">Contact</th>
-                  <th scope="col" className="px-4 py-3">Uses Claude</th>
+                  <th scope="col" className="px-4 py-3">Uses AI</th>
                   <th scope="col" className="px-4 py-3">Wants</th>
                   <th scope="col" className="px-4 py-3">Note</th>
                 </tr>

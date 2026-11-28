@@ -160,7 +160,7 @@ export function PollForm({
             </div>
           </fieldset>
           <fieldset className="bk-field gp-fieldset">
-            <legend className="bk-label">How do you use Claude now? <span className="gp-optional">(optional)</span></legend>
+            <legend className="bk-label">How do you use AI now? <span className="gp-optional">(optional)</span></legend>
             <div className="gp-levels">
               {MEETUP_EXPERIENCE.map(e => (
                 <label key={e.key} className="bk-check gp-level">
