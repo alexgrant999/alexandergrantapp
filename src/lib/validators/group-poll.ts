@@ -24,25 +24,26 @@ export type CreateGroupPollInput = z.infer<typeof createGroupPollSchema>
 export const addOptionsSchema = z.object({ pollId: id, timezone: zone, times: z.array(localTime).min(1).max(40) })
 
 /**
- * What brings someone to the Claude and Such meetup. Stored by key, so a label can be
- * reworded without losing earlier answers.
+ * What brings someone to the meetup: AI in general and practical ways to use it.
+ * Stored by key, so a label can be reworded without losing earlier answers.
  */
 export const MEETUP_INTERESTS = [
-  { key: 'parallel', label: 'Running lots of Claude Code sessions at once' },
-  { key: 'review', label: 'Getting Claude and Codex to check each other’s work' },
-  { key: 'agents', label: 'Agents, subagents and workflows' },
-  { key: 'tooling', label: 'Skills, hooks and MCP servers' },
-  { key: 'shipping', label: 'Shipping real products and client work' },
-  { key: 'costs', label: 'Picking models and keeping costs down' },
-  { key: 'people', label: 'Meeting others building with Claude' },
+  { key: 'everyday', label: 'Saving time in everyday work' },
+  { key: 'business', label: 'Putting AI to work in a business' },
+  { key: 'automation', label: 'Automating repetitive tasks' },
+  { key: 'agents', label: 'AI agents that handle whole jobs' },
+  { key: 'building', label: 'Building apps and tools, with or without code' },
+  { key: 'choosing', label: 'Choosing tools and models, and what they cost' },
+  { key: 'safety', label: 'Using it safely: privacy, accuracy and limits' },
+  { key: 'people', label: 'Meeting others exploring AI' },
   { key: 'demo', label: 'Showing something I’ve built' },
 ] as const
 
 export const MEETUP_EXPERIENCE = [
   { key: 'curious', label: 'Curious, not using it much yet' },
-  { key: 'chat', label: 'Using Claude chat most days' },
-  { key: 'code', label: 'Using Claude Code most days' },
-  { key: 'agents', label: 'Running many agents or building on the API' },
+  { key: 'sometimes', label: 'Using ChatGPT, Claude or similar now and then' },
+  { key: 'daily', label: 'Using AI tools most days' },
+  { key: 'building', label: 'Building with AI: agents, automations or code' },
 ] as const
 
 const INTEREST_KEYS = new Set<string>(MEETUP_INTERESTS.map(i => i.key))
