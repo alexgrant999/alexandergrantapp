@@ -5,6 +5,8 @@ import { respondAction, type RespondState } from './actions'
 export type PollRow = {
   id: string
   time: string
+  /** The same start in Sydney and Brisbane, leaving out the zone `time` is already in. */
+  also: string
   past: boolean
   chosen: boolean
   best: boolean
@@ -91,6 +93,7 @@ export function PollForm({
                   <li key={row.id} className={`gp-row${row.chosen ? ' is-chosen' : ''}${row.best && !row.chosen ? ' is-best' : ''}${row.past ? ' is-past' : ''}`}>
                     <div className="gp-when">
                       <span className="gp-time">{row.time}</span>
+                      {row.also && <span className="gp-also">{row.also}</span>}
                       {row.chosen && <span className="gp-tag">The time</span>}
                       {row.best && !row.chosen && <span className="gp-tag">Most can make this</span>}
                       {row.past && <span className="gp-tag is-quiet">Passed</span>}
@@ -105,7 +108,7 @@ export function PollForm({
                       )}
                     </div>
                     <fieldset className="gp-choice" disabled={disabled}>
-                      <legend className="sr-only">{day.label}, {row.time}</legend>
+                      <legend className="sr-only">{day.label}, {row.time}{row.also ? ` (${row.also})` : ''}</legend>
                       {(['yes', 'maybe', 'no'] as const).map(value => (
                         <label key={value} className={`gp-opt is-${value}`}>
                           <input type="radio" name={`opt-${row.id}`} value={value} defaultChecked={mine === value} />

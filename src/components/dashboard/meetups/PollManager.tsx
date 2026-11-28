@@ -9,7 +9,8 @@ import {
   removeResponseAction,
   setClosedAction,
 } from '@/app/dashboard/meetups/actions'
-import { formatDayShort, formatTime } from '@/components/booking/format'
+import { alsoIn, formatDayShort, formatTime, zoneCity } from '@/components/booking/format'
+import { MEETUP_ZONES } from '@/components/booking/zones'
 import { DANGER, GHOST, PANEL, PRIMARY, QUIET, SECTION_LABEL } from '@/components/dashboard/bookings/styles'
 import type { PollView } from '@/lib/services/group-poll'
 import { TimesEditor, type LocalTime } from './TimesEditor'
@@ -30,9 +31,12 @@ export function PollManager({ poll }: { poll: PollView }) {
   const when = (iso: string) => `${formatDayShort(iso, zone)}, ${formatTime(iso, zone)}`
   const chosen = poll.options.find(o => o.id === poll.chosenOptionId)
 
+  // For the group chat: the day, then the time in Sydney and in Brisbane.
+  const groupWhen = (iso: string) =>
+    MEETUP_ZONES.map(z => `${formatTime(iso, z)} ${zoneCity(z)}`).join(' / ')
   const share = chosen
-    ? `${poll.title} is on ${when(chosen.startsAt)} (${zone.split('/').pop()?.replaceAll('_', ' ')} time). Add it to your calendar here: ${poll.url}`
-    : `Let's find a time for ${poll.title}. Tap the times you can make (they show in your own time zone): ${poll.url}`
+    ? `${poll.title} is on ${formatDayShort(chosen.startsAt, MEETUP_ZONES[0])}, ${groupWhen(chosen.startsAt)}. Add it to your calendar here: ${poll.url}`
+    : `Let's find a time for ${poll.title}. Tap the times you can make (Sydney and Brisbane times are both shown): ${poll.url}`
 
   const act = (task: () => Promise<{ ok: boolean; error?: string }>, done: string) => {
     setMessage('')
@@ -86,6 +90,7 @@ export function PollManager({ poll }: { poll: PollView }) {
                   <tr key={o.id} className={`border-b border-[#1e1e2e] last:border-0 ${isChosen ? 'bg-[#3ecf8e]/10' : isBest ? 'bg-[#5a52e0]/10' : ''} ${o.past ? 'opacity-50' : ''}`}>
                     <th scope="row" className="whitespace-nowrap px-4 py-3 text-left font-medium text-[#e8e8f0] tabular-nums">
                       {when(o.startsAt)}
+                      {alsoIn(o.startsAt, zone, MEETUP_ZONES) && <span className="block text-xs font-normal text-[#c8c8d8]">{alsoIn(o.startsAt, zone, MEETUP_ZONES)}</span>}
                       <span className="block text-xs font-normal text-[#c8c8d8]">
                         {isChosen ? 'Settled' : isBest ? 'Best so far' : o.past ? 'Passed' : ''}
                         {o.clashes && <span className="text-[#d9b87a]">{isChosen || isBest || o.past ? ' · ' : ''}Busy on your calendar</span>}
