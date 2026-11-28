@@ -24,26 +24,29 @@ export type CreateGroupPollInput = z.infer<typeof createGroupPollSchema>
 export const addOptionsSchema = z.object({ pollId: id, timezone: zone, times: z.array(localTime).min(1).max(40) })
 
 /**
- * What brings someone to the meetup: AI in general and practical ways to use it.
- * Stored by key, so a label can be reworded without losing earlier answers.
+ * What brings someone to the meetup. The group already lives in these tools all day
+ * (Claude Code, Codex, Cursor, ChatGPT, Gemini, Grok), so the options are about running
+ * them together, not getting started. Stored by key, so a label can be reworded
+ * without losing earlier answers.
  */
 export const MEETUP_INTERESTS = [
-  { key: 'everyday', label: 'Saving time in everyday work' },
-  { key: 'business', label: 'Putting AI to work in a business' },
-  { key: 'automation', label: 'Automating repetitive tasks' },
-  { key: 'agents', label: 'AI agents that handle whole jobs' },
-  { key: 'building', label: 'Building apps and tools, with or without code' },
-  { key: 'choosing', label: 'Choosing tools and models, and what they cost' },
-  { key: 'safety', label: 'Using it safely: privacy, accuracy and limits' },
-  { key: 'people', label: 'Meeting others exploring AI' },
+  { key: 'sessions', label: 'Juggling many sessions and projects at once' },
+  { key: 'multiagent', label: 'Getting several agents to work together' },
+  { key: 'review', label: 'Having models check each other’s work' },
+  { key: 'platforms', label: 'Working across Claude, ChatGPT, Gemini, Grok and Cursor' },
+  { key: 'context', label: 'Sharing context and memory between agents' },
+  { key: 'connectors', label: 'Wiring it up: MCP servers, APIs and connectors' },
+  { key: 'always-on', label: 'Always-on agents on your own hardware' },
+  { key: 'tools', label: 'Building your own tools to fix your workflow' },
+  { key: 'limits', label: 'Subscriptions, rate limits and costs' },
   { key: 'demo', label: 'Showing something I’ve built' },
 ] as const
 
 export const MEETUP_EXPERIENCE = [
-  { key: 'curious', label: 'Curious, not using it much yet' },
-  { key: 'sometimes', label: 'Using ChatGPT, Claude or similar now and then' },
-  { key: 'daily', label: 'Using AI tools most days' },
-  { key: 'building', label: 'Building with AI: agents, automations or code' },
+  { key: 'learning', label: 'Still finding my way, here to learn' },
+  { key: 'daily', label: 'Using AI assistants all day' },
+  { key: 'agents', label: 'Working with coding agents daily (Claude Code, Codex, Cursor)' },
+  { key: 'builder', label: 'Running my own multi-agent setups and tools' },
 ] as const
 
 const INTEREST_KEYS = new Set<string>(MEETUP_INTERESTS.map(i => i.key))
