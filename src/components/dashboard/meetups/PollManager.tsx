@@ -24,7 +24,7 @@ export function PollManager({ poll }: { poll: PollView }) {
   const router = useRouter()
   const [pending, startTransition] = useTransition()
   const [message, setMessage] = useState('')
-  const [copied, setCopied] = useState(false)
+  const [copied, setCopied] = useState<'message' | 'link' | null>(null)
   const [adding, setAdding] = useState<LocalTime[]>([{ date: '', time: '19:00' }])
 
   const zone = poll.timezone
@@ -46,11 +46,11 @@ export function PollManager({ poll }: { poll: PollView }) {
     })
   }
 
-  const copy = async () => {
+  const copy = async (what: 'message' | 'link') => {
     try {
-      await navigator.clipboard.writeText(share)
-      setCopied(true)
-      setTimeout(() => setCopied(false), 2000)
+      await navigator.clipboard.writeText(what === 'link' ? poll.url : share)
+      setCopied(what)
+      setTimeout(() => setCopied(null), 2000)
     } catch {
       setMessage('Could not copy. Select the text and copy it by hand.')
     }
@@ -64,7 +64,10 @@ export function PollManager({ poll }: { poll: PollView }) {
         <h2 id="share-heading" className={`${SECTION_LABEL} mb-4`}>Share with the group</h2>
         <div className={`${PANEL} flex flex-col gap-3 p-6`}>
           <p className="select-all whitespace-pre-wrap break-words text-sm text-[#e8e8f0]">{share}</p>
-          <div><button type="button" className={GHOST} onClick={copy}>{copied ? 'Copied' : 'Copy message'}</button></div>
+          <div className="flex flex-wrap gap-3">
+            <button type="button" className={GHOST} onClick={() => copy('message')}>{copied === 'message' ? 'Copied' : 'Copy message'}</button>
+            <button type="button" className={GHOST} onClick={() => copy('link')}>{copied === 'link' ? 'Copied' : 'Copy link'}</button>
+          </div>
         </div>
       </section>
 
