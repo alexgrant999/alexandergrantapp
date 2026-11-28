@@ -1,5 +1,6 @@
 'use client'
 import { useActionState, useEffect, useRef, useState } from 'react'
+import { MEETUP_EXPERIENCE, MEETUP_INTERESTS, NOTE_MAX } from '@/lib/validators/group-poll'
 import { respondAction, type RespondState } from './actions'
 
 export type PollRow = {
@@ -15,6 +16,9 @@ export type PollRow = {
 }
 
 export type PollDay = { date: string; label: string; rows: PollRow[] }
+
+/** This browser's earlier answers about themselves, so an update does not wipe them. */
+export type OwnDetails = { email: string; phone: string; interests: string[]; experience: string; note: string }
 
 type Answer = 'yes' | 'maybe' | 'no'
 
@@ -34,12 +38,14 @@ export function PollForm({
   days,
   ownName,
   ownAnswers,
+  ownDetails,
   closed,
 }: {
   slug: string
   days: PollDay[]
   ownName: string
   ownAnswers: Record<string, 'yes' | 'maybe'>
+  ownDetails: OwnDetails
   closed: boolean
 }) {
   const [state, formAction, pending] = useActionState(respondAction, initial)
@@ -130,6 +136,43 @@ export function PollForm({
             <label className="bk-label" htmlFor="gp-name">Your name</label>
             <p className="bk-hint" id="gp-name-hint">First name is fine. The group sees it next to your answers.</p>
             <input id="gp-name" className="bk-input" name="name" required maxLength={60} autoComplete="given-name" defaultValue={ownName} aria-describedby="gp-name-hint" />
+          </div>
+          <div className="bk-field">
+            <label className="bk-label" htmlFor="gp-email">Email</label>
+            <p className="bk-hint" id="gp-email-hint">Only Alex sees this. It’s for sending you the final time and the link to join.</p>
+            <input id="gp-email" className="bk-input" name="email" type="email" inputMode="email" required maxLength={200} autoComplete="email" defaultValue={ownDetails.email} aria-describedby="gp-email-hint" />
+          </div>
+          <div className="bk-field">
+            <label className="bk-label" htmlFor="gp-phone">Mobile <span className="gp-optional">(optional)</span></label>
+            <p className="bk-hint" id="gp-phone-hint">Only Alex sees this. Outside Australia, start with your country code.</p>
+            <input id="gp-phone" className="bk-input" name="phone" type="tel" inputMode="tel" maxLength={30} autoComplete="tel" placeholder="0412 345 678" defaultValue={ownDetails.phone} aria-describedby="gp-phone-hint" />
+          </div>
+          <fieldset className="bk-field gp-fieldset" aria-describedby="gp-interests-hint">
+            <legend className="bk-label">What would you like to get out of it? <span className="gp-optional">(optional)</span></legend>
+            <p className="bk-hint" id="gp-interests-hint">Tick any that fit. It helps shape the session.</p>
+            <div className="gp-chips">
+              {MEETUP_INTERESTS.map(i => (
+                <label key={i.key} className="gp-chip">
+                  <input type="checkbox" name="interests" value={i.key} defaultChecked={ownDetails.interests.includes(i.key)} />
+                  <span>{i.label}</span>
+                </label>
+              ))}
+            </div>
+          </fieldset>
+          <fieldset className="bk-field gp-fieldset">
+            <legend className="bk-label">How do you use Claude now? <span className="gp-optional">(optional)</span></legend>
+            <div className="gp-levels">
+              {MEETUP_EXPERIENCE.map(e => (
+                <label key={e.key} className="bk-check gp-level">
+                  <input type="radio" name="experience" value={e.key} defaultChecked={ownDetails.experience === e.key} />
+                  <span>{e.label}</span>
+                </label>
+              ))}
+            </div>
+          </fieldset>
+          <div className="bk-field">
+            <label className="bk-label" htmlFor="gp-note">Anything you’d like covered, or a question to bring? <span className="gp-optional">(optional)</span></label>
+            <textarea id="gp-note" className="bk-input" name="note" rows={3} maxLength={NOTE_MAX} defaultValue={ownDetails.note} />
           </div>
           <div className="bk-submit">
             <button className="bk-button" type="submit" disabled={pending}>

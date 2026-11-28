@@ -32,6 +32,17 @@ const CSS = `
   .gp-choice:disabled .gp-opt { cursor:default; }
   .gp-choice:disabled .gp-opt:not(:has(input:checked)) { color:var(--muted); border-color:var(--line); }
 
+  .gp-optional { font-weight:400; color:var(--muted); }
+  .gp-fieldset { margin:0; padding:0; border:0; min-width:0; }
+  .gp-chips { display:flex; flex-wrap:wrap; gap:8px; margin-top:12px; }
+  .gp-chip { position:relative; display:inline-flex; align-items:center; min-height:44px; padding:8px 14px; border:1px solid var(--muted); border-radius:2px; cursor:pointer; transition:background .2s, color .2s, border-color .2s; }
+  .gp-chip input { position:absolute; opacity:0; width:1px; height:1px; }
+  .gp-chip:hover { border-color:var(--ink); }
+  .gp-chip:has(input:focus-visible) { outline:3px solid var(--green); outline-offset:2px; }
+  .gp-chip:has(input:checked) { background:var(--green); border-color:var(--green); color:var(--paper); }
+  .gp-levels { display:flex; flex-direction:column; margin-top:6px; }
+  .gp-level { font-weight:400; }
+
   .gp-people { list-style:none; margin:18px 0 0; padding:0; border-top:1px solid var(--ink); }
   .gp-people li { display:flex; flex-wrap:wrap; justify-content:space-between; gap:0 16px; padding:12px 0; border-bottom:1px solid var(--line); }
   .gp-people span { color:var(--muted); font-variant-numeric:lining-nums tabular-nums; }

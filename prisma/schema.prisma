@@ -221,8 +221,8 @@ model SmsOptIn {
 }
 
 model VoiceCall {
-  id             String    @id @default(cuid())
-  conversationId String?   @unique
+  id             String  @id @default(cuid())
+  conversationId String? @unique
   agentId        String?
 
   callerNumber String?
@@ -330,10 +330,10 @@ model GroupPoll {
 }
 
 model GroupPollOption {
-  id       String    @id @default(cuid())
+  id       String   @id @default(cuid())
   pollId   String
-  startsAt DateTime  @db.Timestamptz(3)
-  endsAt   DateTime  @db.Timestamptz(3)
+  startsAt DateTime @db.Timestamptz(3)
+  endsAt   DateTime @db.Timestamptz(3)
 
   poll GroupPoll @relation(fields: [pollId], references: [id], onDelete: Cascade)
 
@@ -343,16 +343,23 @@ model GroupPollOption {
 /// One person's answers. `yes` and `maybe` hold option ids; any option in neither is a no.
 /// No sign in: the browser keeps `editToken` in a cookie so the same person can come back and change them.
 model GroupPollResponse {
-  id        String   @id @default(cuid())
-  pollId    String
-  name      String
-  timezone  String?
-  yes       String[] @default([])
-  maybe     String[] @default([])
-  editToken String   @unique
-  ipHash    String?
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  id         String   @id @default(cuid())
+  pollId     String
+  name       String
+  timezone   String?
+  yes        String[] @default([])
+  maybe      String[] @default([])
+  /// Private to Alex, never shown on the public poll page.
+  email      String?
+  phone      String?
+  /// Keys from MEETUP_INTERESTS and MEETUP_EXPERIENCE in lib/validators/group-poll.
+  interests  String[] @default([])
+  experience String?
+  note       String?
+  editToken  String   @unique
+  ipHash     String?
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
 
   poll GroupPoll @relation(fields: [pollId], references: [id], onDelete: Cascade)
 
