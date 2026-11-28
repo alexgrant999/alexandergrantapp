@@ -9,8 +9,6 @@ import { POLL_COOKIE_PREFIX, respondSchema } from '@/lib/validators/group-poll'
 
 export type RespondState = { status: 'idle' | 'saved' | 'error'; message?: string; at?: number }
 
-
-
 const ERRORS = {
   not_found: 'This poll no longer exists.',
   closed: 'This poll has closed, so answers can no longer change.',
@@ -24,6 +22,11 @@ export async function respondAction(_prev: RespondState, formData: FormData): Pr
   const parsed = respondSchema.safeParse({
     slug: formData.get('slug'),
     name: formData.get('name'),
+    email: formData.get('email') ?? '',
+    phone: formData.get('phone') ?? '',
+    interests: formData.getAll('interests').map(String),
+    experience: formData.get('experience') || undefined,
+    note: formData.get('note') ?? '',
     timezone: formData.get('timezone') || undefined,
     // One radio group per time, named opt-<option id>, valued yes, maybe or no.
     yes: answers('yes'),

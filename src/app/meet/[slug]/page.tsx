@@ -149,7 +149,16 @@ export default async function MeetPage({ params, searchParams }: Props) {
         ) : undefined
       }
     >
-      <PollForm slug={poll.slug} days={days} ownName={own?.name ?? ''} ownAnswers={ownAnswers} closed={poll.closed} />
+      <PollForm slug={poll.slug} days={days} ownName={own?.name ?? ''} ownAnswers={ownAnswers}
+        ownDetails={{
+          email: own?.email ?? '',
+          phone: own?.phone ?? '',
+          interests: own?.interests ?? [],
+          experience: own?.experience ?? '',
+          note: own?.note ?? '',
+        }}
+        closed={poll.closed}
+      />
     </BookingShell>
   )
 }

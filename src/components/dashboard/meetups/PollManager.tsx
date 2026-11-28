@@ -13,6 +13,7 @@ import { alsoIn, formatDayShort, formatTime, zoneCity } from '@/components/booki
 import { MEETUP_ZONES } from '@/components/booking/zones'
 import { DANGER, GHOST, PANEL, PRIMARY, QUIET, SECTION_LABEL } from '@/components/dashboard/bookings/styles'
 import type { PollView } from '@/lib/services/group-poll'
+import { MEETUP_EXPERIENCE, MEETUP_INTERESTS } from '@/lib/validators/group-poll'
 import { TimesEditor, type LocalTime } from './TimesEditor'
 
 /**
@@ -24,7 +25,7 @@ export function PollManager({ poll }: { poll: PollView }) {
   const router = useRouter()
   const [pending, startTransition] = useTransition()
   const [message, setMessage] = useState('')
-  const [copied, setCopied] = useState<'message' | 'link' | null>(null)
+  const [copied, setCopied] = useState<'message' | 'link' | 'emails' | null>(null)
   const [adding, setAdding] = useState<LocalTime[]>([{ date: '', time: '19:00' }])
 
   const zone = poll.timezone
@@ -46,9 +47,17 @@ export function PollManager({ poll }: { poll: PollView }) {
     })
   }
 
-  const copy = async (what: 'message' | 'link') => {
+  const emails = [...new Set(poll.responses.map(r => r.email).filter((e): e is string => !!e))]
+  const interestCounts = MEETUP_INTERESTS.map(i => ({ ...i, count: poll.responses.filter(r => r.interests?.includes(i.key)).length }))
+    .filter(i => i.count > 0)
+    .sort((a, b) => b.count - a.count)
+  const experienceCounts = MEETUP_EXPERIENCE.map(e => ({ ...e, count: poll.responses.filter(r => r.experience === e.key).length })).filter(e => e.count > 0)
+  const interestLabel = (key: string) => MEETUP_INTERESTS.find(i => i.key === key)?.label ?? key
+  const experienceLabel = (key: string) => MEETUP_EXPERIENCE.find(e => e.key === key)?.label ?? key
+
+  const copy = async (what: 'message' | 'link' | 'emails') => {
     try {
-      await navigator.clipboard.writeText(what === 'link' ? poll.url : share)
+      await navigator.clipboard.writeText(what === 'link' ? poll.url : what === 'emails' ? emails.join(', ') : share)
       setCopied(what)
       setTimeout(() => setCopied(null), 2000)
     } catch {
@@ -165,6 +174,68 @@ export function PollManager({ poll }: { poll: PollView }) {
           </details>
         )}
       </section>
+
+      {poll.responses.length > 0 && (
+        <section aria-labelledby="people-heading">
+          <h2 id="people-heading" className={`${SECTION_LABEL} mb-4`}>Who they are</h2>
+          {(interestCounts.length > 0 || experienceCounts.length > 0) && (
+            <div className={`${PANEL} mb-4 grid gap-6 p-6 text-sm sm:grid-cols-2`}>
+              {interestCounts.length > 0 && (
+                <div>
+                  <h3 className="mb-2 font-medium text-[#e8e8f0]">What they want from it</h3>
+                  <ul className="flex flex-col gap-1 text-[#c8c8d8]">
+                    {interestCounts.map(i => (
+                      <li key={i.key} className="flex justify-between gap-4"><span>{i.label}</span><span className="tabular-nums text-[#e8e8f0]">{i.count}</span></li>
+                    ))}
+                  </ul>
+                </div>
+              )}
+              {experienceCounts.length > 0 && (
+                <div>
+                  <h3 className="mb-2 font-medium text-[#e8e8f0]">How they use Claude</h3>
+                  <ul className="flex flex-col gap-1 text-[#c8c8d8]">
+                    {experienceCounts.map(e => (
+                      <li key={e.key} className="flex justify-between gap-4"><span>{e.label}</span><span className="tabular-nums text-[#e8e8f0]">{e.count}</span></li>
+                    ))}
+                  </ul>
+                </div>
+              )}
+            </div>
+          )}
+          <div className={`${PANEL} overflow-x-auto`}>
+            <table className="w-full text-sm">
+              <thead>
+                <tr className="border-b border-[#1e1e2e] text-left text-xs font-medium uppercase tracking-wider text-[#c8c8d8]">
+                  <th scope="col" className="px-4 py-3">Name</th>
+                  <th scope="col" className="px-4 py-3">Contact</th>
+                  <th scope="col" className="px-4 py-3">Uses Claude</th>
+                  <th scope="col" className="px-4 py-3">Wants</th>
+                  <th scope="col" className="px-4 py-3">Note</th>
+                </tr>
+              </thead>
+              <tbody>
+                {poll.responses.map(r => (
+                  <tr key={r.id} className="border-b border-[#1e1e2e] align-top last:border-0">
+                    <th scope="row" className="px-4 py-3 text-left font-medium text-[#e8e8f0]">{r.name}</th>
+                    <td className="px-4 py-3 text-[#c8c8d8]">
+                      {r.email ? <a className="block text-[#e8e8f0] underline-offset-2 hover:underline" href={`mailto:${r.email}`}>{r.email}</a> : <span className="block">No email</span>}
+                      {r.phone && <a className="block tabular-nums underline-offset-2 hover:underline" href={`tel:${r.phone}`}>{r.phone}</a>}
+                    </td>
+                    <td className="px-4 py-3 text-[#c8c8d8]">{r.experience ? experienceLabel(r.experience) : ''}</td>
+                    <td className="px-4 py-3 text-[#c8c8d8]">{r.interests?.map(interestLabel).join('; ')}</td>
+                    <td className="max-w-xs whitespace-pre-wrap break-words px-4 py-3 text-[#c8c8d8]">{r.note}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+          {emails.length > 0 && (
+            <div className="mt-4">
+              <button type="button" className={GHOST} onClick={() => copy('emails')}>{copied === 'emails' ? 'Copied' : `Copy ${emails.length === 1 ? 'the email' : `all ${emails.length} emails`}`}</button>
+            </div>
+          )}
+        </section>
+      )}
 
       <section aria-labelledby="add-heading">
         <h2 id="add-heading" className={`${SECTION_LABEL} mb-4`}>Add times</h2>

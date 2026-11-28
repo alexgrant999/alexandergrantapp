@@ -45,10 +45,13 @@ export type PollView = {
   chosenOptionId: string | null
   closed: boolean
   options: PollOptionView[]
-  responses: { id: string; name: string; timezone: string | null; yes: string[]; maybe: string[]; updatedAt: string }[]
+  responses: ({ id: string; name: string; timezone: string | null; yes: string[]; maybe: string[]; updatedAt: string } & Partial<ResponseDetails>)[]
   bestOptionId: string | null
   url: string
 }
+
+/** What someone told Alex about themselves. Dashboard only: never put these on the public page. */
+export type ResponseDetails = { email: string | null; phone: string | null; interests: string[]; experience: string | null; note: string | null }
 
 function slugify(title: string): string {
   const base = title
@@ -156,7 +159,8 @@ function loadPoll(where: { id: string } | { slug: string }) {
   })
 }
 
-function toView(poll: PollRow, now: Date, busy?: { startsAt: Date; endsAt: Date }[]): PollView {
+function toView(poll: PollRow, now: Date, dashboard?: { busy: { startsAt: Date; endsAt: Date }[] }): PollView {
+  const busy = dashboard?.busy
   const tallies = tallyOptions(poll.options, poll.responses)
   return {
     id: poll.id,
@@ -176,7 +180,15 @@ function toView(poll: PollRow, now: Date, busy?: { startsAt: Date; endsAt: Date 
       tally: tallies.get(o.id)!,
       ...(busy ? { clashes: busy.some(b => o.startsAt < b.endsAt && o.endsAt > b.startsAt) } : {}),
     })),
-    responses: poll.responses.map(r => ({ id: r.id, name: r.name, timezone: r.timezone, yes: r.yes, maybe: r.maybe, updatedAt: r.updatedAt.toISOString() })),
+    responses: poll.responses.map(r => ({
+      id: r.id,
+      name: r.name,
+      timezone: r.timezone,
+      yes: r.yes,
+      maybe: r.maybe,
+      updatedAt: r.updatedAt.toISOString(),
+      ...(dashboard ? { email: r.email, phone: r.phone, interests: r.interests, experience: r.experience, note: r.note } : {}),
+    })),
     bestOptionId: bestOption(poll.options, poll.responses, now),
     url: pollUrl(poll.slug),
   }
@@ -195,7 +207,7 @@ export async function getDashboardPoll(id: string): Promise<PollView | null> {
   const first = poll.options[0]
   const last = poll.options.at(-1)
   const busy = first && last ? await getCalendarBusy(first.startsAt, last.endsAt).catch(() => []) : []
-  return toView(poll, new Date(), busy)
+  return toView(poll, new Date(), { busy })
 }
 
 export async function listGroupPolls() {
@@ -251,10 +263,12 @@ export async function respondToPoll(input: RespondInput, ctx: { ip: string | nul
   // Keep answers to times that have since passed: they are history, not something to clear.
   const keepPast = (ids: string[]) => ids.filter(id => !open.has(id))
 
+  const details = { email: input.email, phone: input.phone, interests: input.interests, experience: input.experience, note: input.note }
+
   if (existing) {
     await prisma.groupPollResponse.update({
       where: { id: existing.id },
-      data: { name: input.name, timezone: input.timezone ?? null, yes: [...keepPast(existing.yes), ...yes], maybe: [...keepPast(existing.maybe), ...maybe] },
+      data: { name: input.name, timezone: input.timezone ?? null, yes: [...keepPast(existing.yes), ...yes], maybe: [...keepPast(existing.maybe), ...maybe], ...details },
     })
     return { ok: true, editToken: existing.editToken, updated: true }
   }
@@ -267,7 +281,7 @@ export async function respondToPoll(input: RespondInput, ctx: { ip: string | nul
   if ((await prisma.groupPollResponse.count({ where: { pollId: poll.id } })) >= MAX_RESPONSES_PER_POLL) return { ok: false, error: 'full' }
 
   const editToken = crypto.randomBytes(18).toString('base64url')
-  await prisma.groupPollResponse.create({ data: { pollId: poll.id, name: input.name, timezone: input.timezone ?? null, yes, maybe, editToken, ipHash } })
+  await prisma.groupPollResponse.create({ data: { pollId: poll.id, name: input.name, timezone: input.timezone ?? null, yes, maybe, editToken, ipHash, ...details } })
 
   const notify = async () => {
     const name = input.name.replace(/\s+/g, ' ').slice(0, 40)
@@ -285,7 +299,7 @@ export async function findOwnResponse(slug: string, editToken: string | null) {
   if (!editToken) return null
   return prisma.groupPollResponse.findFirst({
     where: { editToken, poll: { slug } },
-    select: { name: true, yes: true, maybe: true },
+    select: { name: true, yes: true, maybe: true, email: true, phone: true, interests: true, experience: true, note: true },
   })
 }
 

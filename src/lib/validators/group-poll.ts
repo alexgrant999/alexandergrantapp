@@ -23,10 +23,62 @@ export type CreateGroupPollInput = z.infer<typeof createGroupPollSchema>
 
 export const addOptionsSchema = z.object({ pollId: id, timezone: zone, times: z.array(localTime).min(1).max(40) })
 
+/**
+ * What brings someone to the Claude and Such meetup. Stored by key, so a label can be
+ * reworded without losing earlier answers.
+ */
+export const MEETUP_INTERESTS = [
+  { key: 'parallel', label: 'Running lots of Claude Code sessions at once' },
+  { key: 'review', label: 'Getting Claude and Codex to check each other’s work' },
+  { key: 'agents', label: 'Agents, subagents and workflows' },
+  { key: 'tooling', label: 'Skills, hooks and MCP servers' },
+  { key: 'shipping', label: 'Shipping real products and client work' },
+  { key: 'costs', label: 'Picking models and keeping costs down' },
+  { key: 'people', label: 'Meeting others building with Claude' },
+  { key: 'demo', label: 'Showing something I’ve built' },
+] as const
+
+export const MEETUP_EXPERIENCE = [
+  { key: 'curious', label: 'Curious, not using it much yet' },
+  { key: 'chat', label: 'Using Claude chat most days' },
+  { key: 'code', label: 'Using Claude Code most days' },
+  { key: 'agents', label: 'Running many agents or building on the API' },
+] as const
+
+const INTEREST_KEYS = new Set<string>(MEETUP_INTERESTS.map(i => i.key))
+const EXPERIENCE_KEYS = new Set<string>(MEETUP_EXPERIENCE.map(e => e.key))
+
+export const NOTE_MAX = 500
+
+/**
+ * "+61412345678". The group is mostly in Australia, so a local mobile (0412 345 678)
+ * or one without its leading 0 (412 345 678) is read as Australian; anything else
+ * needs its country code. Null when it cannot be a phone number.
+ */
+export function normaliseMeetupPhone(raw: string): string | null {
+  const trimmed = raw.trim()
+  const digits = trimmed.replace(/\D/g, '')
+  if (trimmed.startsWith('+')) return /^\d{8,15}$/.test(digits) ? `+${digits}` : null
+  if (/^04\d{8}$/.test(digits)) return `+61${digits.slice(1)}`
+  if (/^4\d{8}$/.test(digits)) return `+61${digits}`
+  return null
+}
+
 export const respondSchema = z
   .object({
     slug: z.string().trim().min(1).max(64),
     name: z.string().trim().min(1, 'Please add your name.').max(60, 'That name is a little long.'),
+    email: z.string().trim().toLowerCase().max(200, 'Please check the email address.').pipe(z.email('Please check the email address.')),
+    phone: z
+      .string()
+      .trim()
+      .max(30, 'Please check the mobile number.')
+      .default('')
+      .refine(v => v === '' || normaliseMeetupPhone(v) !== null, 'Please check the mobile number. Outside Australia, start with your country code, like +1.')
+      .transform(v => (v ? normaliseMeetupPhone(v) : null)),
+    interests: z.array(z.string()).max(MEETUP_INTERESTS.length).transform(keys => [...new Set(keys)].filter(k => INTEREST_KEYS.has(k))),
+    experience: z.string().optional().transform(v => (v && EXPERIENCE_KEYS.has(v) ? v : null)),
+    note: z.string().trim().max(NOTE_MAX, `Keep it under ${NOTE_MAX} characters.`).default('').transform(v => v || null),
     timezone: z.string().trim().max(64).optional().transform(v => (v && isIanaZone(v) ? v : undefined)),
     yes: z.array(id).max(60),
     maybe: z.array(id).max(60),
